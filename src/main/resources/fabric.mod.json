@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "libertyvillagers",
+  "version": "${version}",
+
+  "name": "Liberty's Villagers",
+  "description": "Basic improvements for villagers. * Villagers regain max health when waking up. * Farmers search further to find crops to harvest, run for longer, and don't go to empty farmland if they lack seeds.",
+  "authors": [
+    "gitsh01"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": ""
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/libertyvillagers/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.gitsh01.libertyvillagers.LibertyVillagersMod"
+    ]
+  },
+  "mixins": [
+    "libertyvillagers.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.9",
+    "fabric-api": "*",
+    "minecraft": "~1.19",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
