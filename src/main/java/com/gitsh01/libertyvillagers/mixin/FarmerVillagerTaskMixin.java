@@ -23,6 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
+import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
+
 @Mixin(FarmerVillagerTask.class)
 public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
     @Accessor
@@ -43,31 +45,31 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
 
     @Inject(method = "shouldRun", at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity, CallbackInfoReturnable<Boolean> cir) {
-        if (!serverWorld.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING)) {
-            cir.setReturnValue(false);
-            cir.cancel();
-        } else if (villagerEntity.getVillagerData().getProfession() != VillagerProfession.FARMER) {
-            cir.setReturnValue(false);
-            cir.cancel();
-        } else {
-            BlockPos.Mutable mutable = villagerEntity.getBlockPos().mutableCopy();
-            this.getTargetPositions().clear();
+            if (!serverWorld.getGameRules().getBoolean(GameRules.DO_MOB_GRIEFING)) {
+                cir.setReturnValue(false);
+                cir.cancel();
+            } else if (villagerEntity.getVillagerData().getProfession() != VillagerProfession.FARMER) {
+                cir.setReturnValue(false);
+                cir.cancel();
+            } else {
+                BlockPos.Mutable mutable = villagerEntity.getBlockPos().mutableCopy();
+                this.getTargetPositions().clear();
 
-            for(int i = -10; i <= 10; ++i) {
-                for(int j = -1; j <= 1; ++j) {
-                    for(int k = -10; k <= 10; ++k) {
-                        mutable.set(villagerEntity.getX() + (double)i, villagerEntity.getY() + (double)j, villagerEntity.getZ() + (double)k);
-                        if (this.replaceIsSuitableTarget(mutable, serverWorld, villagerEntity)) {
-                            this.getTargetPositions().add(new BlockPos(mutable));
+                for (int i = -1 * CONFIG.findCropRange; i <= CONFIG.findCropRange; ++i) {
+                    for (int j = -1; j <= 1; ++j) {
+                        for (int k = -CONFIG.findCropRange; k <= CONFIG.findCropRange; ++k) {
+                            mutable.set(villagerEntity.getX() + (double) i, villagerEntity.getY() + (double) j, villagerEntity.getZ() + (double) k);
+                            if (this.replaceIsSuitableTarget(mutable, serverWorld, villagerEntity)) {
+                                this.getTargetPositions().add(new BlockPos(mutable));
+                            }
                         }
                     }
                 }
-            }
 
-            this.setCurrentTarget(this.invokeChooseRandomTarget(serverWorld));
-            cir.setReturnValue(this.getCurrentTarget() != null);
-            cir.cancel();
-        }
+                this.setCurrentTarget(this.invokeChooseRandomTarget(serverWorld));
+                cir.setReturnValue(this.getCurrentTarget() != null);
+                cir.cancel();
+            }
     }
 
     protected boolean replaceIsSuitableTarget(BlockPos pos, ServerWorld world, VillagerEntity villagerEntity) {

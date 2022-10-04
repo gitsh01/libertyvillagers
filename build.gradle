@@ -19,6 +19,11 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
+	maven { url "https://maven.shedaniel.me/" }
+
+	maven {
+		url "https://maven.terraformersmc.com/releases/"
+	}
 }
 
 dependencies {
@@ -29,6 +34,14 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	modApi include("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
+		exclude module: 'fabric-api' // includes bad Fabric API
+	}
 
 	// Uncomment the following line to enable the deprecated Fabric API modules. 
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
@@ -72,18 +85,13 @@ publishing {
 
 	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
 	}
 }
 
 modrinth {
-	token = '$GITHUB_TOKEN' // Please use an environment variable for this! The default is `$MODRINTH_TOKEN`.
+	token = '$env:GITHUB_TOKEN' // Please use an environment variable for this! The default is `$MODRINTH_TOKEN`.
 	projectId = '264clomZ' // The ID of your Modrinth project. Slugs will not work.
-	versionNumber = '' // The (preferably SemVer) version of the mod. If not specified, it'll use the `version` declaration
-	versionName = '' // The version title. If not specified, it'll use the version number
+	versionType = 'alpha'
 	uploadFile = remapJar // Tells Minotaur to use the remapped jar
 	gameVersions = ['1.19.2'] // An array of game versions the version supports
 	loaders = ['fabric'] // Self-explanatory.

@@ -6,8 +6,11 @@
   "mixins": [
   ],
   "client": [
+    "FarmerVillagerTaskMixin",
+    "FindPointOfInterestTaskMixin",
+    "PointOfInterestStorageMixin",
     "VillagerEntityMixin",
-    "FarmerVillagerTaskMixin"
+    "WalkHomeTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1
