@@ -17,4 +17,7 @@ public class LibertyVillagersConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public int findCropRange = 10;
 
+    @ConfigEntry.Gui.Tooltip
+    public boolean preferPlantSameCrop = true;
+
 }

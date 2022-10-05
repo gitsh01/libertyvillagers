@@ -1,9 +1,11 @@
 {
   "text.autoconfig.LibertyVillagers.title": "Liberty Villagers Config",
   "text.autoconfig.LibertyVillagers.option.findPOIRange": "Find POI Range",
-  "text.autoconfig.LibertyVillagers.option.findPOIRange.@Tooltip": "The number of blocks a villager will search for a bed, bell, or workplace.",
+  "text.autoconfig.LibertyVillagers.option.findPOIRange.@Tooltip": "The number of blocks a villager will search for a bed, bell, or workplace. Mojang default: 48. Suggested default: 128.",
   "text.autoconfig.LibertyVillagers.option.findCropRange": "Find Crop Range",
-  "text.autoconfig.LibertyVillagers.option.findCropRange.@Tooltip": "The number of blocks a farmer will search for a mature crop or empty farmland (expensive).",
+  "text.autoconfig.LibertyVillagers.option.findCropRange.@Tooltip": "The number of blocks a farmer will search for a mature crop or empty farmland in the x/z plane (expensive). Mojang default: 1. Suggested default: 10",
   "text.autoconfig.LibertyVillagers.option.healOnWake": "Heal Villager On Wake",
-  "text.autoconfig.LibertyVillagers.option.healOnWake.@Tooltip": "Heals a villager to max health upon waking from sleep."
+  "text.autoconfig.LibertyVillagers.option.healOnWake.@Tooltip": "Heals a villager to max health upon waking from sleep.",
+  "text.autoconfig.LibertyVillagers.option.preferPlantSameCrop": "Plant Same Crop",
+  "text.autoconfig.LibertyVillagers.option.preferPlantSameCrop.@Tooltip": "When harvesting a crop, farmers will attempt to plant the same crop if they have the right seeds."
 }
