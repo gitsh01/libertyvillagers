@@ -20,4 +20,10 @@ public class LibertyVillagersConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public boolean preferPlantSameCrop = true;
 
+    @ConfigEntry.Gui.Tooltip
+    public boolean golemsAvoidCactus = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean villagersAvoidCactus = true;
+
 }

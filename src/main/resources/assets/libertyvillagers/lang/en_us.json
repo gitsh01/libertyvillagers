@@ -7,5 +7,9 @@
   "text.autoconfig.LibertyVillagers.option.healOnWake": "Heal Villager On Wake",
   "text.autoconfig.LibertyVillagers.option.healOnWake.@Tooltip": "Heals a villager to max health upon waking from sleep.",
   "text.autoconfig.LibertyVillagers.option.preferPlantSameCrop": "Plant Same Crop",
-  "text.autoconfig.LibertyVillagers.option.preferPlantSameCrop.@Tooltip": "When harvesting a crop, farmers will attempt to plant the same crop if they have the right seeds."
+  "text.autoconfig.LibertyVillagers.option.preferPlantSameCrop.@Tooltip": "When harvesting a crop, farmers will attempt to plant the same crop if they have the right seeds.",
+  "text.autoconfig.LibertyVillagers.option.golemsAvoidCactus": "Golems Avoid Cactus",
+  "text.autoconfig.LibertyVillagers.option.golemsAvoidCactus.@Tooltip": "Raises the danger level of walking near a cactus in the Golem's pathfinding AI.",
+  "text.autoconfig.LibertyVillagers.option.villagersAvoidCactus": "Villagers Avoid Cactus",
+  "text.autoconfig.LibertyVillagers.option.villagersAvoidCactus.@Tooltip": "Raises the danger level of walking near a cactus in the Villagers's pathfinding AI."
 }

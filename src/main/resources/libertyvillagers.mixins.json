@@ -8,6 +8,7 @@
   "client": [
     "FarmerVillagerTaskMixin",
     "FindPointOfInterestTaskMixin",
+    "GolemEntityMixin",
     "PointOfInterestStorageMixin",
     "VillagerEntityMixin",
     "WalkHomeTaskMixin"

@@ -19,7 +19,13 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     public VillagerEntityMixin(EntityType<? extends MerchantEntity> entityType, World world) {
         super(entityType, world);
-        this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16.0F);
+    }
+
+    @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
+    public void avoidCactus(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {
+        if (CONFIG.villagersAvoidCactus) {
+            this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "wakeUp()V")
