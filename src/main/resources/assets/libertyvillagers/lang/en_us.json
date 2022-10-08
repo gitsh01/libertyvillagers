@@ -1,7 +1,9 @@
 {
   "text.autoconfig.LibertyVillagers.title": "Liberty Villagers Config",
   "text.autoconfig.LibertyVillagers.option.findPOIRange": "Find POI Range",
-  "text.autoconfig.LibertyVillagers.option.findPOIRange.@Tooltip": "The number of blocks a villager will search for a bed, bell, or workplace. Mojang default: 48. Suggested default: 128.",
+  "text.autoconfig.LibertyVillagers.option.findPOIRange.@Tooltip": "The Euclidean Distance a villager will search for a bed, bell, or workplace. Mojang default: 48. Suggested default: 128.",
+  "text.autoconfig.LibertyVillagers.option.pathfindingMaxRange": "Pathfinding Max Range",
+  "text.autoconfig.LibertyVillagers.option.pathfindingMaxRange.@Tooltip": "The maximum Manhattan Distance allowed for a valid villager path. Mojang default: 100. Suggested default: 256.",
   "text.autoconfig.LibertyVillagers.option.findCropRange": "Find Crop Range",
   "text.autoconfig.LibertyVillagers.option.findCropRange.@Tooltip": "The number of blocks a farmer will search for a mature crop or empty farmland in the x/z plane (expensive). Mojang default: 1. Suggested default: 10",
   "text.autoconfig.LibertyVillagers.option.healOnWake": "Heal Villager On Wake",

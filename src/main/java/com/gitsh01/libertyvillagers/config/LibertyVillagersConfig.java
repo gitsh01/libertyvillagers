@@ -12,6 +12,9 @@ public class LibertyVillagersConfig implements ConfigData {
     public int findPOIRange = 128;
 
     @ConfigEntry.Gui.Tooltip
+    public int pathfindingMaxRange = 256;
+
+    @ConfigEntry.Gui.Tooltip
     public boolean healOnWake = true;
 
     @ConfigEntry.Gui.Tooltip

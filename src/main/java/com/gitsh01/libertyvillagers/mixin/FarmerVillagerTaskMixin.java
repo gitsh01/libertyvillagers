@@ -35,9 +35,7 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(FarmerVillagerTask.class)
 public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
     public FarmerVillagerTaskMixin() {
-        super(ImmutableMap.of(MemoryModuleType.LOOK_TARGET, MemoryModuleState.VALUE_ABSENT,
-                MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT, MemoryModuleType.SECONDARY_JOB_SITE,
-                MemoryModuleState.VALUE_PRESENT));
+        super(ImmutableMap.of());
     }
 
     @Accessor
