@@ -29,4 +29,6 @@ public class LibertyVillagersConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public boolean villagersAvoidCactus = true;
 
+    @ConfigEntry.Gui.Tooltip
+    public boolean villagersDontClimb = true;
 }
