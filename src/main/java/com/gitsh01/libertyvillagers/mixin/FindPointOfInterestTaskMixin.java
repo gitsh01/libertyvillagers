@@ -17,7 +17,9 @@ public abstract class FindPointOfInterestTaskMixin extends Task<VillagerEntity> 
         super(ImmutableMap.of());
     }
 
-    @ModifyConstant(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/mob/PathAwareEntity;J)V", constant = @Constant(intValue = 48))
+    @ModifyConstant(
+            method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/mob/PathAwareEntity;J)V",
+            constant = @Constant(intValue = 48))
     private int injected(int value) {
         return CONFIG.findPOIRange;
     }

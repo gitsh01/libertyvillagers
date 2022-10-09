@@ -17,12 +17,14 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
         super(ImmutableMap.of());
     }
 
-    @ModifyConstant(method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z", constant = @Constant(intValue = 48))
+    @ModifyConstant(method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z",
+            constant = @Constant(intValue = 48))
     private int injectedShouldRun(int value) {
         return CONFIG.findPOIRange;
     }
 
-    @ModifyConstant(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V", constant = @Constant(intValue = 48))
+    @ModifyConstant(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
+            constant = @Constant(intValue = 48))
     private int injectedRun(int value) {
         return CONFIG.findPOIRange;
     }

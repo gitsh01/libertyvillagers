@@ -19,14 +19,18 @@ import java.nio.file.Path;
 import java.util.function.Predicate;
 
 @Mixin(PointOfInterestStorage.class)
-public abstract class PointOfInterestStorageMixin  extends SerializingRegionBasedStorage<PointOfInterestSet> {
+public abstract class PointOfInterestStorageMixin extends SerializingRegionBasedStorage<PointOfInterestSet> {
 
-    public PointOfInterestStorageMixin(Path path, DataFixer dataFixer, boolean dsync, DynamicRegistryManager registryManager, HeightLimitView world) {
-        super(path, PointOfInterestSet::createCodec, PointOfInterestSet::new, dataFixer, DataFixTypes.POI_CHUNK, dsync, registryManager, world);
+    public PointOfInterestStorageMixin(Path path, DataFixer dataFixer, boolean dsync,
+                                       DynamicRegistryManager registryManager, HeightLimitView world) {
+        super(path, PointOfInterestSet::createCodec, PointOfInterestSet::new, dataFixer, DataFixTypes.POI_CHUNK, dsync,
+                registryManager, world);
     }
 
-    @Inject(at = @At("HEAD"), method = "getInCircle(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;")
-    void logGetInCircle(Predicate<RegistryEntry<PointOfInterestType>> typePredicate, BlockPos pos, int radius, PointOfInterestStorage.OccupationStatus occupationStatus, CallbackInfoReturnable cir) {
+    @Inject(at = @At("HEAD"),
+            method = "getInCircle(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;")
+    void logGetInCircle(Predicate<RegistryEntry<PointOfInterestType>> typePredicate, BlockPos pos, int radius,
+                        PointOfInterestStorage.OccupationStatus occupationStatus, CallbackInfoReturnable cir) {
         //System.out.printf("Radius is %d\n", radius);
     }
 }

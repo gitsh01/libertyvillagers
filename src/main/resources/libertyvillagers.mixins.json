@@ -9,6 +9,7 @@
     "FarmerVillagerTaskMixin",
     "FindPointOfInterestTaskMixin",
     "GolemEntityMixin",
+    "LivingEntityMixin",
     "PointOfInterestStorageMixin",
     "VillagerEntityMixin",
     "WalkHomeTaskMixin"
