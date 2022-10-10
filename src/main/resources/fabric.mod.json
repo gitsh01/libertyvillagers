@@ -2,9 +2,8 @@
   "schemaVersion": 1,
   "id": "libertyvillagers",
   "version": "${version}",
-
   "name": "Liberty's Villagers",
-  "description": "Basic improvements for villagers. * Villagers regain max health when waking up. * Farmers search further to find crops to harvest, run for longer, and don't go to empty farmland if they lack seeds.",
+  "description": "QOI improvements for villagers.",
   "authors": [
     "gitsh01"
   ],
@@ -12,7 +11,6 @@
     "homepage": "",
     "sources": ""
   },
-
   "license": "CC0-1.0",
   "icon": "assets/libertyvillagers/icon.png",
 

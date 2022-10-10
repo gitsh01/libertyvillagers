@@ -12,6 +12,7 @@
     "LivingEntityMixin",
     "PointOfInterestStorageMixin",
     "VillagerEntityMixin",
+    "VillagerTaskListProviderMixin",
     "WalkHomeTaskMixin"
   ],
   "injectors": {

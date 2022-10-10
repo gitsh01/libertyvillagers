@@ -31,4 +31,10 @@ public class LibertyVillagersConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean villagersDontClimb = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean armorerHealsGolems = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public int armorerHealsGolemsRange = 32;
 }

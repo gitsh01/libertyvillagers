@@ -15,5 +15,9 @@
   "text.autoconfig.LibertyVillagers.option.villagersAvoidCactus": "Villagers Avoid Cactus",
   "text.autoconfig.LibertyVillagers.option.villagersAvoidCactus.@Tooltip": "Raises the danger level of walking near a cactus in the Villagers's pathfinding AI.",
   "text.autoconfig.LibertyVillagers.option.villagersDontClimb": "Villagers Don't Climb",
-  "text.autoconfig.LibertyVillagers.option.villagersDontClimb.@Tooltip": "Prevents villagers from being pushed onto ladders, vines, etc."
+  "text.autoconfig.LibertyVillagers.option.villagersDontClimb.@Tooltip": "Prevents villagers from being pushed onto ladders, vines, etc.",
+  "text.autoconfig.LibertyVillagers.option.armorerHealsGolems": "Armorers Heal Iron Golems",
+  "text.autoconfig.LibertyVillagers.option.armorerHealsGolems.@Tooltip": "During their working hours, armorers will seek out and heal nearby Iron Golems.",
+  "text.autoconfig.LibertyVillagers.option.armorerHealsGolemsRange": "Armorers Heal Iron Golems Range",
+  "text.autoconfig.LibertyVillagers.option.armorerHealsGolemsRange.@Tooltip": "The Euclidean Distance an armorer will seek out Iron Golems to heal."
 }
