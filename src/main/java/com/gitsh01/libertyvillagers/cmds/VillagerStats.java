@@ -9,7 +9,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.village.VillagerProfession;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +31,13 @@ public class VillagerStats {
                 })));
     }
 
+    public static MutablePair<Integer, Integer> sumPair(MutablePair<Integer, Integer> oldVal,
+                                                        MutablePair<Integer, Integer> newVal) {
+        oldVal.setLeft(oldVal.getLeft() + newVal.getLeft());
+        oldVal.setRight(oldVal.getRight() + newVal.getRight());
+        return oldVal;
+    }
+
     public static void processVillagerStats(CommandContext<ServerCommandSource> command) throws CommandSyntaxException {
         ServerCommandSource source = command.getSource();
         ServerPlayerEntity player = source.getPlayer();
@@ -43,10 +50,20 @@ public class VillagerStats {
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfVillagers").getString(),
                 villagers.size()));
 
-        HashMap<VillagerProfession, Integer> villagerProfessionintegerMap = new HashMap<VillagerProfession, Integer>();
+        // MutablePair is countOfVillagersWithProfession, countOfVillagersWithProfessionWhoHaveWorkstations.
+        HashMap<String, MutablePair<Integer, Integer>> villagerProfessionMap = new HashMap<>();
         int numHomeless = 0;
         for (VillagerEntity villager : villagers) {
-            villagerProfessionintegerMap.merge(villager.getVillagerData().getProfession(), 1, Integer::sum);
+            if (villager.isBaby()) {
+                // TODO: getProfession() is not localized currently. When getProfession is localized, also localize
+                // "baby".
+                villagerProfessionMap.merge("baby", new MutablePair<>(1, 0), VillagerStats::sumPair);
+            } else {
+
+                villagerProfessionMap.merge(villager.getVillagerData().getProfession().toString(), new MutablePair<>(1,
+                                villager.getBrain().getOptionalMemory(MemoryModuleType.JOB_SITE).isPresent() ? 1 : 0),
+                        VillagerStats::sumPair);
+            }
             if (!villager.getBrain().hasMemoryModule(MemoryModuleType.HOME)) {
                 numHomeless++;
             }
@@ -56,9 +73,10 @@ public class VillagerStats {
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), numHomeless));
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.professions"));
-        villagerProfessionintegerMap.forEach((villagerProfession, count) -> {
-            player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.professionsFormat",
-                    villagerProfession.toString(), count));
+        villagerProfessionMap.forEach((villagerProfession, pair) -> {
+            player.sendMessage(
+                    Text.translatable("text.LibertyVillagers.villagerStats.professionsFormat", villagerProfession,
+                            pair.getLeft(), pair.getRight()));
         });
     }
 }
