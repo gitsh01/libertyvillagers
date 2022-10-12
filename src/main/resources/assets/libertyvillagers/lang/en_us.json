@@ -19,5 +19,10 @@
   "text.autoconfig.LibertyVillagers.option.armorerHealsGolems": "Armorers Heal Iron Golems",
   "text.autoconfig.LibertyVillagers.option.armorerHealsGolems.@Tooltip": "During their working hours, armorers will seek out and heal nearby Iron Golems.",
   "text.autoconfig.LibertyVillagers.option.armorerHealsGolemsRange": "Armorers Heal Iron Golems Range",
-  "text.autoconfig.LibertyVillagers.option.armorerHealsGolemsRange.@Tooltip": "The Euclidean Distance an armorer will seek out Iron Golems to heal."
+  "text.autoconfig.LibertyVillagers.option.armorerHealsGolemsRange.@Tooltip": "The Euclidean Distance an armorer will seek out Iron Golems to heal.",
+  "text.LibertyVillagers.villagerStats.format": "%s %d",
+  "text.LibertyVillagers.villagerStats.numberOfVillagers": "Number Of Villagers:",
+  "text.LibertyVillagers.villagerStats.numberOfHomeless": "Number of Homeless Villagers:",
+  "text.LibertyVillagers.villagerStats.professions": "Professions:",
+  "text.LibertyVillagers.villagerStats.professionsFormat": "    %s: %d"
 }

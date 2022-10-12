@@ -1,6 +1,6 @@
 package com.gitsh01.libertyvillagers.mixin;
 
-import com.gitsh01.libertyvillagers.HealGolemTask;
+import com.gitsh01.libertyvillagers.tasks.HealGolemTask;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.EntityType;

@@ -37,4 +37,7 @@ public class LibertyVillagersConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public int armorerHealsGolemsRange = 32;
+
+    @ConfigEntry.Gui.Tooltip
+    public int villagerStatRange = 256;
 }

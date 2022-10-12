@@ -1,4 +1,4 @@
-package com.gitsh01.libertyvillagers;
+package com.gitsh01.libertyvillagers.tasks;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
