@@ -22,7 +22,12 @@ public abstract class GolemEntityMixin extends PathAwareEntity {
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
     public void avoidCactus(EntityType<? extends GolemEntity> entityType, World world, CallbackInfo ci) {
         if (CONFIG.golemsAvoidCactus) {
-            this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
+            this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, -1);
+        }
+
+        if (CONFIG.golemsAvoidWater) {
+            this.setPathfindingPenalty(PathNodeType.WATER, -1);
+            this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16);
         }
     }
 }

@@ -26,6 +26,10 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
         if (CONFIG.villagersAvoidCactus) {
             this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
         }
+        if (CONFIG.villagersAvoidWater) {
+            this.setPathfindingPenalty(PathNodeType.WATER, -1);
+            this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16);
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "wakeUp()V")
