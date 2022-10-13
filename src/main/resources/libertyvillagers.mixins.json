@@ -10,6 +10,7 @@
     "FindPointOfInterestTaskMixin",
     "GolemEntityMixin",
     "LivingEntityMixin",
+    "MobEntityMixin",
     "PointOfInterestStorageMixin",
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",

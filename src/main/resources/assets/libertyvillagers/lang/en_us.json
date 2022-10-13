@@ -20,6 +20,8 @@
   "text.autoconfig.LibertyVillagers.option.villagersAvoidWater.@Tooltip": "Raises the danger level of walking near water in the Villagers's pathfinding AI.",
   "text.autoconfig.LibertyVillagers.option.villagersDontClimb": "Villagers Don't Climb",
   "text.autoconfig.LibertyVillagers.option.villagersDontClimb.@Tooltip": "Prevents villagers from being pushed onto ladders, vines, etc.",
+  "text.autoconfig.LibertyVillagers.option.villagerSafeFallDistance": "Villager Safe Fall Distance",
+  "text.autoconfig.LibertyVillagers.option.villagerSafeFallDistance.@Tooltip": "Overrides the villager safe fall distance. Mojang default: 3. Suggested default: 2.",
   "text.autoconfig.LibertyVillagers.option.armorerHealsGolems": "Armorers Heal Iron Golems",
   "text.autoconfig.LibertyVillagers.option.armorerHealsGolems.@Tooltip": "During their working hours, armorers will seek out and heal nearby Iron Golems.",
   "text.autoconfig.LibertyVillagers.option.armorerHealsGolemsRange": "Armorers Heal Iron Golems Range",
