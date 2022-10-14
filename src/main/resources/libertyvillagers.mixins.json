@@ -12,6 +12,7 @@
     "LivingEntityMixin",
     "MobEntityMixin",
     "PointOfInterestStorageMixin",
+    "VillagerDataMixin",
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
     "WalkHomeTaskMixin"

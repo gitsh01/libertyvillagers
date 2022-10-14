@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
@@ -39,4 +40,13 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
             this.heal(this.getMaxHealth());
         }
     }
+
+    @Inject(at = @At("HEAD"), method = "isReadyToBreed()Z", cancellable = true)
+    public void replaceIsReadyToBreed(CallbackInfoReturnable<Boolean> cir) {
+        if (CONFIG.villagersDontBreed) {
+            cir.setReturnValue(false);
+            cir.cancel();
+        }
+    }
+
 }

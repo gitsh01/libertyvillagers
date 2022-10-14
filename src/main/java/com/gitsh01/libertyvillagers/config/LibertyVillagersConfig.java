@@ -42,6 +42,12 @@ public class LibertyVillagersConfig implements ConfigData {
     public int villagerSafeFallDistance = 2;
 
     @ConfigEntry.Gui.Tooltip
+    public boolean villagersDontBreed = false;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean noNitwitVillagers = false;
+
+    @ConfigEntry.Gui.Tooltip
     public boolean armorerHealsGolems = true;
 
     @ConfigEntry.Gui.Tooltip
