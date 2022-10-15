@@ -34,7 +34,7 @@
   "text.autoconfig.LibertyVillagers.option.villagerStatRange.@Tooltip": "Euclidean Distance used for finding villagers for the villagerstats command.",
   "text.LibertyVillagers.villagerStats.format": "%s %d",
   "text.LibertyVillagers.villagerStats.numberOfVillagers": "Number Of Villagers:",
-  "text.LibertyVillagers.villagerStats.numberOfHomeless": "Number of Homeless Villagers:",
+  "text.LibertyVillagers.villagerStats.numberOfHomeless": "Number of Homeless Villagers: %d With Available Beds: %d",
   "text.LibertyVillagers.villagerStats.professions": "Professions:",
-  "text.LibertyVillagers.villagerStats.professionsFormat": "    %s: Total: %d With Job Sites: %d"
+  "text.LibertyVillagers.villagerStats.professionsFormat": "    %s: Total: %d Held Job Sites: %d Available Job Sites: %d"
 }
