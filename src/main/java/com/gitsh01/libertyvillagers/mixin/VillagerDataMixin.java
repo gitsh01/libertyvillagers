@@ -4,6 +4,7 @@ import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,6 +19,7 @@ public abstract class VillagerDataMixin {
     public abstract VillagerProfession getProfession();
 
     @Accessor("profession")
+    @Mutable
     public abstract void setProfession(VillagerProfession profession);
 
     @Inject(at = @At("RETURN"), method = "<init>()V")
