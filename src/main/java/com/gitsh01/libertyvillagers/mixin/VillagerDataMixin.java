@@ -22,10 +22,14 @@ public abstract class VillagerDataMixin {
     @Mutable
     public abstract void setProfession(VillagerProfession profession);
 
-    @Inject(at = @At("RETURN"), method = "<init>()V")
+    @Inject(at = @At("RETURN"), method = "<init>")
     public void replaceNitwit(VillagerType type, VillagerProfession profession, int level, CallbackInfo ci) {
         if (CONFIG.noNitwitVillagers && this.getProfession() == VillagerProfession.NITWIT) {
+            System.out.println("Nitwit found");
             this.setProfession(VillagerProfession.NONE);
+        } else {
+            System.out.printf("Setting profession to %s\n", profession.toString());
+            this.setProfession(profession);
         }
     }
 }
