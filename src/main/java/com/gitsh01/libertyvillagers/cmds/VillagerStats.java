@@ -72,7 +72,6 @@ public class VillagerStats {
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfVillagers").getString(),
                 villagers.size()));
 
-        // MutablePair is countOfVillagersWithProfession, countOfVillagersWithProfessionWhoHaveWorkstations.
         TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
         int numHomeless = 0;
         for (VillagerEntity villager : villagers) {
@@ -93,12 +92,15 @@ public class VillagerStats {
             }
         }
 
+        player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.format",
+                Text.translatable("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), numHomeless));
+
         long numAvailableBeds = serverWorld.getPointOfInterestStorage()
                 .count(registryEntry -> registryEntry.matchesKey(PointOfInterestTypes.HOME), player.getBlockPos(),
                         CONFIG.villagerStatRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.format",
-                Text.translatable("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), numHomeless,
+                Text.translatable("text.LibertyVillagers.villagerStats.numberOfAvailableBeds").getString(),
                 numAvailableBeds));
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.professions"));
