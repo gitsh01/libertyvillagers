@@ -9,7 +9,7 @@
     "EntityNavigationMixin",
     "FarmerVillagerTaskMixin",
     "FindPointOfInterestTaskMixin",
-    "GolemEntityMixin",
+    "IronGolemEntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
     "PointOfInterestStorageMixin",

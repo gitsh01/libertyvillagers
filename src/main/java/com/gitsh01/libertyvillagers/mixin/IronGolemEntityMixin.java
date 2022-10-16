@@ -4,18 +4,20 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.passive.GolemEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
-@Mixin(GolemEntity.class)
-public abstract class GolemEntityMixin extends PathAwareEntity {
+@Mixin(IronGolemEntity.class)
+public abstract class IronGolemEntityMixin extends PathAwareEntity {
 
-    public GolemEntityMixin(EntityType<? extends net.minecraft.entity.passive.GolemEntity> entityType, World world) {
+    public IronGolemEntityMixin(EntityType<? extends GolemEntity> entityType, World world) {
         super(entityType, world);
     }
 
@@ -28,6 +30,14 @@ public abstract class GolemEntityMixin extends PathAwareEntity {
         if (CONFIG.golemsConfig.golemsAvoidWater) {
             this.setPathfindingPenalty(PathNodeType.WATER, -1);
             this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1);
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "canTarget", cancellable = true)
+    public void replaceCanTarget(EntityType<?> type, CallbackInfoReturnable<Boolean> cir) {
+        if (CONFIG.golemsConfig.golemsDontAttackPlayer && type == EntityType.PLAYER) {
+            cir.setReturnValue(false);
+            cir.cancel();
         }
     }
 }
