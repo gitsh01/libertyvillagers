@@ -65,7 +65,8 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
     @Accessor
     public abstract Long2LongMap getPositionToExpiry();
 
-    @Inject(method = "shouldRun", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z",
+            at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldRun(ServerWorld world, LivingEntity entity, CallbackInfoReturnable<Boolean> cir) {
         if (world.getTime() - this.getExpiryTimeLimit() < RUN_TIME) {
             cir.setReturnValue(false);
@@ -83,8 +84,8 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
         cir.cancel();
     }
 
-
-    @Inject(method = "run", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
+            at = @At(value = "HEAD"), cancellable = true)
     protected void replaceRun(ServerWorld world, LivingEntity entity, long time, CallbackInfo cir) {
         Predicate<BlockPos> predicate;
         this.setTries(0);

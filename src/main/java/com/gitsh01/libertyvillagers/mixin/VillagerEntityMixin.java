@@ -50,7 +50,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "canSummonGolem()Z", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "canSummonGolem(J)Z", cancellable = true)
     public void replaceCanSummonGolem(long time, CallbackInfoReturnable<Boolean> cir) {
         if (CONFIG.villagersGeneralConfig.villagersDontSummonGolems) {
             cir.setReturnValue(false);
