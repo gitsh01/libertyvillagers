@@ -2,6 +2,7 @@ package com.gitsh01.libertyvillagers.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.InteractionObserver;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -44,6 +45,14 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
     @Inject(at = @At("HEAD"), method = "isReadyToBreed()Z", cancellable = true)
     public void replaceIsReadyToBreed(CallbackInfoReturnable<Boolean> cir) {
         if (CONFIG.villagersGeneralConfig.villagersDontBreed) {
+            cir.setReturnValue(false);
+            cir.cancel();
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "canSummonGolem()Z", cancellable = true)
+    public void replaceCanSummonGolem(long time, CallbackInfoReturnable<Boolean> cir) {
+        if (CONFIG.villagersGeneralConfig.villagersDontSummonGolems) {
             cir.setReturnValue(false);
             cir.cancel();
         }

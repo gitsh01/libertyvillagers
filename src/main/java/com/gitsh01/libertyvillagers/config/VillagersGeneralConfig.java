@@ -32,6 +32,9 @@ public class VillagersGeneralConfig implements ConfigData {
     public boolean villagersDontBreed = false;
 
     @ConfigEntry.Gui.Tooltip
+    public boolean villagersDontSummonGolems = false;
+
+    @ConfigEntry.Gui.Tooltip
     public boolean noNitwitVillagers = false;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
