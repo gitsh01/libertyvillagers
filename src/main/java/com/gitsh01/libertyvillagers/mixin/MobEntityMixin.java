@@ -23,7 +23,7 @@ public abstract class MobEntityMixin extends LivingEntity {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity == null) return;
         if (entity.getType() == EntityType.VILLAGER) {
-            cir.setReturnValue(CONFIG.villagerSafeFallDistance);
+            cir.setReturnValue(CONFIG.villagersGeneralConfig.villagerSafeFallDistance);
             cir.cancel();
         }
     }

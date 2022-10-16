@@ -21,6 +21,6 @@ public abstract class FindPointOfInterestTaskMixin extends Task<VillagerEntity> 
             method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/mob/PathAwareEntity;J)V",
             constant = @Constant(intValue = 48))
     private int injected(int value) {
-        return CONFIG.findPOIRange;
+        return CONFIG.villagersGeneralConfig.findPOIRange;
     }
 }

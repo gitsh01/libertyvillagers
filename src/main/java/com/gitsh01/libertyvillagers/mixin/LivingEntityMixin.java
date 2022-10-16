@@ -22,7 +22,7 @@ public abstract class LivingEntityMixin extends Entity {
     public void replaceIsClimbing(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity == null) return;
-        if (entity.getType() == EntityType.VILLAGER && CONFIG.villagersDontClimb) {
+        if (entity.getType() == EntityType.VILLAGER && CONFIG.villagersGeneralConfig.villagersDontClimb) {
             cir.setReturnValue(false);
             cir.cancel();
         }

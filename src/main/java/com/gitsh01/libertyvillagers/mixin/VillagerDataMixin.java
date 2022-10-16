@@ -24,7 +24,7 @@ public abstract class VillagerDataMixin {
 
     @Inject(at = @At("RETURN"), method = "<init>")
     public void replaceNitwit(VillagerType type, VillagerProfession profession, int level, CallbackInfo ci) {
-        if (CONFIG.noNitwitVillagers && this.getProfession() == VillagerProfession.NITWIT) {
+        if (CONFIG.villagersGeneralConfig.noNitwitVillagers && this.getProfession() == VillagerProfession.NITWIT) {
             this.setProfession(VillagerProfession.NONE);
         } else {
             this.setProfession(profession);

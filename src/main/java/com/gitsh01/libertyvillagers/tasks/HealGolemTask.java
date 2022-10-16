@@ -38,7 +38,7 @@ public class HealGolemTask extends Task<VillagerEntity> {
 
     protected boolean shouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity) {
         List<IronGolemEntity> golems = villagerEntity.world.getNonSpectatingEntities(IronGolemEntity.class,
-                villagerEntity.getBoundingBox().expand(CONFIG.armorerHealsGolemsRange));
+                villagerEntity.getBoundingBox().expand(CONFIG.villagersProfessionConfig.armorerHealsGolemsRange));
 
         // Use a list of golem patients rather than seek out the worst, in case there are
         // multiple armorers in the village.

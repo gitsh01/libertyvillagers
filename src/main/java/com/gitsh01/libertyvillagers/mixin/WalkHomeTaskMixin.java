@@ -76,7 +76,8 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
         PointOfInterestStorage pointOfInterestStorage = world.getPointOfInterestStorage();
         Optional<BlockPos> optional =
                 pointOfInterestStorage.getNearestPosition(poiType -> poiType.matchesKey(PointOfInterestTypes.HOME),
-                        entity.getBlockPos(), CONFIG.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+                        entity.getBlockPos(), CONFIG.villagersGeneralConfig.findPOIRange,
+                        PointOfInterestStorage.OccupationStatus.HAS_SPACE);
         cir.setReturnValue(optional.isPresent() &&
                 !(optional.get().getSquaredDistance(pathAwareEntity.getBlockPos()) <= MAX_DISTANCE));
         cir.cancel();
@@ -103,7 +104,8 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
                                     }
                                     this.getPositionToExpiry().put(l, this.getExpiryTimeLimit() + POI_EXPIRY);
                                     return true;
-                                }, entity.getBlockPos(), CONFIG.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE)
+                                }, entity.getBlockPos(), CONFIG.villagersGeneralConfig.findPOIRange,
+                                PointOfInterestStorage.OccupationStatus.HAS_SPACE)
                         .collect(Collectors.toSet());
         Path path = FindPointOfInterestTask.findPathToPoi(pathAwareEntity, set);
         if (path != null && path.reachesTarget()) {

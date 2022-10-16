@@ -26,6 +26,6 @@ public abstract class VillagerWalkTowardsTaskMixin extends Task<VillagerEntity> 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)V")
     public void overrideMaxRange(MemoryModuleType<GlobalPos> destination, float speed, int completionRange,
                                  int maxRange, int maxRunTime, CallbackInfo ci) {
-        this.setMaxRange(CONFIG.pathfindingMaxRange);
+        this.setMaxRange(CONFIG.villagersGeneralConfig.pathfindingMaxRange);
     }
 }

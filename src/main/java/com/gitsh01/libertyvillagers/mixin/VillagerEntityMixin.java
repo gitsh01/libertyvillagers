@@ -24,10 +24,10 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
     public void avoidCactus(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {
-        if (CONFIG.villagersAvoidCactus) {
+        if (CONFIG.villagersGeneralConfig.villagersAvoidCactus) {
             this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
         }
-        if (CONFIG.villagersAvoidWater) {
+        if (CONFIG.villagersGeneralConfig.villagersAvoidWater) {
             this.setPathfindingPenalty(PathNodeType.WATER, -1);
             this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16);
         }
@@ -35,7 +35,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("HEAD"), method = "wakeUp()V")
     private void healOnWakeUp(CallbackInfo info) {
-        if (CONFIG.healOnWake) {
+        if (CONFIG.villagersGeneralConfig.healOnWake) {
             // Heal villager upon waking up.
             this.heal(this.getMaxHealth());
         }
@@ -43,7 +43,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("HEAD"), method = "isReadyToBreed()Z", cancellable = true)
     public void replaceIsReadyToBreed(CallbackInfoReturnable<Boolean> cir) {
-        if (CONFIG.villagersDontBreed) {
+        if (CONFIG.villagersGeneralConfig.villagersDontBreed) {
             cir.setReturnValue(false);
             cir.cancel();
         }

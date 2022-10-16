@@ -74,9 +74,11 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
             BlockPos.Mutable mutable = villagerEntity.getBlockPos().mutableCopy();
             this.getTargetPositions().clear();
 
-            for (int i = -1 * CONFIG.findCropRange; i <= CONFIG.findCropRange; ++i) {
+            for (int i = -1 * CONFIG.villagersProfessionConfig.findCropRange;
+                 i <= CONFIG.villagersProfessionConfig.findCropRange; ++i) {
                 for (int j = -1; j <= 1; ++j) {
-                    for (int k = -CONFIG.findCropRange; k <= CONFIG.findCropRange; ++k) {
+                    for (int k = -CONFIG.villagersProfessionConfig.findCropRange;
+                         k <= CONFIG.villagersProfessionConfig.findCropRange; ++k) {
                         mutable.set(villagerEntity.getX() + (double) i, villagerEntity.getY() + (double) j,
                                 villagerEntity.getZ() + (double) k);
                         if (this.replaceIsSuitableTarget(mutable, serverWorld, villagerEntity)) {
@@ -94,7 +96,7 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
 
     @Inject(method = "keepRunning", at = @At(value = "HEAD"), cancellable = true)
     protected void keepRunning(ServerWorld serverWorld, VillagerEntity villagerEntity, long l, CallbackInfo cir) {
-        if (!CONFIG.preferPlantSameCrop) {
+        if (!CONFIG.villagersProfessionConfig.preferPlantSameCrop) {
             // Use default logic.
             return;
         }

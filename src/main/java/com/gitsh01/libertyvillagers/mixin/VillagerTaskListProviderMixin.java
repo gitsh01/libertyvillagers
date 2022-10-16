@@ -41,7 +41,7 @@ public abstract class VillagerTaskListProviderMixin {
         Task thirdWorkTask = null;
         switch (profession.toString()) {
             case "armorer":
-                if (CONFIG.armorerHealsGolems) {
+                if (CONFIG.villagersProfessionConfig.armorerHealsGolems) {
                     secondaryWorkTask = new HealGolemTask();
                 }
                 break;
@@ -73,8 +73,8 @@ public abstract class VillagerTaskListProviderMixin {
                         Pair.of(10, new HoldTradeOffersTask(400, 1600)),
                         Pair.of(10, new FindInteractionTargetTask(EntityType.PLAYER, 4)), Pair.of(2,
                                 new VillagerWalkTowardsTask(MemoryModuleType.JOB_SITE, speed, 9,
-                                        CONFIG.pathfindingMaxRange, 1200)), Pair.of(3, new GiveGiftsToHeroTask(100)),
-                        Pair.of(99, new ScheduleActivityTask()));
+                                        CONFIG.villagersGeneralConfig.pathfindingMaxRange, 1200)),
+                        Pair.of(3, new GiveGiftsToHeroTask(100)), Pair.of(99, new ScheduleActivityTask()));
         cir.setReturnValue(ImmutableList.copyOf(tasks));
         cir.cancel();
     }
