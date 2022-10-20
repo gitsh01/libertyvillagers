@@ -10,12 +10,17 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.village.VillagerProfession;
+import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestTypes;
 import org.apache.commons.lang3.tuple.MutablePair;
 
+import java.awt.*;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -95,14 +100,21 @@ public class VillagerStats {
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.format",
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), numHomeless));
 
-        long numAvailableBeds = serverWorld.getPointOfInterestStorage()
-                .count(registryEntry -> registryEntry.matchesKey(PointOfInterestTypes.HOME), player.getBlockPos(),
+        List<PointOfInterest> availableBeds = serverWorld.getPointOfInterestStorage()
+                .getInCircle(registryEntry -> registryEntry.matchesKey(PointOfInterestTypes.HOME), player.getBlockPos(),
                         CONFIG.villagersGeneralConfig.villagerStatRange,
-                        PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+                        PointOfInterestStorage.OccupationStatus.HAS_SPACE).collect(Collectors.toList());
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.format",
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfAvailableBeds").getString(),
-                numAvailableBeds));
+                availableBeds.size()));
+
+        player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.bedsAt"));
+        for (PointOfInterest bed : availableBeds) {
+            if (bed != null && bed.getPos() != null) {
+                player.sendMessage(Text.of(bed.getPos().toShortString()));
+            }
+        }
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.professions"));
         villagerProfessionMap.forEach((villagerProfession, professionInfo) -> {

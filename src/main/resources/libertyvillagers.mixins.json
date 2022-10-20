@@ -6,17 +6,18 @@
   "mixins": [
   ],
   "client": [
+    "BrainMixin",
     "EntityNavigationMixin",
     "FarmerVillagerTaskMixin",
     "FindPointOfInterestTaskMixin",
     "IronGolemEntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
-    "PointOfInterestStorageMixin",
-    "VillagerDataMixin",
+    "TaskMixin",
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
-    "WalkHomeTaskMixin"
+    "WalkHomeTaskMixin",
+    "WanderAroundTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1

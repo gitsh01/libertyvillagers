@@ -1,20 +1,41 @@
 package com.gitsh01.libertyvillagers.mixin;
 
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.InteractionObserver;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.DebugInfoSender;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
+import net.minecraft.village.VillagerProfession;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.poi.PointOfInterestStorage;
+import net.minecraft.world.poi.PointOfInterestType;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Optional;
+import java.util.function.BiPredicate;
+
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
+import static net.minecraft.entity.passive.VillagerEntity.POINTS_OF_INTEREST;
 
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin extends MerchantEntity implements InteractionObserver, VillagerDataContainer {
@@ -23,14 +44,70 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
         super(entityType, world);
     }
 
+    @Shadow
+    public abstract VillagerData getVillagerData();
+
+    @Shadow
+    public abstract void setVillagerData(VillagerData villagerData);
+
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
-    public void avoidCactus(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {
+    public void villagerInit(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {
         if (CONFIG.villagersGeneralConfig.villagersAvoidCactus) {
             this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
         }
         if (CONFIG.villagersGeneralConfig.villagersAvoidWater) {
             this.setPathfindingPenalty(PathNodeType.WATER, -1);
             this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16);
+        }
+        if (CONFIG.villagersGeneralConfig.allBabyVillagers) {
+            this.setBaby(true);
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "initBrain(Lnet/minecraft/entity/ai/brain/Brain;)V")
+    private void changeVillagerProfession(Brain<VillagerEntity> brain, CallbackInfo ci) {
+        if (!(this.world instanceof ServerWorld)) {
+            return;
+        }
+        ServerWorld world = (ServerWorld) this.world;
+
+        VillagerProfession profession = this.getVillagerData().getProfession();
+        if (CONFIG.villagersGeneralConfig.noNitwitVillagers && profession == VillagerProfession.NITWIT) {
+            this.setVillagerData(getVillagerData().withProfession(VillagerProfession.NONE));
+            brain.stopAllTasks(world, (VillagerEntity) ((Object) this));
+        }
+        if (CONFIG.villagersGeneralConfig.allNitwitVillagers && profession != VillagerProfession.NITWIT) {
+            this.setVillagerData(getVillagerData().withProfession(VillagerProfession.NITWIT));
+            this.releaseTicketFor(brain, world, MemoryModuleType.JOB_SITE);
+            this.releaseTicketFor(brain, world, MemoryModuleType.POTENTIAL_JOB_SITE);
+            brain.stopAllTasks(world, (VillagerEntity) ((Object) this));
+        }
+    }
+
+    public void releaseTicketFor(Brain<VillagerEntity> brain, ServerWorld world,
+                                 MemoryModuleType<GlobalPos> memoryModuleType) {
+        MinecraftServer minecraftServer = ((ServerWorld) world).getServer();
+        brain.getOptionalMemory(memoryModuleType).ifPresent(pos -> {
+            ServerWorld serverWorld = minecraftServer.getWorld(pos.getDimension());
+            if (serverWorld == null) {
+                return;
+            }
+            PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
+            Optional<RegistryEntry<PointOfInterestType>> optional = pointOfInterestStorage.getType(pos.getPos());
+            BiPredicate<VillagerEntity, RegistryEntry<PointOfInterestType>> biPredicate =
+                    POINTS_OF_INTEREST.get(memoryModuleType);
+            if (optional.isPresent() && biPredicate.test((VillagerEntity) ((Object) this), optional.get())) {
+                pointOfInterestStorage.releaseTicket(pos.getPos());
+                DebugInfoSender.sendPointOfInterest(serverWorld, pos.getPos());
+            }
+        });
+    }
+
+    @Inject(method = "onGrowUp()V", at = @At("HEAD"), cancellable = true)
+    private void babiesNeverGrowUp(CallbackInfo ci) {
+        if (CONFIG.villagersGeneralConfig.allBabyVillagers) {
+            this.setBaby(true);
+            ci.cancel();
         }
     }
 

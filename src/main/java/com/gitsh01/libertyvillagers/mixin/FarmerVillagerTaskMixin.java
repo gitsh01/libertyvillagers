@@ -1,6 +1,7 @@
 package com.gitsh01.libertyvillagers.mixin;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -19,7 +20,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.event.GameEvent;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,29 +40,22 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
         super(ImmutableMap.of());
     }
 
-    @Accessor
-    public abstract List<BlockPos> getTargetPositions();
+    @Shadow
+    @Nullable
+    private BlockPos currentTarget;
 
-    @Accessor
-    public abstract BlockPos getCurrentTarget();
+    @Shadow
+    private long nextResponseTime;
 
-    @Accessor("currentTarget")
-    public abstract void setCurrentTarget(BlockPos currentTarget);
+    @Shadow
+    private int ticksRan;
 
-    @Accessor
-    public abstract long getNextResponseTime();
+    @Shadow
+    private List<BlockPos> targetPositions;
 
-    @Accessor("nextResponseTime")
-    public abstract void setNextResponseTime(long responseTime);
-
-    @Accessor
-    public abstract int getTicksRan();
-
-    @Accessor("ticksRan")
-    public abstract void setTicksRan(int ticksRan);
-
-    @Invoker("chooseRandomTarget")
-    public abstract BlockPos invokeChooseRandomTarget(ServerWorld world);
+    @Shadow
+    @Nullable
+    abstract BlockPos chooseRandomTarget(ServerWorld world);
 
     @Inject(method = "shouldRun", at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity,
@@ -72,24 +68,25 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
             cir.cancel();
         } else {
             BlockPos.Mutable mutable = villagerEntity.getBlockPos().mutableCopy();
-            this.getTargetPositions().clear();
+            this.targetPositions.clear();
 
-            for (int i = -1 * CONFIG.villagersProfessionConfig.findCropRange;
-                 i <= CONFIG.villagersProfessionConfig.findCropRange; ++i) {
-                for (int j = -1; j <= 1; ++j) {
-                    for (int k = -CONFIG.villagersProfessionConfig.findCropRange;
-                         k <= CONFIG.villagersProfessionConfig.findCropRange; ++k) {
+            for (int i = -1 * CONFIG.villagersProfessionConfig.findCropRangeHorizontal;
+                 i <= CONFIG.villagersProfessionConfig.findCropRangeHorizontal; ++i) {
+                for (int j = -1 * CONFIG.villagersProfessionConfig.findCropRangeVertical;
+                     j <= CONFIG.villagersProfessionConfig.findCropRangeVertical; ++j) {
+                    for (int k = -CONFIG.villagersProfessionConfig.findCropRangeHorizontal;
+                         k <= CONFIG.villagersProfessionConfig.findCropRangeHorizontal; ++k) {
                         mutable.set(villagerEntity.getX() + (double) i, villagerEntity.getY() + (double) j,
                                 villagerEntity.getZ() + (double) k);
                         if (this.replaceIsSuitableTarget(mutable, serverWorld, villagerEntity)) {
-                            this.getTargetPositions().add(new BlockPos(mutable));
+                            this.targetPositions.add(new BlockPos(mutable));
                         }
                     }
                 }
             }
 
-            this.setCurrentTarget(this.invokeChooseRandomTarget(serverWorld));
-            cir.setReturnValue(this.getCurrentTarget() != null);
+            this.currentTarget = this.chooseRandomTarget(serverWorld);
+            cir.setReturnValue(this.currentTarget != null);
             cir.cancel();
         }
     }
@@ -102,9 +99,9 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
         }
 
         Item preferredSeeds = null;
-        BlockPos currentTarget = this.getCurrentTarget();
+        BlockPos currentTarget = this.currentTarget;
         if (currentTarget == null || currentTarget.isWithinDistance(villagerEntity.getPos(), 1.0)) {
-            if (currentTarget != null && l > this.getNextResponseTime()) {
+            if (currentTarget != null && l > this.nextResponseTime) {
                 BlockState blockState = serverWorld.getBlockState(currentTarget);
                 Block block = blockState.getBlock();
                 Block block2 = serverWorld.getBlockState(currentTarget.down()).getBlock();
@@ -155,26 +152,26 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
                 }
 
                 if (block instanceof CropBlock && !((CropBlock) block).isMature(blockState)) {
-                    this.getTargetPositions().remove(currentTarget);
-                    this.setCurrentTarget(this.invokeChooseRandomTarget(serverWorld));
-                    if (this.getCurrentTarget() != null) {
-                        this.setNextResponseTime(l + 20L);
+                    this.targetPositions.remove(currentTarget);
+                    this.currentTarget = this.chooseRandomTarget(serverWorld);
+                    if (this.currentTarget != null) {
+                        this.nextResponseTime = l + 20L;
                         villagerEntity.getBrain().remember(MemoryModuleType.WALK_TARGET,
-                                new WalkTarget(new BlockPosLookTarget(this.getCurrentTarget()), 0.5F, 1));
-                        villagerEntity.getBrain().remember(MemoryModuleType.LOOK_TARGET,
-                                new BlockPosLookTarget(this.getCurrentTarget()));
+                                new WalkTarget(new BlockPosLookTarget(this.currentTarget), 0.5F, 1));
+                        villagerEntity.getBrain()
+                                .remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(this.currentTarget));
                     }
                 }
             }
 
-            this.setTicksRan(this.getTicksRan() + 1);
+            this.ticksRan++;
         }
     }
 
     private boolean plantSeed(ItemStack itemStack, int stackIndex, ServerWorld serverWorld,
                               VillagerEntity villagerEntity) {
         BlockState blockState2;
-        BlockPos currentTarget = this.getCurrentTarget();
+        BlockPos currentTarget = this.currentTarget;
         if (itemStack.isOf(Items.WHEAT_SEEDS)) {
             blockState2 = Blocks.WHEAT.getDefaultState();
         } else if (itemStack.isOf(Items.POTATO)) {
@@ -211,7 +208,7 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
     @Inject(method = "shouldKeepRunning", at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldKeepRunning(ServerWorld serverWorld, VillagerEntity villagerEntity, long l,
                                             CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(this.getCurrentTarget() != null);
+        cir.setReturnValue(this.currentTarget != null);
         cir.cancel();
     }
 }

@@ -13,7 +13,10 @@ public class VillagersProfessionConfig implements ConfigData {
     public int armorerHealsGolemsRange = 32;
 
     @ConfigEntry.Gui.Tooltip(count = 3)
-    public int findCropRange = 10;
+    public int findCropRangeHorizontal = 10;
+
+    @ConfigEntry.Gui.Tooltip(count = 3)
+    public int findCropRangeVertical = 2;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean preferPlantSameCrop = true;

@@ -7,7 +7,7 @@ import net.minecraft.entity.ai.brain.task.VillagerWalkTowardsTask;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.util.math.GlobalPos;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,12 +20,12 @@ public abstract class VillagerWalkTowardsTaskMixin extends Task<VillagerEntity> 
         super(ImmutableMap.of());
     }
 
-    @Accessor("maxRange")
-    public abstract void setMaxRange(int maxRange);
+    @Shadow
+    private int maxRange;
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)V")
     public void overrideMaxRange(MemoryModuleType<GlobalPos> destination, float speed, int completionRange,
                                  int maxRange, int maxRunTime, CallbackInfo ci) {
-        this.setMaxRange(CONFIG.villagersGeneralConfig.pathfindingMaxRange);
+        this.maxRange = CONFIG.villagersGeneralConfig.pathfindingMaxRange;
     }
 }
