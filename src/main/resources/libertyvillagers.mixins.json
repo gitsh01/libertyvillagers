@@ -17,7 +17,6 @@
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
     "WalkHomeTaskMixin",
-    "WanderAroundTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1
