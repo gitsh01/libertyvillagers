@@ -32,6 +32,7 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(FindPointOfInterestTask.class)
 public abstract class FindPointOfInterestTaskMixin extends Task<PathAwareEntity> {
 
+    private static final long TICKS_PER_DAY = 24000;
     private static final long TIME_NIGHT = 13000;
     private PathAwareEntity entity;
     @Shadow
@@ -56,10 +57,10 @@ public abstract class FindPointOfInterestTaskMixin extends Task<PathAwareEntity>
             at = @At(value = "Head"), cancellable = true)
     protected void dontFindWorkstationsAtNight(ServerWorld serverWorld, PathAwareEntity pathAwareEntity,
                                                CallbackInfoReturnable<Boolean> cir) {
+        long timeOfDay = serverWorld.getTimeOfDay() % 24000;
         if (CONFIG.villagersGeneralConfig.villagersDontLookForWorkstationsAtNight &&
                 pathAwareEntity.getType() == EntityType.VILLAGER &&
-                targetMemoryModuleType == MemoryModuleType.POTENTIAL_JOB_SITE &&
-                serverWorld.getTimeOfDay() > TIME_NIGHT) {
+                targetMemoryModuleType == MemoryModuleType.POTENTIAL_JOB_SITE && timeOfDay > TIME_NIGHT) {
             cir.setReturnValue(false);
             cir.cancel();
         }
