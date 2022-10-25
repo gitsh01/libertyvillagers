@@ -71,7 +71,7 @@ public class VillagerStats {
         ServerWorld serverWorld = source.getWorld();
 
         List<VillagerEntity> villagers = serverWorld.getNonSpectatingEntities(VillagerEntity.class,
-                player.getBoundingBox().expand(CONFIG.villagersGeneralConfig.villagerStatRange));
+                player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.format",
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfVillagers").getString(),
@@ -102,8 +102,7 @@ public class VillagerStats {
 
         List<PointOfInterest> availableBeds = serverWorld.getPointOfInterestStorage()
                 .getInCircle(registryEntry -> registryEntry.matchesKey(PointOfInterestTypes.HOME), player.getBlockPos(),
-                        CONFIG.villagersGeneralConfig.villagerStatRange,
-                        PointOfInterestStorage.OccupationStatus.HAS_SPACE).collect(Collectors.toList());
+                        CONFIG.debugConfig.villagerStatRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE).collect(Collectors.toList());
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.format",
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfAvailableBeds").getString(),
@@ -123,8 +122,7 @@ public class VillagerStats {
             if (villagerProfession != "baby") {
                 numAvailableWorkstations = serverWorld.getPointOfInterestStorage()
                         .count(professionInfo.profession.acquirableWorkstation(), player.getBlockPos(),
-                                CONFIG.villagersGeneralConfig.villagerStatRange,
-                                PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+                                CONFIG.debugConfig.villagerStatRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
             }
 
             player.sendMessage(

@@ -89,7 +89,7 @@ public abstract class FindPointOfInterestTaskMixin extends Task<PathAwareEntity>
             at = @At(value = "Head"), cancellable = true)
     protected void debugPOILogicInRun(ServerWorld serverWorld, PathAwareEntity pathAwareEntity, long l,
                                       CallbackInfo ci) {
-        if (!CONFIG.villagersGeneralConfig.enableVillagerFindPOIDebug) {
+        if (!CONFIG.debugConfig.enableVillagerFindPOIDebug) {
             return;
         }
         System.out.printf("%s TargetMemoryModule is %s\n", pathAwareEntity.getName(),

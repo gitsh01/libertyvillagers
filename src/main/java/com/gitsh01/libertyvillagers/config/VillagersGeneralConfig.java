@@ -45,13 +45,4 @@ public class VillagersGeneralConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean allBabyVillagers = false;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public int villagerStatRange = 256;
-
-    @ConfigEntry.Gui.Tooltip
-    public boolean enableVillagerBrainDebug = false;
-
-    @ConfigEntry.Gui.Tooltip
-    public boolean enableVillagerFindPOIDebug = false;
 }

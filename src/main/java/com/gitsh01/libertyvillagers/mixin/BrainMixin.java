@@ -27,7 +27,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
     @Inject(method = "setMemory(Lnet/minecraft/entity/ai/brain/MemoryModuleType;Ljava/util/Optional;)V",
             at = @At(value = "Head"))
     <U> void setMemory(MemoryModuleType<U> type, Optional<? extends Memory<?>> memory, CallbackInfo ci) {
-        if (!CONFIG.villagersGeneralConfig.enableVillagerBrainDebug) {
+        if (!CONFIG.debugConfig.enableVillagerBrainDebug) {
             return;
         }
         // Only look for villagers.

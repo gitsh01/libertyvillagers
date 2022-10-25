@@ -23,4 +23,8 @@ public class BaseConfig extends PartitioningSerializer.GlobalData implements Con
     @ConfigEntry.Category(value = "Golems")
     @ConfigEntry.Gui.TransitiveObject
     public final GolemsConfig golemsConfig = new GolemsConfig();
+
+    @ConfigEntry.Category(value = "Debug")
+    @ConfigEntry.Gui.TransitiveObject
+    public final DebugConfig debugConfig = new DebugConfig();
 }
