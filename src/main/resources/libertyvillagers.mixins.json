@@ -14,9 +14,10 @@
     "LivingEntityMixin",
     "MobEntityMixin",
     "TaskMixin",
+    "VillagerBreedTaskMixin",
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
-    "WalkHomeTaskMixin",
+    "WalkHomeTaskMixin"
   ],
   "injectors": {
     "defaultRequire": 1

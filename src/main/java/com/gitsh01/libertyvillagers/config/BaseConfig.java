@@ -9,8 +9,9 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 @Config.Gui.Background("minecraft:textures/block/emerald_block.png")
 @Config.Gui.CategoryBackground(category = "VillagersGeneral", background = "minecraft:textures/block/copper_block.png")
 @Config.Gui.CategoryBackground(category = "VillagersProfession",
-        background = "minecraft:textures/block/jukebox_side" + ".png")
+        background = "minecraft:textures/block/diamond_block" + ".png")
 @Config.Gui.CategoryBackground(category = "Golems", background = "minecraft:textures/block/emerald_block.png")
+@Config.Gui.CategoryBackground(category = "Debug", background = "minecraft:textures/block/redstone_block.png")
 public class BaseConfig extends PartitioningSerializer.GlobalData implements ConfigData {
     @ConfigEntry.Category(value = "VillagersGeneral")
     @ConfigEntry.Gui.TransitiveObject

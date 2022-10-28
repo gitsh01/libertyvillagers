@@ -60,7 +60,8 @@ public abstract class FindPointOfInterestTaskMixin extends Task<PathAwareEntity>
         long timeOfDay = serverWorld.getTimeOfDay() % 24000;
         if (CONFIG.villagersGeneralConfig.villagersDontLookForWorkstationsAtNight &&
                 pathAwareEntity.getType() == EntityType.VILLAGER &&
-                targetMemoryModuleType == MemoryModuleType.POTENTIAL_JOB_SITE && timeOfDay > TIME_NIGHT) {
+                (targetMemoryModuleType == MemoryModuleType.POTENTIAL_JOB_SITE ||
+                        targetMemoryModuleType == MemoryModuleType.MEETING_POINT) && timeOfDay > TIME_NIGHT) {
             cir.setReturnValue(false);
             cir.cancel();
         }

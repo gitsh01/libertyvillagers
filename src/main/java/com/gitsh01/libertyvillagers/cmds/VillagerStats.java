@@ -9,6 +9,9 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
@@ -17,6 +20,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -28,19 +32,15 @@ import static net.minecraft.server.command.CommandManager.literal;
 class ProfessionInfo {
     public VillagerProfession profession;
     public int countVillagersWithProfession;
-    public int countVillagersWithWorkstations;
 
-    public ProfessionInfo(VillagerProfession profession, int countVillagersWithProfession,
-                          int countVillagersWithWorkstations) {
+    public ProfessionInfo(VillagerProfession profession, int countVillagersWithProfession) {
         this.profession = profession;
         this.countVillagersWithProfession = countVillagersWithProfession;
-        this.countVillagersWithWorkstations = countVillagersWithWorkstations;
     }
 
     public static ProfessionInfo mergeProfessionInfo(ProfessionInfo oldVal, ProfessionInfo newVal) {
         return new ProfessionInfo(oldVal.profession,
-                oldVal.countVillagersWithProfession + newVal.countVillagersWithProfession,
-                oldVal.countVillagersWithWorkstations + newVal.countVillagersWithWorkstations);
+                oldVal.countVillagersWithProfession + newVal.countVillagersWithProfession);
     }
 }
 
@@ -70,6 +70,8 @@ public class VillagerStats {
         ServerPlayerEntity player = source.getPlayer();
         ServerWorld serverWorld = source.getWorld();
 
+        player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.title"));
+
         List<VillagerEntity> villagers = serverWorld.getNonSpectatingEntities(VillagerEntity.class,
                 player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
 
@@ -78,18 +80,22 @@ public class VillagerStats {
                 villagers.size()));
 
         TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
+
+        for (Map.Entry<RegistryKey<VillagerProfession>, VillagerProfession> professionEntry : Registry.VILLAGER_PROFESSION.getEntrySet()) {
+            VillagerProfession profession = professionEntry.getValue();
+            villagerProfessionMap.put(profession.toString(), new ProfessionInfo(profession, 0));
+        }
+
         int numHomeless = 0;
         for (VillagerEntity villager : villagers) {
             if (villager.isBaby()) {
                 // TODO: getProfession() is not localized currently. When getProfession is localized, also localize
                 // "baby".
-                villagerProfessionMap.merge("baby",
-                        new ProfessionInfo(villager.getVillagerData().getProfession(), 1, 0),
+                villagerProfessionMap.merge("baby", new ProfessionInfo(villager.getVillagerData().getProfession(), 1),
                         ProfessionInfo::mergeProfessionInfo);
             } else {
                 villagerProfessionMap.merge(villager.getVillagerData().getProfession().toString(),
-                        new ProfessionInfo(villager.getVillagerData().getProfession(), 1,
-                                villager.getBrain().getOptionalMemory(MemoryModuleType.JOB_SITE).isPresent() ? 1 : 0),
+                        new ProfessionInfo(villager.getVillagerData().getProfession(), 1),
                         ProfessionInfo::mergeProfessionInfo);
             }
             if (!villager.getBrain().hasMemoryModule(MemoryModuleType.HOME)) {
@@ -102,7 +108,8 @@ public class VillagerStats {
 
         List<PointOfInterest> availableBeds = serverWorld.getPointOfInterestStorage()
                 .getInCircle(registryEntry -> registryEntry.matchesKey(PointOfInterestTypes.HOME), player.getBlockPos(),
-                        CONFIG.debugConfig.villagerStatRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE).collect(Collectors.toList());
+                        CONFIG.debugConfig.villagerStatRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE)
+                .collect(Collectors.toList());
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.format",
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfAvailableBeds").getString(),
@@ -117,17 +124,22 @@ public class VillagerStats {
 
         player.sendMessage(Text.translatable("text.LibertyVillagers.villagerStats.professions"));
         villagerProfessionMap.forEach((villagerProfession, professionInfo) -> {
-
             long numAvailableWorkstations = 0;
+            long numOccupiedWorkstations = 0;
             if (villagerProfession != "baby") {
                 numAvailableWorkstations = serverWorld.getPointOfInterestStorage()
                         .count(professionInfo.profession.acquirableWorkstation(), player.getBlockPos(),
-                                CONFIG.debugConfig.villagerStatRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+                                CONFIG.debugConfig.villagerStatRange,
+                                PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+                numOccupiedWorkstations = serverWorld.getPointOfInterestStorage()
+                        .count(professionInfo.profession.heldWorkstation(), player.getBlockPos(),
+                                CONFIG.debugConfig.villagerStatRange,
+                                PointOfInterestStorage.OccupationStatus.IS_OCCUPIED);
             }
 
             player.sendMessage(
                     Text.translatable("text.LibertyVillagers.villagerStats.professionsFormat", villagerProfession,
-                            professionInfo.countVillagersWithProfession, professionInfo.countVillagersWithWorkstations,
+                            professionInfo.countVillagersWithProfession, numOccupiedWorkstations,
                             numAvailableWorkstations));
         });
     }

@@ -19,8 +19,10 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 public class LibertyVillagersOverlay {
 
-    static float WIDTH_FROM_RIGHT_EDGE = 150;
     static int WHITE = 0xffffff;
+    static int TEXT_PADDING = 2;
+    static int BACKGROUND_PADDING = 2;
+    static int BACKGROUND_COLOR = 0x55200000;
 
     public static void HudRenderCallback(MatrixStack matrices, float tickDelta) {
         if (!CONFIG.debugConfig.enableVillagerInfoOverlay) {
@@ -28,13 +30,6 @@ public class LibertyVillagersOverlay {
         }
 
         MinecraftClient client = MinecraftClient.getInstance();
-        float width = client.getWindow().getScaledWidth();
-        float x = width = WIDTH_FROM_RIGHT_EDGE;
-        TextRenderer renderer = client.textRenderer;
-        float textHeight = renderer.getWrappedLinesHeight("Ij", 40);
-        float y = 0;
-        renderer.draw(matrices, Text.translatable("text.LibertyVillagers.libertyVillagersOverlay.title"), x, y, WHITE);
-
         HitResult hit = client.crosshairTarget;
         List<Text> lines = null;
 
@@ -55,9 +50,14 @@ public class LibertyVillagersOverlay {
         }
 
         if (lines != null) {
-            y += textHeight;
+            int windowScaledWidth = client.getWindow().getScaledWidth();
+            TextRenderer renderer = client.textRenderer;
             MultilineText multilineText = MultilineText.createFromTexts(renderer, lines);
-            multilineText.draw(matrices, (int) x, (int) y, (int) textHeight, WHITE);
+            int multilineWidth = multilineText.getMaxWidth() + TEXT_PADDING;
+            int x = windowScaledWidth - multilineWidth;
+            multilineText.fillBackground(matrices, x + (multilineWidth / 2) - (BACKGROUND_PADDING / 2), TEXT_PADDING,
+                    renderer.fontHeight, BACKGROUND_PADDING, BACKGROUND_COLOR);
+            multilineText.draw(matrices, x, TEXT_PADDING, renderer.fontHeight, WHITE);
         }
     }
 }

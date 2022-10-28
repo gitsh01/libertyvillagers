@@ -31,6 +31,9 @@ public class VillagersGeneralConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean villagersDontBreed = false;
 
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean villagerBabiesRequireWorkstationAndBed = false;
+
     @ConfigEntry.Gui.Tooltip
     public boolean villagersDontSummonGolems = false;
 
@@ -45,4 +48,7 @@ public class VillagersGeneralConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean allBabyVillagers = false;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean foreverYoung = false;
 }

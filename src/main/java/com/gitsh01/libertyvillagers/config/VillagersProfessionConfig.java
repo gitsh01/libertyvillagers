@@ -12,6 +12,14 @@ public class VillagersProfessionConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int armorerHealsGolemsRange = 32;
 
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean clericThrowsPotionsAtPlayers = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean clericThrowsPotionsAtVillagers = true;
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int clericThrowsPotionsAtRange = 32;
+
     @ConfigEntry.Gui.Tooltip(count = 3)
     public int findCropRangeHorizontal = 10;
 

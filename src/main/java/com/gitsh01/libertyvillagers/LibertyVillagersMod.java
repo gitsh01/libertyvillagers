@@ -1,6 +1,7 @@
 package com.gitsh01.libertyvillagers;
 
 import com.gitsh01.libertyvillagers.cmds.VillagerInfo;
+import com.gitsh01.libertyvillagers.cmds.VillagerSetPOI;
 import com.gitsh01.libertyvillagers.cmds.VillagerStats;
 import com.gitsh01.libertyvillagers.config.BaseConfig;
 import com.gitsh01.libertyvillagers.overlay.LibertyVillagersOverlay;
@@ -27,7 +28,8 @@ public class LibertyVillagersMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        VillagerStats.register();
         VillagerInfo.register();
+        VillagerSetPOI.register();
+        VillagerStats.register();
     }
 }
