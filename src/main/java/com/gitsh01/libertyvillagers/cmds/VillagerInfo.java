@@ -5,7 +5,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
@@ -87,12 +86,12 @@ public class VillagerInfo {
                 BlockHitResult blockHit = (BlockHitResult) hit;
                 BlockPos blockPos = blockHit.getBlockPos();
                 BlockState blockState = serverWorld.getBlockState(blockPos);
-                lines = getBlockInfo(blockPos, blockState);
+                lines = getBlockInfo(serverWorld, blockPos, blockState);
                 break;
             case ENTITY:
                 EntityHitResult entityHit = (EntityHitResult) hit;
                 Entity entity = entityHit.getEntity();
-                lines = getEntityInfo(entity);
+                lines = getEntityInfo(serverWorld, entity);
                 break;
         }
 
@@ -104,7 +103,7 @@ public class VillagerInfo {
     }
 
 
-    public static List<Text> getEntityInfo(Entity entity) {
+    public static List<Text> getEntityInfo(ServerWorld serverWorld, Entity entity) {
         List<Text> lines = new ArrayList();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.title"));
         Text name = entity.getDisplayName();
@@ -117,16 +116,13 @@ public class VillagerInfo {
         String occupation = ((VillagerEntity) entity).getVillagerData().getProfession().id();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.occupation", occupation));
 
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (!client.isIntegratedServerRunning()) {
+        if (serverWorld == null) {
             lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.needsServer"));
             return lines;
         }
 
-        ServerWorld world = client.getServer().getWorld(client.world.getRegistryKey());
-
         // Client-side villagers don't have memories.
-        VillagerEntity villager = (VillagerEntity) world.getEntity(entity.getUuid());
+        VillagerEntity villager = (VillagerEntity) serverWorld.getEntity(entity.getUuid());
         Optional<GlobalPos> home = villager.getBrain().getOptionalMemory(MemoryModuleType.HOME);
         String homeCoords = home.isPresent() ? home.get().getPos().toShortString() : BLANK_COORDS;
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.home", homeCoords));
@@ -167,29 +163,17 @@ public class VillagerInfo {
         return lines;
     }
 
-    public static List<Text> getBlockInfo(BlockPos blockPos, BlockState blockState) {
+    public static List<Text> getBlockInfo(ServerWorld serverWorld, BlockPos blockPos, BlockState blockState) {
         List<Text> lines = new ArrayList<>();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.title"));
-
         Block block = blockState.getBlock();
         Text name = block.getName();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.name", name));
 
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (!client.isIntegratedServerRunning()) {
+        if (serverWorld == null) {
             lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.needsServer"));
             return lines;
         }
-
-        ServerWorld world = client.getServer().getWorld(client.world.getRegistryKey());
-        return getBlockInfo(world, blockPos, blockState);
-    }
-
-    public static List<Text> getBlockInfo(ServerWorld serverWorld, BlockPos blockPos, BlockState blockState) {
-        List<Text> lines = new ArrayList<>();
-        Block block = blockState.getBlock();
-        Text name = block.getName();
-        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.name", name));
 
         Optional<RegistryEntry<PointOfInterestType>> optionalRegistryEntry =
                 PointOfInterestTypes.getTypeForState(blockState);

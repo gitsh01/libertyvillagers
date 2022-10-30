@@ -19,6 +19,9 @@
     "main": [
       "com.gitsh01.libertyvillagers.LibertyVillagersMod"
     ],
+    "client": [
+      "com.gitsh01.libertyvillagers.LibertyVillagersClientInitializer"
+    ],
     "modmenu": [
       "com.gitsh01.libertyvillagers.integration.ModMenuIntegration"
     ]

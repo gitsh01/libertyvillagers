@@ -1,12 +1,14 @@
 package com.gitsh01.libertyvillagers.overlay;
 
 import com.gitsh01.libertyvillagers.cmds.VillagerInfo;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.MultilineText;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -24,6 +26,12 @@ public class LibertyVillagersOverlay {
     static int BACKGROUND_PADDING = 2;
     static int BACKGROUND_COLOR = 0x55200000;
 
+    public static void register() {
+        HudRenderCallback.EVENT.register((matrices, tickDelta) -> {
+            HudRenderCallback(matrices, tickDelta);
+        });
+    }
+
     public static void HudRenderCallback(MatrixStack matrices, float tickDelta) {
         if (!CONFIG.debugConfig.enableVillagerInfoOverlay) {
             return;
@@ -32,6 +40,10 @@ public class LibertyVillagersOverlay {
         MinecraftClient client = MinecraftClient.getInstance();
         HitResult hit = client.crosshairTarget;
         List<Text> lines = null;
+        ServerWorld world = null;
+        if (client.isIntegratedServerRunning()) {
+            world = client.getServer().getWorld(client.world.getRegistryKey());
+        }
 
         switch (hit.getType()) {
             case MISS:
@@ -40,12 +52,12 @@ public class LibertyVillagersOverlay {
                 BlockHitResult blockHit = (BlockHitResult) hit;
                 BlockPos blockPos = blockHit.getBlockPos();
                 BlockState blockState = client.world.getBlockState(blockPos);
-                lines = VillagerInfo.getBlockInfo(blockPos, blockState);
+                lines = VillagerInfo.getBlockInfo(world, blockPos, blockState);
                 break;
             case ENTITY:
                 EntityHitResult entityHit = (EntityHitResult) hit;
                 Entity entity = entityHit.getEntity();
-                lines = VillagerInfo.getEntityInfo(entity);
+                lines = VillagerInfo.getEntityInfo(world, entity);
                 break;
         }
 
