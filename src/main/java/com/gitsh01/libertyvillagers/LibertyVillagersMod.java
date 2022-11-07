@@ -16,6 +16,16 @@ public class LibertyVillagersMod implements ModInitializer {
     public static ConfigHolder<BaseConfig> CONFIG_MANAGER;
     public static BaseConfig CONFIG;
 
+    static boolean isClient = false;
+
+    static public boolean isClient() {
+        return isClient;
+    }
+
+    static public void setIsClient(boolean isClient) {
+        LibertyVillagersMod.isClient = isClient;
+    }
+
     static {
         CONFIG_MANAGER = AutoConfig.register(BaseConfig.class, GsonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(BaseConfig.class).getConfig();

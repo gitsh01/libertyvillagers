@@ -4,8 +4,6 @@
   "package": "com.gitsh01.libertyvillagers.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-  ],
-  "client": [
     "BrainMixin",
     "EntityNavigationMixin",
     "FarmerVillagerTaskMixin",
@@ -18,6 +16,10 @@
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
     "WalkHomeTaskMixin"
+  ],
+  "client": [],
+  "server": [
+    "LecternScreenHandlerAccessorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

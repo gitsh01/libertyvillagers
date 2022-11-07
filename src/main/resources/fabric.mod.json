@@ -22,6 +22,9 @@
     "client": [
       "com.gitsh01.libertyvillagers.LibertyVillagersClientInitializer"
     ],
+    "server": [
+      "com.gitsh01.libertyvillagers.LibertyVillagersServerInitializer"
+    ],
     "modmenu": [
       "com.gitsh01.libertyvillagers.integration.ModMenuIntegration"
     ]

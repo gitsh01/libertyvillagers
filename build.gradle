@@ -19,10 +19,18 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
-	maven { url "https://maven.shedaniel.me/" }
+	maven {
+		// For ModConfig.
+		url "https://maven.shedaniel.me/"
+	}
 
 	maven {
 		url "https://maven.terraformersmc.com/releases/"
+	}
+
+	maven {
+		// For server-translations.
+		url "https://maven.nucleoid.xyz"
 	}
 }
 
@@ -42,6 +50,8 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}") {
 		exclude module: 'fabric-api' // includes bad Fabric API
 	}
+
+	modImplementation include("fr.catcore:server-translations-api:${project.min_server_translations_version}")
 
 	// Uncomment the following line to enable the deprecated Fabric API modules. 
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
@@ -91,7 +101,7 @@ publishing {
 modrinth {
 	token = '$env:GITHUB_TOKEN' // Please use an environment variable for this! The default is `$MODRINTH_TOKEN`.
 	projectId = '264clomZ' // The ID of your Modrinth project. Slugs will not work.
-	versionType = 'alpha'
+	versionType = 'release'
 	uploadFile = remapJar // Tells Minotaur to use the remapped jar
 	gameVersions = ['1.19.2'] // An array of game versions the version supports
 	loaders = ['fabric'] // Self-explanatory.

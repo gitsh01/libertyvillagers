@@ -111,8 +111,11 @@
   "text.LibertyVillagers.villagerStats.format": "%s %d",
   "text.LibertyVillagers.villagerStats.numberOfVillagers": "Number Of Villagers:",
   "text.LibertyVillagers.villagerStats.numberOfHomeless": "Number of Homeless Villagers:",
+  "text.LibertyVillagers.villagerStats.homeless": "%s at %s",
   "text.LibertyVillagers.villagerStats.numberOfAvailableBeds": "Number of Available Beds:",
   "text.LibertyVillagers.villagerStats.professions": "Professions:",
-  "text.LibertyVillagers.villagerStats.professionsFormat": "    %s: Villagers: %d Held Job Sites: %d Available Job Sites: %d",
+  "text.LibertyVillagers.villagerStats.professionsCountFormat": "%s: %d",
+  "text.LibertyVillagers.villagerStats.professionsHeldJobSites": "Held Job Sites:",
+  "text.LibertyVillagers.villagerStats.professionsAvailableJobSites": "Available Job Sites:",
   "text.LibertyVillagers.villagerStats.bedsAt": "Available beds at:"
 }
