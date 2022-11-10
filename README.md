@@ -13,8 +13,10 @@ provide a better experience for your villagers!
 
 * Adjust the range which Villagers will find Points Of Interest (useful for vertical or large cities)
 * Adjust how long a Villager will travel to Points of Interest
+* Adjust how close a Villager needs to get to use a Point of Interest
 * Optional - Heal Villagers when they wake up (like Bedrock)
 * Optional - Prioritize Villagers avoiding cactus and water
+* Optional - Pathfinding fix for villagers becoming "stuck" near walls/fences
 * Optional - Prevent Villagers from climbing up ladders and vines (they don't know how to climb back down, poor dears)
 * Adjust the distance Villagers will consider "safe" for jumping down from ledges.
 * Optional - Prevent Villagers from breeding (for when you've got a bed that isn't pathable that is causing a population
@@ -43,7 +45,7 @@ provide a better experience for your villagers!
 ### Debug
 
 * Villagerstats command which gives you a summary how how many Villagers are in your town and what their occupations
-  are, how many are homeless, and how many open beds are available.
+  are, how many are homeless, and how many open beds are available, in an easy to read book format.
 * Villagerinfo command which tells you a summary of a Villager standing before you - where there bed is, where their
   workstation is, where their meeting place is, and what they are holding in their inventory. If looking at a Point of
   Interest (such as a workplace, bed, or bell), it will tell you whether that POI is claimed by a Villager.
@@ -63,7 +65,15 @@ provide a better experience for your villagers!
 ![Golems #1](https://user-images.githubusercontent.com/56774556/198503651-e23bef7b-dbce-4af1-9828-c97ccb84b722.png)
 ![Debug #1](https://user-images.githubusercontent.com/56774556/198503649-06e800f5-96e2-4f5b-bc1c-20fa31b1e06d.png)
 ![Villager Info Overlay](https://user-images.githubusercontent.com/56774556/198504095-c56833cb-04b9-4b89-9ce0-307180dce9ea.png)
-![Villager Stats](https://user-images.githubusercontent.com/56774556/198504197-c6777c46-0ab1-4518-ab22-137ea50978ca.png)
+![Villager Stats 1](https://user-images.githubusercontent.com/56774556/201022033-e4dd03c3-4125-43c2-bc93-54611daa17fc.png)
+![Villager Stats 2](https://user-images.githubusercontent.com/56774556/201022028-c436d3d4-905c-47fc-ba5e-f69543e3eb71.png)
+![Villager Stats 3](https://user-images.githubusercontent.com/56774556/201022036-77711894-b7ec-482d-b8e4-6fd288fe32a8.png)
+
+## Dependencies
+
+If you want to run this on a dedicated server, you will need the "Server Translation API" version 1.4.17 or higher.
+
+To edit the mod's options on the client, you will need to the "Mod Menu" mod.
 
 ## Credits
 
