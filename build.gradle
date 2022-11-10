@@ -10,7 +10,7 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = "${project.mod_version}+${project.minecraft_version}"
 group = project.maven_group
 
 repositories {
@@ -108,4 +108,5 @@ modrinth {
 	dependencies = [
 			new ModDependency('P7dR8mSH', 'required') // Creates a new required dependency on Fabric API
 	]
+	syncBodyFrom = rootProject.file("README.md").text
 }

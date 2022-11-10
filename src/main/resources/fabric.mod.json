@@ -32,7 +32,6 @@
   "mixins": [
     "libertyvillagers.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.14.9",
     "fabric-api": "*",
@@ -41,5 +40,12 @@
   },
   "suggests": {
     "another-mod": "*"
+  },
+  "custom": {
+    "modupdater": {
+      "strategy": "github",
+      "owner": "gitsh01",
+      "repository": "libertyvillagers"
+    }
   }
 }
