@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class VillagerInfo {
@@ -145,7 +147,8 @@ public class VillagerInfo {
         Optional<WalkTarget> walkTarget = villager.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET);
         String walkTargetCoords =
                 walkTarget.isPresent() ? walkTarget.get().getLookTarget().getBlockPos().toShortString() : BLANK_COORDS;
-        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.walkTarget", walkTargetCoords));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.walkTarget", walkTargetCoords,
+                walkTarget.isPresent() ? walkTarget.get().getCompletionRange() : 0));
 
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.inventory"));
 
@@ -157,6 +160,15 @@ public class VillagerInfo {
                     lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.inventoryLine", stack.getCount(),
                             stack.getName()));
                 }
+            }
+        }
+
+        if (villager.getNavigation().getCurrentPath() != null && CONFIG.debugConfig.villagerInfoShowsPath) {
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.path"));
+            Path path = villager.getNavigation().getCurrentPath();
+            for (int i = path.getCurrentNodeIndex(); i < path.getLength(); i++) {
+                lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.pathnode", i,
+                        path.getNode(i).getBlockPos().toShortString()));
             }
         }
 

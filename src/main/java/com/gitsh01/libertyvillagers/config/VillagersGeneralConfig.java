@@ -13,6 +13,9 @@ public class VillagersGeneralConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int pathfindingMaxRange = 256;
 
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int minimumPOISearchDistance = 3;
+
     @ConfigEntry.Gui.Tooltip
     public boolean healOnWake = true;
 
@@ -21,6 +24,9 @@ public class VillagersGeneralConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean villagersAvoidWater = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean villagerWanderingFix = true;
 
     @ConfigEntry.Gui.Tooltip
     public boolean villagersDontClimb = true;

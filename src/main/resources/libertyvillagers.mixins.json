@@ -8,14 +8,19 @@
     "EntityNavigationMixin",
     "FarmerVillagerTaskMixin",
     "FindPointOfInterestTaskMixin",
+    "GoToWorkTaskMixin",
     "IronGolemEntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
+    "PointOfInterestTypesMixin",
+    "TakeJobSiteTaskMixin",
     "TaskMixin",
     "VillagerBreedTaskMixin",
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
-    "WalkHomeTaskMixin"
+    "WanderAroundTaskMixin",
+    "WalkHomeTaskMixin",
+    "WalkTowardJobSiteTaskMixin"
   ],
   "client": [],
   "server": [
