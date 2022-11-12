@@ -9,6 +9,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.DebugInfoSender;
@@ -26,12 +28,13 @@ import net.minecraft.world.poi.PointOfInterestType;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiPredicate;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
@@ -49,6 +52,22 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Shadow
     public abstract void setVillagerData(VillagerData villagerData);
+
+    @Shadow
+    public static Map<Item, Integer> ITEM_FOOD_VALUES;
+
+    @Shadow
+    private static Set<Item> GATHERABLE_ITEMS;
+
+    @Inject(method = "<clinit>", at = @At("TAIL"))
+    static private void modifyStaticBlock(CallbackInfo ci) {
+        if (CONFIG.villagersGeneralConfig.villagersEatMelons) {
+            GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
+            GATHERABLE_ITEMS.add(Items.MELON_SLICE);
+            ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
+            ITEM_FOOD_VALUES.put(Items.MELON_SLICE, 1);
+        }
+    }
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
     public void villagerInit(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {

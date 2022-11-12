@@ -47,6 +47,9 @@ public class VillagersGeneralConfig implements ConfigData {
     public boolean villagersDontLookForWorkstationsAtNight = true;
 
     @ConfigEntry.Gui.Tooltip
+    public boolean villagersEatMelons = true;
+
+    @ConfigEntry.Gui.Tooltip
     public boolean noNitwitVillagers = false;
 
     @ConfigEntry.Gui.Tooltip
