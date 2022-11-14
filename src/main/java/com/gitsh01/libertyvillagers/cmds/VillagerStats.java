@@ -11,6 +11,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.BookScreen;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.passive.CatEntity;
+import net.minecraft.entity.passive.CatVariant;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -92,12 +95,14 @@ public class VillagerStats {
                 player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
 
         NbtList pages = new NbtList();
-        pages.addAll(splitToPageTags(titlePage(villagers, serverWorld)));
+        pages.addAll(splitToPageTags(titlePage(player, villagers, serverWorld)));
         pages.addAll(splitToPageTags(professionPage(player, villagers, serverWorld)));
         pages.addAll(splitToPageTags(heldWorkstationPage(player, villagers, serverWorld)));
         pages.addAll(splitToPageTags(freeWorkstationsPage(player, villagers, serverWorld)));
         pages.addAll(splitToPageTags(homelessPage(player, villagers, serverWorld)));
         pages.addAll(splitToPageTags(availableBedsPage(player, villagers, serverWorld)));
+        pages.addAll(splitToPageTags(golems(player, serverWorld)));
+        pages.addAll(splitToPageTags(cats(player, serverWorld)));
         bookStack.setSubNbt("pages", pages);
 
         if (LibertyVillagersMod.isClient()) {
@@ -139,12 +144,63 @@ public class VillagerStats {
     }
 
 
-    protected static String titlePage(List<VillagerEntity> villagers, ServerWorld serverWorld) {
+    protected static String titlePage(ServerPlayerEntity player, List<VillagerEntity> villagers,
+                                      ServerWorld serverWorld) {
         String pageString = Text.translatable("text.LibertyVillagers.villagerStats.title").getString() + "\n\n";
 
         pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
                 Text.translatable("text.LibertyVillagers.villagerStats.numberOfVillagers").getString(),
-                villagers.size()).getString();
+                villagers.size()).getString() + "\n";
+
+        int babies = 0;
+        int nitwits = 0;
+        int unemployed = 0;
+        int homeless = 0;
+        for (VillagerEntity villager : villagers) {
+            if (villager.getVillagerData().getProfession() == VillagerProfession.NITWIT) {
+                nitwits++;
+            }
+            if (villager.getVillagerData().getProfession() == VillagerProfession.NONE) {
+                unemployed++;
+            }
+            if (villager.isBaby()) {
+                babies++;
+            }
+            if (!villager.getBrain().hasMemoryModule(MemoryModuleType.HOME)) {
+                homeless++;
+            }
+        }
+
+        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
+                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfNitwits").getString(), nitwits)
+                .getString() + "\n";
+
+        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
+                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfUnemployed").getString(), unemployed)
+                .getString() + "\n";
+
+        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
+                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfBabies").getString(), babies)
+                .getString() + "\n";
+
+        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
+                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), homeless)
+                .getString() + "\n";
+
+        List<IronGolemEntity> golems = serverWorld.getNonSpectatingEntities(IronGolemEntity.class,
+                player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
+        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
+                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfGolems").getString(), golems.size())
+                .getString() + "\n";
+
+        List<CatEntity> cats = serverWorld.getNonSpectatingEntities(CatEntity.class,
+                player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
+
+        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
+                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfCats").getString(), cats.size())
+                .getString() + "\n";
+
+
         return pageString;
     }
 
@@ -288,6 +344,62 @@ public class VillagerStats {
                     pageString += bed.getPos().toShortString() + "\n";
                 }
             }
+        }
+
+        return pageString;
+    }
+
+    protected static String golems(ServerPlayerEntity player, ServerWorld serverWorld) {
+        List<IronGolemEntity> golems = serverWorld.getNonSpectatingEntities(IronGolemEntity.class,
+                player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
+
+        String pageString = Text.translatable("text.LibertyVillagers.villagerStats.format",
+                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfGolems").getString(), golems.size())
+                .getString() + "\n\n";
+
+        if (golems.size() > 0) {
+            pageString += Text.translatable("text.LibertyVillagers.villagerStats.golemsAt").getString() + "\n";
+            for (IronGolemEntity golem : golems) {
+                if (golem != null && golem.getBlockPos() != null) {
+                    pageString += golem.getBlockPos().toShortString() + "\n";
+                }
+            }
+        }
+
+        return pageString;
+    }
+
+
+    protected static String cats(ServerPlayerEntity player, ServerWorld serverWorld) {
+        List<CatEntity> cats = serverWorld.getNonSpectatingEntities(CatEntity.class,
+                player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
+
+        String pageString = Text.translatable("text.LibertyVillagers.villagerStats.format",
+                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfCats").getString(), cats.size())
+                .getString() + "\n\n";
+
+        TreeMap<String, Integer> catVariantMap = new TreeMap<>();
+
+        for (Map.Entry<RegistryKey<CatVariant>, CatVariant> catVariantEntry : Registry.CAT_VARIANT.getEntrySet()) {
+            catVariantMap.put(catVariantEntry.getKey().getValue().toShortTranslationKey(), 0);
+        }
+
+        if (cats.size() > 0) {
+            for (CatEntity cat : cats) {
+                String variant = Registry.CAT_VARIANT.getId(cat.getVariant()).toShortTranslationKey();
+                catVariantMap.merge(variant, 1, Integer::sum);
+            }
+
+            pageString += Text.translatable("text.LibertyVillagers.villagerStats.catTypes").getString() + "\n";
+
+            AtomicReference<String> catVariants = new AtomicReference<>("");
+            catVariantMap.forEach((catVariant, sum) -> {
+                catVariants.set(catVariants.get() +
+                        Text.translatable("text.LibertyVillagers.villagerStats.professionsCountFormat",
+                                Text.translatable(catVariant).getString(), sum).getString() + "\n");
+            });
+
+            pageString += catVariants;
         }
 
         return pageString;
