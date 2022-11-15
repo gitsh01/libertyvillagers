@@ -15,4 +15,16 @@ public class GolemsConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean golemsDontAttackPlayer = false;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean villagersDontSummonGolems = false;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean golemSpawnLimit = false;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int golemSpawnLimitCount = 10;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int golemSpawnLimitRange = 128;
 }

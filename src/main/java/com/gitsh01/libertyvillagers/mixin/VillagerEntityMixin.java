@@ -7,6 +7,7 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.Item;
@@ -147,10 +148,17 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("HEAD"), method = "canSummonGolem(J)Z", cancellable = true)
     public void replaceCanSummonGolem(long time, CallbackInfoReturnable<Boolean> cir) {
-        if (CONFIG.villagersGeneralConfig.villagersDontSummonGolems) {
+        if (CONFIG.golemsConfig.villagersDontSummonGolems) {
             cir.setReturnValue(false);
             cir.cancel();
         }
+        if (CONFIG.golemsConfig.golemSpawnLimit) {
+            List<IronGolemEntity> golems = this.getWorld().getNonSpectatingEntities(IronGolemEntity.class,
+                    this.getBoundingBox().expand(CONFIG.golemsConfig.golemSpawnLimitRange));
+            if (golems.size() >= CONFIG.golemsConfig.golemSpawnLimitCount) {
+                cir.setReturnValue(false);
+                cir.cancel();
+            }
+        }
     }
-
 }

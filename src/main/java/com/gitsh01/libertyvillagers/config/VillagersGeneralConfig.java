@@ -41,9 +41,6 @@ public class VillagersGeneralConfig implements ConfigData {
     public boolean villagerBabiesRequireWorkstationAndBed = false;
 
     @ConfigEntry.Gui.Tooltip
-    public boolean villagersDontSummonGolems = false;
-
-    @ConfigEntry.Gui.Tooltip
     public boolean villagersDontLookForWorkstationsAtNight = true;
 
     @ConfigEntry.Gui.Tooltip
