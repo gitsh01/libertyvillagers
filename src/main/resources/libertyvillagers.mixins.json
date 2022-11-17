@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BrainMixin",
+    "CatEntityMixin",
+    "CatSpawnerMixin",
     "EntityNavigationMixin",
     "FarmerVillagerTaskMixin",
     "FindPointOfInterestTaskMixin",

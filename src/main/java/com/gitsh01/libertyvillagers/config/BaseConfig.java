@@ -12,6 +12,7 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
         background = "minecraft:textures/block/diamond_block" + ".png")
 @Config.Gui.CategoryBackground(category = "Golems", background = "minecraft:textures/block/emerald_block.png")
 @Config.Gui.CategoryBackground(category = "Debug", background = "minecraft:textures/block/redstone_block.png")
+@Config.Gui.CategoryBackground(category = "Cats", background = "minecraft:textures/block/lapis_block.png")
 public class BaseConfig extends PartitioningSerializer.GlobalData implements ConfigData {
     @ConfigEntry.Category(value = "VillagersGeneral")
     @ConfigEntry.Gui.TransitiveObject
@@ -24,6 +25,10 @@ public class BaseConfig extends PartitioningSerializer.GlobalData implements Con
     @ConfigEntry.Category(value = "Golems")
     @ConfigEntry.Gui.TransitiveObject
     public final GolemsConfig golemsConfig = new GolemsConfig();
+
+    @ConfigEntry.Category(value = "Cats")
+    @ConfigEntry.Gui.TransitiveObject
+    public final CatsConfig catsConfig = new CatsConfig();
 
     @ConfigEntry.Category(value = "Debug")
     @ConfigEntry.Gui.TransitiveObject
