@@ -3,8 +3,8 @@ plugins {
 	id 'maven-publish'
 	id "com.modrinth.minotaur" version "2.+"
 	id "com.github.breadmoirai.github-release" version "2.4.1"
-	id 'org.ajoberstar.grgit' version '3.1.1'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
+	id 'se.bjurr.gitchangelog.git-changelog-gradle-plugin' version '1.73.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_17
@@ -111,29 +111,6 @@ publishing {
 	}
 }
 
-task checkGitStatus() {
-	group = 'publishing'
-	description = 'Checks that the git repository is in a state suitable for release'
-	doLast {
-		if (grgit == null) throw new RuntimeException('No git repository')
-		if (!grgit.status().isClean()) {
-			throw new RuntimeException("Git repository not ready for release (${grgit.status()})")
-		}
-		def currentBranch = grgit.branch.current().getName()
-		grgit.fetch()
-		if (grgit.tag.list().any { it.name == project.version }) {
-			throw new RuntimeException("A tag already exists for ${project.version}")
-		}
-		def status = grgit.branch.status(name: currentBranch)
-		if (status.aheadCount != 0) {
-			throw new RuntimeException('Some commits have not been pushed')
-		}
-		if (status.behindCount != 0) {
-			throw new RuntimeException('Some commits have not been pulled')
-		}
-	}
-}
-
 githubRelease {
 	token System.getenv("GITHUB_TOKEN")
 	owner "gitsh01"
@@ -146,7 +123,6 @@ githubRelease {
 	FilenameFilter filter = { dir, filename -> filename.contains(project.version) && !filename.contains('-dev.jar') }
 	releaseAssets = { jar.destinationDirectory.asFile.get().listFiles filter }
 }
-tasks.githubRelease.dependsOn(checkGitStatus)
 
 import com.modrinth.minotaur.dependencies.ModDependency
 
@@ -158,11 +134,13 @@ modrinth {
 	uploadFile = remapJar // Tells Minotaur to use the remapped jar
 	gameVersions = ['1.19.2'] // An array of game versions the version supports
 	loaders = ['fabric'] // Self-explanatory.
+	changelog = 'changelog.md'
 	dependencies = [
 			new ModDependency('P7dR8mSH', 'required') // Creates a new required dependency on Fabric API
 	]
 	syncBodyFrom = rootProject.file("README.md").text
 }
+tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 
 curseforge {
 	if (project.getProjectProperty('curse_key') != null) {
@@ -233,7 +211,40 @@ curseforge {
 	}
 }
 
-tasks.curseforge.dependsOn(checkGitStatus)
+task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
+	file = file("CHANGELOG.md");
+	fromRepo = file(".");
+	templateContent = """
+{{#tags}}
+{{#ifEquals name "Unreleased"}}
+{{else}}
+
+## [{{name}}](https://gitlab.com/html-validate/html-validate/compare/{{name}}) ({{tagDate .}})
+
+  {{#ifContainsType commits type='feat'}}
+### Features
+
+    {{#commits}}
+      {{#ifCommitType . type='feat'}}
+ - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://gitlab.com/html-validate/html-validate/commit/{{hashFull}}))
+      {{/ifCommitType}}
+    {{/commits}}
+  {{/ifContainsType}}
+
+  {{#ifContainsType commits type='fix'}}
+### Bug Fixes
+
+    {{#commits}}
+      {{#ifCommitType . type='fix'}}
+ - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://gitlab.com/html-validate/html-validate/commit/{{hashFull}}))
+      {{/ifCommitType}}
+    {{/commits}}
+  {{/ifContainsType}}
+
+{{/ifEquals}}
+{{/tags}}
+ """;
+}
 
 task release(dependsOn: [tasks.githubRelease, tasks.curseforge, tasks.modrinth]) {
 	group = 'publishing'
