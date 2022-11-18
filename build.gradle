@@ -199,7 +199,7 @@ curseforge {
 			}
 
 			changelogType = 'markdown'
-			changelog = project.getChangelogText()
+			changelog = file('changelog.md')
 
 			afterEvaluate {
 				uploadTask.dependsOn remapSourcesJar
@@ -212,7 +212,7 @@ curseforge {
 }
 
 task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
-	file = file("CHANGELOG.md");
+	file = file("changelog.md");
 	fromRepo = file(".");
 	templateContent = """
 {{#tags}}
