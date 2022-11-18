@@ -32,3 +32,5 @@ bin/
 
 run/
 /serverrun/
+/.chglog/CHANGELOG.tpl.md
+/.chglog/config.yml
