@@ -82,3 +82,4 @@ fabric mod</a>
 for writing code under the <a href="https://will-lucic.mit-license.org/">MIT license</a> for opening the book UI on the
 server.
 
+Thanks to kressety for the Simplified Chinese translations.
