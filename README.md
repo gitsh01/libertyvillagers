@@ -19,6 +19,7 @@ provide a better experience for your villagers!
 * Optional - Pathfinding fix for villagers becoming "stuck" near walls/fences
 * Optional - Prevent Villagers from climbing up ladders and vines (they don't know how to climb back down, poor dears)
 * Adjust the distance Villagers will consider "safe" for jumping down from ledges.
+* Optional - Villagers can consume melon slices for food.
 * Optional - Prevent Villagers from breeding (for when you've got a bed that isn't pathable that is causing a population
   boom)
 * Optional - Require a free workstation when Villagers decide to have a baby
@@ -41,11 +42,18 @@ provide a better experience for your villagers!
 * Optional - Golems avoid cactus
 * Optional - Golems avoid water
 * Optional - Golems don't attack players
+* Optional - Choose how many golems can spawn in a specified radius.
+
+### Cats
+
+* Optional - Choose how many cats can spawn in a specified radius.
+* Optional - Cats don't despawn.
 
 ### Debug
 
 * Villagerstats command which gives you a summary how how many Villagers are in your town and what their occupations
-  are, how many are homeless, and how many open beds are available, in an easy to read book format.
+  are, how many are homeless, number of golems, number and types of cats, and how many open beds are available, in an
+  easy to read book format.
 * Villagerinfo command which tells you a summary of a Villager standing before you - where there bed is, where their
   workstation is, where their meeting place is, and what they are holding in their inventory. If looking at a Point of
   Interest (such as a workplace, bed, or bell), it will tell you whether that POI is claimed by a Villager.
