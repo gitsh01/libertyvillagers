@@ -2,7 +2,7 @@ package com.gitsh01.libertyvillagers.cmds;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -11,15 +11,13 @@ import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
-import net.minecraft.world.poi.PointOfInterestTypes;
 
 import java.util.Optional;
 
@@ -27,13 +25,13 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class VillagerSetPOI {
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
                 literal("villagersetpoi").executes(context -> {
                     processVillagerSetPOI(context);
                     return 1;
                 })));
         CommandRegistrationCallback.EVENT.register(
-                (dispatcher, registryAccess, environment) -> dispatcher.register(literal("vsp").executes(context -> {
+                (dispatcher, dedicated) -> dispatcher.register(literal("vsp").executes(context -> {
                     processVillagerSetPOI(context);
                     return 1;
                 })));
@@ -50,20 +48,18 @@ public class VillagerSetPOI {
         HitResult hit = player.raycast(maxDistance, tickDelta, false);
 
         switch (hit.getType()) {
-            case MISS:
-                player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.miss"));
-                break;
-            case BLOCK:
+            case MISS -> player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerSetPOI.miss"), false);
+            case BLOCK -> {
                 BlockHitResult blockHit = (BlockHitResult) hit;
                 BlockPos blockPos = blockHit.getBlockPos();
                 BlockState blockState = serverWorld.getBlockState(blockPos);
                 handleBlockHit(player, serverWorld, blockPos, blockState);
-                break;
-            case ENTITY:
+            }
+            case ENTITY -> {
                 EntityHitResult entityHit = (EntityHitResult) hit;
                 Entity entity = entityHit.getEntity();
-                player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.entity"));
-                break;
+                player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerSetPOI.entity"), false);
+            }
         }
     }
 
@@ -72,31 +68,27 @@ public class VillagerSetPOI {
         Block block = blockState.getBlock();
         Text name = block.getName();
 
-        Optional<RegistryEntry<PointOfInterestType>> optionalRegistryEntry =
-                PointOfInterestTypes.getTypeForState(blockState);
+        Optional<PointOfInterestType> optionalRegistryEntry =
+                PointOfInterestType.from(blockState);
         if (optionalRegistryEntry.isEmpty()) {
-            player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.notPOIType", name));
+            player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerSetPOI.notPOIType", name), false);
             return;
         }
 
-        PointOfInterestType poiType = optionalRegistryEntry.get().value();
-        Optional<RegistryKey<PointOfInterestType>> optionalRegistryKey = optionalRegistryEntry.get().getKey();
-        if (optionalRegistryKey.isEmpty()) {
-            player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.notPOIType", name));
-            return;
-        }
-
-        String poiTypeName = optionalRegistryKey.get().getValue().toString();
+        PointOfInterestType poiType = optionalRegistryEntry.get();
+        String poiTypeName = poiType.getId();
         PointOfInterestStorage storage = serverWorld.getPointOfInterestStorage();
 
-        if (!storage.hasTypeAt(optionalRegistryKey.get(), blockPos)) {
-            storage.add(blockPos, (RegistryEntry<PointOfInterestType>) optionalRegistryEntry.get());
+        if (!storage.hasTypeAt(poiType, blockPos)) {
+            storage.add(blockPos, poiType);
             DebugInfoSender.sendPoiAddition(serverWorld, blockPos);
-            player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.enable", name, poiTypeName));
+            player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerSetPOI.enable", name, poiTypeName)
+                    , false);
         } else {
             storage.remove(blockPos);
             DebugInfoSender.sendPoiRemoval(serverWorld, blockPos);
-            player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.disable", name, poiTypeName));
+            player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerSetPOI.disable", name,
+                    poiTypeName), false);
         }
     }
 }

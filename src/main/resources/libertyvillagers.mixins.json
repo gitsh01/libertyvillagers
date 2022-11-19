@@ -14,7 +14,7 @@
     "IronGolemEntityMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
-    "PointOfInterestTypesMixin",
+    "PointOfInterestTypeMixin",
     "TakeJobSiteTaskMixin",
     "TaskMixin",
     "VillagerBreedTaskMixin",
@@ -22,7 +22,8 @@
     "VillagerTaskListProviderMixin",
     "WanderAroundTaskMixin",
     "WalkHomeTaskMixin",
-    "WalkTowardJobSiteTaskMixin"
+    "WalkTowardJobSiteTaskMixin",
+    "VillagerWalkTowardsTaskMixin"
   ],
   "client": [],
   "server": [
