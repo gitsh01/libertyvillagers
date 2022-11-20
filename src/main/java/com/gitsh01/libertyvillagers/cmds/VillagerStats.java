@@ -4,6 +4,7 @@ import com.gitsh01.libertyvillagers.LibertyVillagersClientInitializer;
 import com.gitsh01.libertyvillagers.LibertyVillagersMod;
 import com.gitsh01.libertyvillagers.LibertyVillagersServerInitializer;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -72,7 +73,7 @@ public class VillagerStats {
         return oldVal;
     }
 
-    public static void processVillagerStats(CommandContext<ServerCommandSource> command) {
+    public static void processVillagerStats(CommandContext<ServerCommandSource> command) throws CommandSyntaxException {
         ServerCommandSource source = command.getSource();
         ServerPlayerEntity player = source.getPlayer();
         ServerWorld serverWorld = source.getWorld();

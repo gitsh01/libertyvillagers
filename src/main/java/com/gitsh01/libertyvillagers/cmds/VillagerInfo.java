@@ -1,6 +1,7 @@
 package com.gitsh01.libertyvillagers.cmds;
 
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -50,7 +51,7 @@ public class VillagerInfo {
                 })));
     }
 
-    public static void processVillagerInfo(CommandContext<ServerCommandSource> command) {
+    public static void processVillagerInfo(CommandContext<ServerCommandSource> command) throws CommandSyntaxException {
         ServerCommandSource source = command.getSource();
         ServerPlayerEntity player = source.getPlayer();
         ServerWorld serverWorld = source.getWorld();
