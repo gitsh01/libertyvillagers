@@ -363,6 +363,9 @@ public class VillagerStats {
         return pageString.toString();
     }
 
+    protected static String translatedCatVariant(String variant) {
+        return Text.translatable("text.LibertyVillagers.villagerStats." + variant).getString();
+    }
 
     protected static String cats(ServerPlayerEntity player, ServerWorld serverWorld) {
         List<CatEntity> cats = serverWorld.getNonSpectatingEntities(CatEntity.class,
@@ -375,12 +378,13 @@ public class VillagerStats {
         TreeMap<String, Integer> catVariantMap = new TreeMap<>();
 
         for (Map.Entry<RegistryKey<CatVariant>, CatVariant> catVariantEntry : Registry.CAT_VARIANT.getEntrySet()) {
-            catVariantMap.put(catVariantEntry.getKey().getValue().toShortTranslationKey(), 0);
+            catVariantMap.put(translatedCatVariant(catVariantEntry.getKey().getValue().toShortTranslationKey()), 0);
         }
 
         if (cats.size() > 0) {
             for (CatEntity cat : cats) {
-                String variant = Registry.CAT_VARIANT.getId(cat.getVariant()).toShortTranslationKey();
+                String variant =
+                        translatedCatVariant(Registry.CAT_VARIANT.getId(cat.getVariant()).toShortTranslationKey());
                 catVariantMap.merge(variant, 1, Integer::sum);
             }
 
@@ -389,7 +393,7 @@ public class VillagerStats {
             AtomicReference<String> catVariants = new AtomicReference<>("");
             catVariantMap.forEach((catVariant, sum) -> catVariants.set(catVariants.get() +
                     Text.translatable("text.LibertyVillagers.villagerStats.professionsCountFormat",
-                            Text.translatable(catVariant).getString(), sum).getString() + "\n"));
+                            catVariant, sum).getString() + "\n"));
 
             pageString += catVariants;
         }
