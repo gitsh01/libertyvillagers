@@ -355,7 +355,9 @@ public class VillagerStats {
                     .append("\n");
             for (IronGolemEntity golem : golems) {
                 if (golem != null && golem.getBlockPos() != null) {
-                    pageString.append(golem.getBlockPos().toShortString()).append("\n");
+                    pageString.append(
+                            Text.translatable("text.LibertyVillagers.villagerStats.homeless", golem.getDisplayName(),
+                                    golem.getBlockPos().toShortString()).getString()).append("\n");
                 }
             }
         }
