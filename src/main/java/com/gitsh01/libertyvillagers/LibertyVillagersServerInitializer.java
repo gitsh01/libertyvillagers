@@ -3,7 +3,6 @@ package com.gitsh01.libertyvillagers;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
 
 import java.util.LinkedList;
 import java.util.List;

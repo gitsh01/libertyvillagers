@@ -12,7 +12,6 @@ import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
@@ -97,9 +96,7 @@ public abstract class FindPointOfInterestTaskMixin extends Task<PathAwareEntity>
                 this.targetMemoryModuleType.toString());
         this.positionExpireTimeLimit = l + 20L + (long) serverWorld.getRandom().nextInt(20);
         PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
-        Predicate<BlockPos> predicate = pos -> {
-            return true;
-        };
+        Predicate<BlockPos> predicate = pos -> true;
         Set<Pair<RegistryEntry<PointOfInterestType>, BlockPos>> set =
                 pointOfInterestStorage.getSortedTypesAndPositions(this.poiTypePredicate, predicate,
                         pathAwareEntity.getBlockPos(), CONFIG.villagersGeneralConfig.findPOIRange,

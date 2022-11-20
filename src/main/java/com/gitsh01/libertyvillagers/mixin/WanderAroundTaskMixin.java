@@ -35,14 +35,14 @@ public abstract class WanderAroundTaskMixin {
     @Inject(method = "hasFinishedPath(Lnet/minecraft/entity/mob/MobEntity;Lnet/minecraft/entity/ai/brain/WalkTarget;J)Z",
             at = @At("HEAD"), cancellable = true)
     private void storeWalkTargetFromHasFinishedPath(MobEntity entity, WalkTarget walkTarget, long time,
-                                                    CallbackInfoReturnable cir) {
+                                                    CallbackInfoReturnable<Boolean> cir) {
         this.walkTarget = walkTarget;
     }
 
     @Inject(method = "hasFinishedPath(Lnet/minecraft/entity/mob/MobEntity;Lnet/minecraft/entity/ai/brain/WalkTarget;J)Z",
             at = @At("RETURN"), cancellable = true)
     private void lastDitchAttemptToFindPath(MobEntity entity, WalkTarget walkTarget, long time,
-                                            CallbackInfoReturnable cir) {
+                                            CallbackInfoReturnable<Boolean> cir) {
         if (CONFIG.villagersGeneralConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
                 entity.getBrain().hasMemoryModule(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE) && this.path != null) {
             BlockPos blockPos = this.path.getCurrentNodePos();

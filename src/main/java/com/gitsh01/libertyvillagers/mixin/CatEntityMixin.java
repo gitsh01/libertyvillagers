@@ -29,7 +29,7 @@ public abstract class CatEntityMixin extends TameableEntity {
             at = @At("RETURN"))
     void addPersistantToInitialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason,
                                    @Nullable EntityData entityData, @Nullable NbtCompound entityNbt,
-                                   CallbackInfoReturnable cir) {
+                                   CallbackInfoReturnable<EntityData> cir) {
         if (CONFIG.catsConfig.villageCatsDontDespawn) {
             this.setPersistent();
         }

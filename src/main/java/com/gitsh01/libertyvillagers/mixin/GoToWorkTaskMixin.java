@@ -10,7 +10,6 @@ import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
@@ -26,15 +25,16 @@ public class GoToWorkTaskMixin extends Task<VillagerEntity> {
             ")Z", at = @At("HEAD"), cancellable = true)
     protected void shouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity,
                              CallbackInfoReturnable<Boolean> cir) {
-        BlockPos blockPos =
-                villagerEntity.getBrain().getOptionalMemory(MemoryModuleType.POTENTIAL_JOB_SITE).get().getPos();
-        cir.setReturnValue(blockPos.isWithinDistance(villagerEntity.getPos(),
-                CONFIG.villagersGeneralConfig.minimumPOISearchDistance) || villagerEntity.isNatural());
-        cir.cancel();
+        if (villagerEntity.getBrain().getOptionalMemory(MemoryModuleType.POTENTIAL_JOB_SITE).isPresent()) {
+            BlockPos blockPos =
+                    villagerEntity.getBrain().getOptionalMemory(MemoryModuleType.POTENTIAL_JOB_SITE).get().getPos();
+            cir.setReturnValue(blockPos.isWithinDistance(villagerEntity.getPos(), CONFIG.villagersGeneralConfig.minimumPOISearchDistance) || villagerEntity.isNatural());
+            cir.cancel();
+        }
     }
 
     /*
-    I'd rather do this but it never seems to work correctly (no ref map).
+    I'd rather do this, but it never seems to work correctly (no ref map).
     @ModifyArg(
             method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/VillagerEntity;)Z",
             at = @At(value = "INVOKE",

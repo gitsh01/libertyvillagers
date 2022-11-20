@@ -20,6 +20,7 @@
     "VillagerBreedTaskMixin",
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
+    "VillagerWalkTowardsTaskMixin",
     "WanderAroundTaskMixin",
     "WalkHomeTaskMixin",
     "WalkTowardJobSiteTaskMixin"

@@ -27,9 +27,7 @@ public class LibertyVillagersOverlay {
     static int BACKGROUND_COLOR = 0x55200000;
 
     public static void register() {
-        HudRenderCallback.EVENT.register((matrices, tickDelta) -> {
-            HudRenderCallback(matrices, tickDelta);
-        });
+        HudRenderCallback.EVENT.register(LibertyVillagersOverlay::HudRenderCallback);
     }
 
     public static void HudRenderCallback(MatrixStack matrices, float tickDelta) {
