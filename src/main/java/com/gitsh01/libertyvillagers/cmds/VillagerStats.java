@@ -228,9 +228,6 @@ public class VillagerStats {
                         new ProfessionInfo(villager.getVillagerData().getProfession(), 1),
                         ProfessionInfo::mergeProfessionInfo);
             }
-
-            String var10000 = villager.getType().getTranslationKey();
-            System.out.println(Text.translatable(var10000 + "." + Registry.VILLAGER_PROFESSION.getId(villager.getVillagerData().getProfession()).getPath()).getString());
         }
 
         AtomicReference<String> professions = new AtomicReference<>("");
