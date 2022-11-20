@@ -41,7 +41,7 @@ public abstract class VillagerBreedTaskMixin extends Task<VillagerEntity> {
                     .getPosition(VillagerProfession.NONE.acquirableWorkstation(),
                             (poiType, pos) -> this.canReachHome(first, pos, poiType), first.getBlockPos(),
                             CONFIG.villagersGeneralConfig.findPOIRange);
-            if (!optionalWorkstation.isPresent()) {
+            if (optionalWorkstation.isEmpty()) {
                 world.sendEntityStatus(second, EntityStatuses.ADD_VILLAGER_ANGRY_PARTICLES);
                 world.sendEntityStatus(first, EntityStatuses.ADD_VILLAGER_ANGRY_PARTICLES);
                 ci.cancel();

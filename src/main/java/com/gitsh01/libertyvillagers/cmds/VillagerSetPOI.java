@@ -1,7 +1,6 @@
 package com.gitsh01.libertyvillagers.cmds;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -39,8 +38,7 @@ public class VillagerSetPOI {
                 })));
     }
 
-    public static void processVillagerSetPOI(CommandContext<ServerCommandSource> command)
-            throws CommandSyntaxException {
+    public static void processVillagerSetPOI(CommandContext<ServerCommandSource> command) {
         ServerCommandSource source = command.getSource();
         ServerPlayerEntity player = source.getPlayer();
         ServerWorld serverWorld = source.getWorld();
@@ -50,20 +48,18 @@ public class VillagerSetPOI {
         HitResult hit = player.raycast(maxDistance, tickDelta, false);
 
         switch (hit.getType()) {
-            case MISS:
-                player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.miss"));
-                break;
-            case BLOCK:
+            case MISS -> player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.miss"));
+            case BLOCK -> {
                 BlockHitResult blockHit = (BlockHitResult) hit;
                 BlockPos blockPos = blockHit.getBlockPos();
                 BlockState blockState = serverWorld.getBlockState(blockPos);
                 handleBlockHit(player, serverWorld, blockPos, blockState);
-                break;
-            case ENTITY:
+            }
+            case ENTITY -> {
                 EntityHitResult entityHit = (EntityHitResult) hit;
                 Entity entity = entityHit.getEntity();
                 player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.entity"));
-                break;
+            }
         }
     }
 
@@ -90,7 +86,7 @@ public class VillagerSetPOI {
         PointOfInterestStorage storage = serverWorld.getPointOfInterestStorage();
 
         if (!storage.hasTypeAt(optionalRegistryKey.get(), blockPos)) {
-            storage.add(blockPos, (RegistryEntry<PointOfInterestType>) optionalRegistryEntry.get());
+            storage.add(blockPos, optionalRegistryEntry.get());
             DebugInfoSender.sendPoiAddition(serverWorld, blockPos);
             player.sendMessage(Text.translatable("text.LibertyVillagers.villagerSetPOI.enable", name, poiTypeName));
         } else {

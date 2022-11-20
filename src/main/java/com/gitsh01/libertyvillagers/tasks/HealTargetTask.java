@@ -92,10 +92,8 @@ public abstract class HealTargetTask extends Task<VillagerEntity> {
     }
 
     protected boolean isValidPatient(LivingEntity entity) {
-        if (entity == null || entity.getHealth() >= entity.getMaxHealth() || !entity.isAlive() ||
-                entity.isInvisible() || entity.isInvulnerable() || entity.hasStatusEffect(StatusEffects.REGENERATION)) {
-            return false;
-        }
-        return true;
+        return entity != null && !(entity.getHealth() >= entity.getMaxHealth()) && entity.isAlive() &&
+                !entity.isInvisible() && !entity.isInvulnerable() &&
+                !entity.hasStatusEffect(StatusEffects.REGENERATION);
     }
 }

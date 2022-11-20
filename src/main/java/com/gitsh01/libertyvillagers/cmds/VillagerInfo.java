@@ -1,7 +1,6 @@
 package com.gitsh01.libertyvillagers.cmds;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -53,7 +52,7 @@ public class VillagerInfo {
                 })));
     }
 
-    public static void processVillagerInfo(CommandContext<ServerCommandSource> command) throws CommandSyntaxException {
+    public static void processVillagerInfo(CommandContext<ServerCommandSource> command) {
         ServerCommandSource source = command.getSource();
         ServerPlayerEntity player = source.getPlayer();
         ServerWorld serverWorld = source.getWorld();
@@ -75,8 +74,7 @@ public class VillagerInfo {
         HitResult hitResult2;
         // Look for an entity between us and the block.
         if ((hitResult2 = ProjectileUtil.getEntityCollision(serverWorld, player, vec3d2, vec3d3,
-                player.getBoundingBox().stretch(player.getVelocity()).expand(maxDistance),
-                entity -> entity.isAlive())) != null) {
+                player.getBoundingBox().stretch(player.getVelocity()).expand(maxDistance), Entity::isAlive)) != null) {
             hit = hitResult2;
         }
 
@@ -106,7 +104,7 @@ public class VillagerInfo {
 
 
     public static List<Text> getEntityInfo(ServerWorld serverWorld, Entity entity) {
-        List<Text> lines = new ArrayList();
+        List<Text> lines = new ArrayList<>();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.title"));
         Text name = entity.getDisplayName();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.name", name));
@@ -148,7 +146,7 @@ public class VillagerInfo {
         String walkTargetCoords =
                 walkTarget.isPresent() ? walkTarget.get().getLookTarget().getBlockPos().toShortString() : BLANK_COORDS;
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.walkTarget", walkTargetCoords,
-                walkTarget.isPresent() ? walkTarget.get().getCompletionRange() : 0));
+                walkTarget.map(WalkTarget::getCompletionRange).orElse(0)));
 
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.inventory"));
 
