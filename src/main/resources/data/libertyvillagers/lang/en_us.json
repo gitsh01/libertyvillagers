@@ -42,5 +42,6 @@
   "text.LibertyVillagers.villagerStats.numberOfNitwits": "Nitwits:",
   "text.LibertyVillagers.villagerStats.numberOfUnemployed": "Unemployed:",
   "text.LibertyVillagers.villagerStats.numberOfBabies": "Babies:",
-  "text.LibertyVillagers.villagerStats.catTypes": "Cat Types:"
+  "text.LibertyVillagers.villagerStats.catTypes": "Cat Types:",
+  "text.LibertyVillagers.villagerStats.baby": "Baby"
 }
