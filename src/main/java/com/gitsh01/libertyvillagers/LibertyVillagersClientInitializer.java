@@ -21,9 +21,7 @@ public class LibertyVillagersClientInitializer implements ClientModInitializer {
     }
 
     public static void openBookScreen(ItemStack bookStack) {
-        RenderSystem.recordRenderCall(() -> {
-            MinecraftClient.getInstance().setScreen(new BookScreen(new BookScreen.WrittenBookContents(bookStack)));
-        });
+        RenderSystem.recordRenderCall(() -> MinecraftClient.getInstance().setScreen(new BookScreen(new BookScreen.WrittenBookContents(bookStack))));
     }
 
     public static List<String> wrapText(String string) {

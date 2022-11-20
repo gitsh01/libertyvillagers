@@ -15,13 +15,12 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 public abstract class MobEntityMixin extends LivingEntity {
 
     public MobEntityMixin(EntityType<? extends MobEntity> entityType, World world) {
-        super((EntityType<? extends LivingEntity>) entityType, world);
+        super(entityType, world);
     }
 
     @Inject(method = "getSafeFallDistance", at = @At(value = "HEAD"), cancellable = true)
     public void replaceGetSafeFallDistance(CallbackInfoReturnable<Integer> cir) {
-        LivingEntity entity = (LivingEntity) (Object) this;
-        if (entity == null) return;
+        LivingEntity entity = this;
         if (entity.getType() == EntityType.VILLAGER) {
             cir.setReturnValue(CONFIG.villagersGeneralConfig.villagerSafeFallDistance);
             cir.cancel();

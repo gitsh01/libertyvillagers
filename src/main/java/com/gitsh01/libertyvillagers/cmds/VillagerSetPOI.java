@@ -5,7 +5,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -13,7 +12,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.poi.PointOfInterestStorage;
@@ -37,8 +35,8 @@ public class VillagerSetPOI {
                 })));
     }
 
-    public static void processVillagerSetPOI(CommandContext<ServerCommandSource> command)
-            throws CommandSyntaxException {
+    public static void processVillagerSetPOI(CommandContext<ServerCommandSource> command) throws
+            CommandSyntaxException {
         ServerCommandSource source = command.getSource();
         ServerPlayerEntity player = source.getPlayer();
         ServerWorld serverWorld = source.getWorld();
@@ -55,11 +53,7 @@ public class VillagerSetPOI {
                 BlockState blockState = serverWorld.getBlockState(blockPos);
                 handleBlockHit(player, serverWorld, blockPos, blockState);
             }
-            case ENTITY -> {
-                EntityHitResult entityHit = (EntityHitResult) hit;
-                Entity entity = entityHit.getEntity();
-                player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerSetPOI.entity"), false);
-            }
+            case ENTITY -> player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerSetPOI.entity"), false);
         }
     }
 

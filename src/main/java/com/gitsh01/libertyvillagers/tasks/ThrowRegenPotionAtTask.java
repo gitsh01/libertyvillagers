@@ -60,7 +60,7 @@ public class ThrowRegenPotionAtTask extends HealTargetTask {
         Potion potion = Potions.REGENERATION;
         PotionEntity potionEntity = new PotionEntity(serverWorld, villagerEntity);
         potionEntity.setItem(PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION), potion));
-        potionEntity.setPitch(potionEntity.getPitch() - -20.0f);
+        potionEntity.setPitch(potionEntity.getPitch() + 20.0f);
         potionEntity.setVelocity(d, e + g * 0.2, f, 0.75f, 8.0f);
         serverWorld.playSound(null, villagerEntity.getX(), villagerEntity.getY(), villagerEntity.getZ(),
                 SoundEvents.ENTITY_LINGERING_POTION_THROW, villagerEntity.getSoundCategory(), 1.0f,
