@@ -4,11 +4,10 @@ import com.gitsh01.libertyvillagers.LibertyVillagersClientInitializer;
 import com.gitsh01.libertyvillagers.LibertyVillagersMod;
 import com.gitsh01.libertyvillagers.LibertyVillagersServerInitializer;
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.passive.CatEntity;
-import net.minecraft.entity.passive.CatVariant;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.ItemStack;
@@ -19,12 +18,14 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
-import net.minecraft.world.poi.PointOfInterestTypes;
+import net.minecraft.world.poi.PointOfInterestType;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.*;
@@ -52,13 +53,13 @@ public class VillagerStats {
     private static final int LINES_PER_PAGE = 14;
 
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
                 literal("villagerstats").executes(context -> {
                     processVillagerStats(context);
                     return 1;
                 })));
         CommandRegistrationCallback.EVENT.register(
-                (dispatcher, registryAccess, environment) -> dispatcher.register(literal("vs").executes(context -> {
+                (dispatcher, dedicated) -> dispatcher.register(literal("vs").executes(context -> {
                     processVillagerStats(context);
                     return 1;
                 })));
@@ -78,7 +79,7 @@ public class VillagerStats {
 
         ItemStack bookStack = new ItemStack(Items.WRITTEN_BOOK);
         bookStack.setSubNbt("title",
-                NbtString.of(Text.translatable("text.LibertyVillagers.villagerStats.title").getString()));
+                NbtString.of(new TranslatableText("text.LibertyVillagers.villagerStats.title").getString()));
         bookStack.setSubNbt("author", NbtString.of(player.getEntityName()));
 
         List<VillagerEntity> villagers = serverWorld.getNonSpectatingEntities(VillagerEntity.class,
@@ -100,7 +101,7 @@ public class VillagerStats {
         } else {
             if (FabricLoader.getInstance().getModContainer("server_translations_api").isEmpty()) {
                 player.sendMessage(Text.of("Server_translations_api is missing. VillagerStats does not work " +
-                        "server-side without translations."));
+                        "server-side without translations."), false);
                 return;
             }
             LibertyVillagersServerInitializer.openBookScreen(bookStack, player);
@@ -136,10 +137,10 @@ public class VillagerStats {
 
     protected static String titlePage(ServerPlayerEntity player, List<VillagerEntity> villagers,
                                       ServerWorld serverWorld) {
-        String pageString = Text.translatable("text.LibertyVillagers.villagerStats.title").getString() + "\n\n";
+        String pageString = new TranslatableText("text.LibertyVillagers.villagerStats.title").getString() + "\n\n";
 
-        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
-                Text.translatable("text.LibertyVillagers.villagerStats.numberOfVillagers").getString(),
+        pageString += new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                new TranslatableText("text.LibertyVillagers.villagerStats.numberOfVillagers").getString(),
                 villagers.size()).getString() + "\n";
 
         int babies = 0;
@@ -161,33 +162,33 @@ public class VillagerStats {
             }
         }
 
-        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfNitwits").getString(), nitwits)
+        pageString += new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                        new TranslatableText("text.LibertyVillagers.villagerStats.numberOfNitwits").getString(), nitwits)
                 .getString() + "\n";
 
-        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfUnemployed").getString(), unemployed)
+        pageString += new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                        new TranslatableText("text.LibertyVillagers.villagerStats.numberOfUnemployed").getString(), unemployed)
                 .getString() + "\n";
 
-        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfBabies").getString(), babies)
+        pageString += new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                        new TranslatableText("text.LibertyVillagers.villagerStats.numberOfBabies").getString(), babies)
                 .getString() + "\n";
 
-        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), homeless)
+        pageString += new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                        new TranslatableText("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), homeless)
                 .getString() + "\n";
 
         List<IronGolemEntity> golems = serverWorld.getNonSpectatingEntities(IronGolemEntity.class,
                 player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
-        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfGolems").getString(), golems.size())
+        pageString += new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                        new TranslatableText("text.LibertyVillagers.villagerStats.numberOfGolems").getString(), golems.size())
                 .getString() + "\n";
 
         List<CatEntity> cats = serverWorld.getNonSpectatingEntities(CatEntity.class,
                 player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
 
-        pageString += Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfCats").getString(), cats.size())
+        pageString += new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                        new TranslatableText("text.LibertyVillagers.villagerStats.numberOfCats").getString(), cats.size())
                 .getString() + "\n";
 
 
@@ -196,7 +197,7 @@ public class VillagerStats {
 
     protected static String professionPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
                                            ServerWorld serverWorld) {
-        String pageString = Text.translatable("text.LibertyVillagers.villagerStats.professions").getString() + "\n\n";
+        String pageString = new TranslatableText("text.LibertyVillagers.villagerStats.professions").getString() + "\n\n";
         TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
 
         for (Map.Entry<RegistryKey<VillagerProfession>, VillagerProfession> professionEntry : Registry.VILLAGER_PROFESSION.getEntrySet()) {
@@ -219,7 +220,7 @@ public class VillagerStats {
 
         AtomicReference<String> professions = new AtomicReference<>("");
         villagerProfessionMap.forEach((villagerProfession, professionInfo) -> professions.set(professions.get() +
-                Text.translatable("text.LibertyVillagers.villagerStats.professionsCountFormat", villagerProfession,
+                new TranslatableText("text.LibertyVillagers.villagerStats.professionsCountFormat", villagerProfession,
                         professionInfo.countVillagersWithProfession).getString() + "\n"));
 
         pageString += professions.get() + "\n\n";
@@ -231,7 +232,7 @@ public class VillagerStats {
     protected static String heldWorkstationPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
                                                 ServerWorld serverWorld) {
         String pageString =
-                Text.translatable("text.LibertyVillagers.villagerStats.professionsHeldJobSites").getString() + "\n\n";
+                new TranslatableText("text.LibertyVillagers.villagerStats.professionsHeldJobSites").getString() + "\n\n";
         TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
 
         for (Map.Entry<RegistryKey<VillagerProfession>, VillagerProfession> professionEntry : Registry.VILLAGER_PROFESSION.getEntrySet()) {
@@ -244,12 +245,12 @@ public class VillagerStats {
             long numOccupiedWorkstations = 0;
             if (!Objects.equals(villagerProfession, "baby")) {
                 numOccupiedWorkstations = serverWorld.getPointOfInterestStorage()
-                        .count(professionInfo.profession.heldWorkstation(), player.getBlockPos(),
+                        .count(professionInfo.profession.getWorkStation().getCompletionCondition(), player.getBlockPos(),
                                 CONFIG.debugConfig.villagerStatRange,
                                 PointOfInterestStorage.OccupationStatus.IS_OCCUPIED);
             }
             heldWorkstations.set(heldWorkstations.get() +
-                    Text.translatable("text.LibertyVillagers.villagerStats.professionsCountFormat", villagerProfession,
+                    new TranslatableText("text.LibertyVillagers.villagerStats.professionsCountFormat", villagerProfession,
                             numOccupiedWorkstations).getString() + "\n");
         });
 
@@ -262,7 +263,7 @@ public class VillagerStats {
     protected static String freeWorkstationsPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
                                                  ServerWorld serverWorld) {
         String pageString =
-                Text.translatable("text.LibertyVillagers.villagerStats.professionsAvailableJobSites").getString() +
+                new TranslatableText("text.LibertyVillagers.villagerStats.professionsAvailableJobSites").getString() +
                         "\n\n";
         TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
 
@@ -276,13 +277,13 @@ public class VillagerStats {
             long numAvailableWorkstations = 0;
             if (!Objects.equals(villagerProfession, "baby")) {
                 numAvailableWorkstations = serverWorld.getPointOfInterestStorage()
-                        .count(professionInfo.profession.acquirableWorkstation(), player.getBlockPos(),
+                        .count(professionInfo.profession.getWorkStation().getCompletionCondition(), player.getBlockPos(),
                                 CONFIG.debugConfig.villagerStatRange,
                                 PointOfInterestStorage.OccupationStatus.HAS_SPACE);
             }
 
             availableWorkstations.set(availableWorkstations.get() +
-                    Text.translatable("text.LibertyVillagers.villagerStats.professionsCountFormat", villagerProfession,
+                    new TranslatableText("text.LibertyVillagers.villagerStats.professionsCountFormat", villagerProfession,
                             numAvailableWorkstations).getString() + "\n");
         });
 
@@ -299,13 +300,13 @@ public class VillagerStats {
             if (!villager.getBrain().hasMemoryModule(MemoryModuleType.HOME)) {
                 numHomeless++;
                 homelessString.append(
-                        Text.translatable("text.LibertyVillagers.villagerStats.homeless", villager.getDisplayName(),
+                        new TranslatableText("text.LibertyVillagers.villagerStats.homeless", villager.getDisplayName(),
                                 villager.getBlockPos().toShortString()).getString()).append("\n");
             }
         }
 
-        String pageString = Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), numHomeless)
+        String pageString = new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                        new TranslatableText("text.LibertyVillagers.villagerStats.numberOfHomeless").getString(), numHomeless)
                 .getString() + "\n\n";
         if (numHomeless > 0) {
             pageString += homelessString;
@@ -317,16 +318,17 @@ public class VillagerStats {
     protected static String availableBedsPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
                                               ServerWorld serverWorld) {
         List<PointOfInterest> availableBeds = serverWorld.getPointOfInterestStorage()
-                .getInCircle(registryEntry -> registryEntry.matchesKey(PointOfInterestTypes.HOME), player.getBlockPos(),
+                .getInCircle(poiType -> poiType == PointOfInterestType.HOME, player.getBlockPos(),
                         CONFIG.debugConfig.villagerStatRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE)
                 .toList();
 
-        StringBuilder pageString = new StringBuilder(Text.translatable("text.LibertyVillagers.villagerStats.format",
-                Text.translatable("text.LibertyVillagers.villagerStats.numberOfAvailableBeds").getString(),
+        StringBuilder pageString = new StringBuilder(new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                new TranslatableText("text.LibertyVillagers.villagerStats.numberOfAvailableBeds").getString(),
                 availableBeds.size()).getString() + "\n\n");
 
         if (availableBeds.size() > 0) {
-            pageString.append(Text.translatable("text.LibertyVillagers.villagerStats.bedsAt").getString()).append("\n");
+            pageString.append(new TranslatableText("text.LibertyVillagers.villagerStats.bedsAt").getString())
+                    .append("\n");
             for (PointOfInterest bed : availableBeds) {
                 if (bed != null && bed.getPos() != null) {
                     pageString.append(bed.getPos().toShortString()).append("\n");
@@ -341,12 +343,12 @@ public class VillagerStats {
         List<IronGolemEntity> golems = serverWorld.getNonSpectatingEntities(IronGolemEntity.class,
                 player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
 
-        StringBuilder pageString = new StringBuilder(Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfGolems").getString(), golems.size())
-                .getString() + "\n\n");
+        StringBuilder pageString = new StringBuilder(new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                new TranslatableText("text.LibertyVillagers.villagerStats.numberOfGolems").getString(),
+                golems.size()).getString() + "\n\n");
 
         if (golems.size() > 0) {
-            pageString.append(Text.translatable("text.LibertyVillagers.villagerStats.golemsAt").getString())
+            pageString.append(new TranslatableText("text.LibertyVillagers.villagerStats.golemsAt").getString())
                     .append("\n");
             for (IronGolemEntity golem : golems) {
                 if (golem != null && golem.getBlockPos() != null) {
@@ -359,32 +361,36 @@ public class VillagerStats {
     }
 
 
+    protected static String catType(Identifier identifier) {
+        return identifier.getPath().replaceAll("^(.*)/(.*)(\\..*)$", "$2");
+    }
+
     protected static String cats(ServerPlayerEntity player, ServerWorld serverWorld) {
         List<CatEntity> cats = serverWorld.getNonSpectatingEntities(CatEntity.class,
                 player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
 
-        String pageString = Text.translatable("text.LibertyVillagers.villagerStats.format",
-                        Text.translatable("text.LibertyVillagers.villagerStats.numberOfCats").getString(), cats.size())
+        String pageString = new TranslatableText("text.LibertyVillagers.villagerStats.format",
+                        new TranslatableText("text.LibertyVillagers.villagerStats.numberOfCats").getString(), cats.size())
                 .getString() + "\n\n";
 
         TreeMap<String, Integer> catVariantMap = new TreeMap<>();
 
-        for (Map.Entry<RegistryKey<CatVariant>, CatVariant> catVariantEntry : Registry.CAT_VARIANT.getEntrySet()) {
-            catVariantMap.put(catVariantEntry.getKey().getValue().toShortTranslationKey(), 0);
+        for (int i = 0; i < CatEntity.TEXTURES.size(); i++) {
+            catVariantMap.put(catType(CatEntity.TEXTURES.get(i)), 0);
         }
 
         if (cats.size() > 0) {
             for (CatEntity cat : cats) {
-                String variant = Registry.CAT_VARIANT.getId(cat.getVariant()).toShortTranslationKey();
+                String variant = catType(cat.getTexture());
                 catVariantMap.merge(variant, 1, Integer::sum);
             }
 
-            pageString += Text.translatable("text.LibertyVillagers.villagerStats.catTypes").getString() + "\n";
+            pageString += new TranslatableText("text.LibertyVillagers.villagerStats.catTypes").getString() + "\n";
 
             AtomicReference<String> catVariants = new AtomicReference<>("");
             catVariantMap.forEach((catVariant, sum) -> catVariants.set(catVariants.get() +
-                    Text.translatable("text.LibertyVillagers.villagerStats.professionsCountFormat",
-                            Text.translatable(catVariant).getString(), sum).getString() + "\n"));
+                    new TranslatableText("text.LibertyVillagers.villagerStats.professionsCountFormat",
+                            new TranslatableText(catVariant).getString(), sum).getString() + "\n"));
 
             pageString += catVariants;
         }

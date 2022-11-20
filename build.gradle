@@ -133,7 +133,7 @@ modrinth {
 	projectId = '264clomZ' // The ID of your Modrinth project. Slugs will not work.
 	versionType = 'release'
 	uploadFile = remapJar // Tells Minotaur to use the remapped jar
-	gameVersions = ['1.19.2'] // An array of game versions the version supports
+	gameVersions = ['1.18.2'] // An array of game versions the version supports
 	loaders = ['fabric'] // Self-explanatory.
 	changelog = 'changelog.md'
 	dependencies = [
@@ -145,7 +145,7 @@ tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 
 curseforge {
 	if (project.getProjectProperty('curse_key') != null) {
-		apiKey = System.getenv("CURSE_KEY");
+		apiKey = System.getenv("CURSE_KEY")
 	}
 
 	if (project.hasProperty('curseforge_id')) {
@@ -213,8 +213,10 @@ curseforge {
 }
 
 task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
-	file = file("changelog.md");
-	fromRepo = file(".");
+	file = file("changelog.md")
+	fromRepo = file(".")
+	fromRef = "master"
+	toRef = "1.18"
 	templateContent = """
 {{#tags}}
 {{#ifEquals name "Unreleased"}}
@@ -244,7 +246,7 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 
 {{/ifEquals}}
 {{/tags}}
- """;
+ """
 }
 
 task release(dependsOn: [tasks.githubRelease, tasks.curseforge, tasks.modrinth]) {
