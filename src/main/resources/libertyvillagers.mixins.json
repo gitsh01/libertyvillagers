@@ -23,8 +23,7 @@
     "VillagerWalkTowardsTaskMixin",
     "WanderAroundTaskMixin",
     "WalkHomeTaskMixin",
-    "WalkTowardJobSiteTaskMixin",
-    "VillagerWalkTowardsTaskMixin"
+    "WalkTowardJobSiteTaskMixin"
   ],
   "client": [],
   "server": [
