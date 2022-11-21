@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
@@ -196,24 +197,36 @@ public class VillagerStats {
         return pageString;
     }
 
-    protected static String professionPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
-                                           ServerWorld serverWorld) {
-        String pageString = new TranslatableText("text.LibertyVillagers.villagerStats.professions").getString() + "\n\n";
+    protected static String translatedProfession(VillagerProfession profession) {
+        String villagerTranslationKey = EntityType.VILLAGER.getTranslationKey();
+        return
+                new TranslatableText(villagerTranslationKey + "." + Registry.VILLAGER_PROFESSION.getId(profession).getPath()).getString();
+    }
+
+    protected static TreeMap<String, ProfessionInfo> createProfessionTreeMap() {
         TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
 
         for (Map.Entry<RegistryKey<VillagerProfession>, VillagerProfession> professionEntry : Registry.VILLAGER_PROFESSION.getEntrySet()) {
             VillagerProfession profession = professionEntry.getValue();
-            villagerProfessionMap.put(profession.toString(), new ProfessionInfo(profession, 0));
+            String professionText = translatedProfession(profession);
+            villagerProfessionMap.put(professionText, new ProfessionInfo(profession, 0));
         }
+
+        return villagerProfessionMap;
+    }
+
+    protected static String professionPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
+                                           ServerWorld serverWorld) {
+        String pageString = new TranslatableText("text.LibertyVillagers.villagerStats.professions").getString() + "\n\n";
+        TreeMap<String, ProfessionInfo> villagerProfessionMap = createProfessionTreeMap();
 
         for (VillagerEntity villager : villagers) {
             if (villager.isBaby()) {
-                // TODO: getProfession() is not localized currently. When getProfession is localized, also localize
-                // "baby".
-                villagerProfessionMap.merge("baby", new ProfessionInfo(villager.getVillagerData().getProfession(), 1),
+                String babyText = new TranslatableText("text.LibertyVillagers.villagerStats.baby").toString();
+                villagerProfessionMap.merge(babyText, new ProfessionInfo(villager.getVillagerData().getProfession(), 1),
                         ProfessionInfo::mergeProfessionInfo);
             } else {
-                villagerProfessionMap.merge(villager.getVillagerData().getProfession().toString(),
+                villagerProfessionMap.merge(translatedProfession(villager.getVillagerData().getProfession()),
                         new ProfessionInfo(villager.getVillagerData().getProfession(), 1),
                         ProfessionInfo::mergeProfessionInfo);
             }
@@ -234,13 +247,7 @@ public class VillagerStats {
                                                 ServerWorld serverWorld) {
         String pageString =
                 new TranslatableText("text.LibertyVillagers.villagerStats.professionsHeldJobSites").getString() + "\n\n";
-        TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
-
-        for (Map.Entry<RegistryKey<VillagerProfession>, VillagerProfession> professionEntry : Registry.VILLAGER_PROFESSION.getEntrySet()) {
-            VillagerProfession profession = professionEntry.getValue();
-            villagerProfessionMap.put(profession.toString(), new ProfessionInfo(profession, 0));
-        }
-
+        TreeMap<String, ProfessionInfo> villagerProfessionMap = createProfessionTreeMap();
         AtomicReference<String> heldWorkstations = new AtomicReference<>("");
         villagerProfessionMap.forEach((villagerProfession, professionInfo) -> {
             long numOccupiedWorkstations = 0;
@@ -266,12 +273,7 @@ public class VillagerStats {
         String pageString =
                 new TranslatableText("text.LibertyVillagers.villagerStats.professionsAvailableJobSites").getString() +
                         "\n\n";
-        TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
-
-        for (Map.Entry<RegistryKey<VillagerProfession>, VillagerProfession> professionEntry : Registry.VILLAGER_PROFESSION.getEntrySet()) {
-            VillagerProfession profession = professionEntry.getValue();
-            villagerProfessionMap.put(profession.toString(), new ProfessionInfo(profession, 0));
-        }
+        TreeMap<String, ProfessionInfo> villagerProfessionMap = createProfessionTreeMap();
 
         AtomicReference<String> availableWorkstations = new AtomicReference<>("");
         villagerProfessionMap.forEach((villagerProfession, professionInfo) -> {
@@ -353,7 +355,9 @@ public class VillagerStats {
                     .append("\n");
             for (IronGolemEntity golem : golems) {
                 if (golem != null && golem.getBlockPos() != null) {
-                    pageString.append(golem.getBlockPos().toShortString()).append("\n");
+                    pageString.append(
+                            new TranslatableText("text.LibertyVillagers.villagerStats.homeless", golem.getDisplayName(),
+                                    golem.getBlockPos().toShortString()).getString()).append("\n");
                 }
             }
         }
@@ -361,6 +365,9 @@ public class VillagerStats {
         return pageString.toString();
     }
 
+    protected static String translatedCatVariant(String variant) {
+        return new TranslatableText("text.LibertyVillagers.villagerStats." + variant).getString();
+    }
 
     protected static String catType(Identifier identifier) {
         return identifier.getPath().replaceAll("^(.*)/(.*)(\\..*)$", "$2");
@@ -377,12 +384,12 @@ public class VillagerStats {
         TreeMap<String, Integer> catVariantMap = new TreeMap<>();
 
         for (int i = 0; i < CatEntity.TEXTURES.size(); i++) {
-            catVariantMap.put(catType(CatEntity.TEXTURES.get(i)), 0);
+            catVariantMap.put(translatedCatVariant(catType(CatEntity.TEXTURES.get(i))), 0);
         }
 
         if (cats.size() > 0) {
             for (CatEntity cat : cats) {
-                String variant = catType(cat.getTexture());
+                String variant = translatedCatVariant(catType(cat.getTexture()));
                 catVariantMap.merge(variant, 1, Integer::sum);
             }
 
@@ -391,7 +398,7 @@ public class VillagerStats {
             AtomicReference<String> catVariants = new AtomicReference<>("");
             catVariantMap.forEach((catVariant, sum) -> catVariants.set(catVariants.get() +
                     new TranslatableText("text.LibertyVillagers.villagerStats.professionsCountFormat",
-                            new TranslatableText(catVariant).getString(), sum).getString() + "\n"));
+                            catVariant, sum).getString() + "\n"));
 
             pageString += catVariants;
         }
