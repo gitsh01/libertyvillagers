@@ -33,14 +33,14 @@ public abstract class BrainMixin<E extends LivingEntity> {
         if (!hasMemoryModule(MemoryModuleType.MEETING_POINT)) {
             return;
         }
-        // Only look for certian memories.
+        // Only look for certain memories.
         if (type != MemoryModuleType.WALK_TARGET && type != MemoryModuleType.HOME &&
                 type != MemoryModuleType.POTENTIAL_JOB_SITE && type != MemoryModuleType.JOB_SITE &&
                 type != MemoryModuleType.PATH) {
             return;
         }
         System.out.printf("===== MemoryType %s\n", type.toString());
-        // Print out stack trace so we can see which task is controlling the villager.
+        // Print out stack trace, so we can see which task is controlling the villager.
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         for (int i = 1; i < elements.length; i++) {
             StackTraceElement s = elements[i];

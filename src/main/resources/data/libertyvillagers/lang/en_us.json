@@ -42,5 +42,17 @@
   "text.LibertyVillagers.villagerStats.numberOfNitwits": "Nitwits:",
   "text.LibertyVillagers.villagerStats.numberOfUnemployed": "Unemployed:",
   "text.LibertyVillagers.villagerStats.numberOfBabies": "Babies:",
-  "text.LibertyVillagers.villagerStats.catTypes": "Cat Types:"
+  "text.LibertyVillagers.villagerStats.catTypes": "Cat Types:",
+  "text.LibertyVillagers.villagerStats.baby": "Baby",
+  "text.LibertyVillagers.villagerStats.tabby": "Tabby",
+  "text.LibertyVillagers.villagerStats.black": "Tuxedo",
+  "text.LibertyVillagers.villagerStats.red": "Orange",
+  "text.LibertyVillagers.villagerStats.siamese": "Siamese",
+  "text.LibertyVillagers.villagerStats.british_shorthair": "British Shorthair",
+  "text.LibertyVillagers.villagerStats.all_black": "Black",
+  "text.LibertyVillagers.villagerStats.calico": "Calico",
+  "text.LibertyVillagers.villagerStats.persian": "Persian",
+  "text.LibertyVillagers.villagerStats.ragdoll": "Ragdoll",
+  "text.LibertyVillagers.villagerStats.white": "White",
+  "text.LibertyVillagers.villagerStats.jellie": "Jellie"
 }

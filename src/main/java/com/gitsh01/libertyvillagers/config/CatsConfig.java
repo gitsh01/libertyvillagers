@@ -18,4 +18,10 @@ public class CatsConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean villageCatsDontDespawn = false;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean blackCatsAtAnyTime = false;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean allBlackCats = false;
 }

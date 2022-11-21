@@ -36,10 +36,11 @@ public abstract class VillagerTaskListProviderMixin {
     }
 
     @Inject(method = "createWorkTasks", at = @At("Head"), cancellable = true)
-    private static void replaceCreateWorkTasks(VillagerProfession profession, float speed, CallbackInfoReturnable cir) {
-        VillagerWorkTask villagerWorkTask = new VillagerWorkTask(); // Plays working sounds at the job site.
-        Task secondaryWorkTask = null;
-        Task thirdWorkTask = null;
+    private static void replaceCreateWorkTasks(VillagerProfession profession, float speed,
+                                               CallbackInfoReturnable<List<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
+        VillagerWorkTask villagerWorkTask = new VillagerWorkTask(); // Plays working sounds on the job site.
+        Task<VillagerEntity> secondaryWorkTask = null;
+        Task<VillagerEntity> thirdWorkTask = null;
         switch (profession.toString()) {
             case "armorer":
                 if (CONFIG.villagersProfessionConfig.armorerHealsGolems) {
@@ -59,7 +60,7 @@ public abstract class VillagerTaskListProviderMixin {
                 break;
         }
 
-        ArrayList<Pair<Task<? super VillagerEntity>, Integer>> randomTasks = new ArrayList(
+        ArrayList<Pair<Task<? super VillagerEntity>, Integer>> randomTasks = new ArrayList<>(
                 ImmutableList.of(Pair.of(villagerWorkTask, 7),
                         Pair.of(new GoToIfNearbyTask(MemoryModuleType.JOB_SITE, 0.4f, 4), 2),
                         Pair.of(new GoToNearbyPositionTask(MemoryModuleType.JOB_SITE, 0.4f, 1, 10), 5),
@@ -74,7 +75,7 @@ public abstract class VillagerTaskListProviderMixin {
             randomTasks.add(Pair.of(thirdWorkTask, THIRD_WORK_TASK_PRIORITY));
         }
 
-        RandomTask randomTask = new RandomTask(ImmutableList.copyOf(randomTasks));
+        RandomTask<VillagerEntity> randomTask = new RandomTask<>(ImmutableList.copyOf(randomTasks));
         List<Pair<Integer, ? extends Task<? super VillagerEntity>>> tasks =
                 List.of(VillagerTaskListProviderMixin.invokeCreateBusyFollowTask(), Pair.of(7, randomTask),
                         Pair.of(10, new HoldTradeOffersTask(400, 1600)),
