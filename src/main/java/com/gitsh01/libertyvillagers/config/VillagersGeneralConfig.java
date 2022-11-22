@@ -53,6 +53,9 @@ public class VillagersGeneralConfig implements ConfigData {
     public boolean allNitwitVillagers = false;
 
     @ConfigEntry.Gui.Tooltip
+    public int growUpTime = 24000;
+
+    @ConfigEntry.Gui.Tooltip
     public boolean allBabyVillagers = false;
 
     @ConfigEntry.Gui.Tooltip

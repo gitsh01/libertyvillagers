@@ -64,6 +64,8 @@
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.noNitwitVillagers.@Tooltip": "Prevents the creation of Nitwits by improving Villager education.",
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.allNitwitVillagers": "All Nitwit Villagers",
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.allNitwitVillagers.@Tooltip": "YOU WILL REGRET THIS!!!",
+  "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.growUpTime": "Villager Grow Up Time",
+  "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.growUpTime.@Tooltip": "Configure the amount of time in ticks villagers spend as a baby.",
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.allBabyVillagers": "All Baby Villagers",
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.allBabyVillagers.@Tooltip": "Entire village is baby!",
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.foreverYoung": "Forever Young",

@@ -53,4 +53,12 @@ public abstract class VillagerBreedTaskMixin extends Task<VillagerEntity> {
     private int replaceGetReachableHomeDistance(int value) {
         return CONFIG.villagersGeneralConfig.findPOIRange;
     }
+
+
+    @ModifyConstant(
+            method = "createChild(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/VillagerEntity;Lnet/minecraft/entity/passive/VillagerEntity;)Ljava/util/Optional;",
+            constant = @Constant(intValue = -24000))
+    private int replaceBreedingAgeForBaby(int breedingAge) {
+        return -1 * CONFIG.villagersGeneralConfig.growUpTime;
+    }
 }
