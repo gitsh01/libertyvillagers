@@ -1,6 +1,7 @@
 package com.gitsh01.libertyvillagers.mixin;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -81,7 +82,6 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
                     }
                 }
             }
-
             this.currentTarget = this.chooseRandomTarget(serverWorld);
             cir.setReturnValue(this.currentTarget != null);
             cir.cancel();
@@ -90,32 +90,53 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
 
     @Inject(method = "keepRunning", at = @At(value = "HEAD"), cancellable = true)
     protected void keepRunning(ServerWorld serverWorld, VillagerEntity villagerEntity, long l, CallbackInfo cir) {
-        if (!CONFIG.villagersProfessionConfig.preferPlantSameCrop) {
+        if (!CONFIG.villagersProfessionConfig.preferPlantSameCrop &&
+            !CONFIG.villagersProfessionConfig.farmersHarvestPumpkins &&
+            !CONFIG.villagersProfessionConfig.farmersHarvestMelons) {
             // Use default logic.
             return;
         }
 
         Item preferredSeeds = null;
         BlockPos currentTarget = this.currentTarget;
-        if (currentTarget == null || currentTarget.isWithinDistance(villagerEntity.getPos(), 1.0)) {
+        int distance = 1;
+        BlockState blockState = serverWorld.getBlockState(currentTarget);
+        Block block = blockState.getBlock();
+        Block block2 = serverWorld.getBlockState(currentTarget.down()).getBlock();
+        if (block instanceof GourdBlock) {
+            // Can't stand directly on top of the gourd bottom, so increase the distance.
+            distance = 2;
+        }
+        if (currentTarget == null || currentTarget.isWithinDistance(villagerEntity.getPos(), distance)) {
             if (currentTarget != null && l > this.nextResponseTime) {
-                BlockState blockState = serverWorld.getBlockState(currentTarget);
-                Block block = blockState.getBlock();
-                Block block2 = serverWorld.getBlockState(currentTarget.down()).getBlock();
-                if (block instanceof CropBlock && ((CropBlock) block).isMature(blockState)) {
-                    if (block instanceof BeetrootsBlock) {
-                        preferredSeeds = Items.BEETROOT_SEEDS;
-                    } else if (block instanceof PotatoesBlock) {
-                        preferredSeeds = Items.POTATO;
-                    } else if (block instanceof CarrotsBlock) {
-                        preferredSeeds = Items.CARROT;
-                    } else {
-                        preferredSeeds = Items.WHEAT_SEEDS;
+                boolean foundBlockCrop = false;
+                if (CONFIG.villagersProfessionConfig.preferPlantSameCrop) {
+                    if (block instanceof CropBlock && ((CropBlock) block).isMature(blockState)) {
+                        foundBlockCrop = true;
+                        if (block instanceof BeetrootsBlock) {
+                            preferredSeeds = Items.BEETROOT_SEEDS;
+                        } else if (block instanceof PotatoesBlock) {
+                            preferredSeeds = Items.POTATO;
+                        } else if (block instanceof CarrotsBlock) {
+                            preferredSeeds = Items.CARROT;
+                        } else {
+                            preferredSeeds = Items.WHEAT_SEEDS;
+                        }
                     }
+                }
 
+                if (block instanceof GourdBlock) {
+                    if (CONFIG.villagersProfessionConfig.farmersHarvestMelons && block instanceof MelonBlock) {
+                        foundBlockCrop = true;
+                    }
+                    if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && block instanceof PumpkinBlock) {
+                        foundBlockCrop = true;
+                    }
+                }
+
+                if (foundBlockCrop) {
                     serverWorld.breakBlock(currentTarget, true, villagerEntity);
                     blockState = serverWorld.getBlockState(currentTarget);
-                    block = blockState.getBlock();
                 }
 
                 if (blockState.isAir() && block2 instanceof FarmlandBlock && villagerEntity.hasSeedToPlant()) {
@@ -139,6 +160,18 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
                         // Look for any seed to plant.
                         for (int i = 0; i < simpleInventory.size(); ++i) {
                             ItemStack itemStack = simpleInventory.getStack(i);
+                            // Plant pumpkin seeds over pumpkins if possible.
+                            if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && itemStack.isOf(Items.PUMPKIN)) {
+                                if (simpleInventory.containsAny(ImmutableSet.of(Items.PUMPKIN_SEEDS))) {
+                                    continue;
+                                }
+                            }
+                            // Plant melon seeds over melon slices if possible.
+                            if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && itemStack.isOf(Items.MELON_SLICE)) {
+                                if (simpleInventory.containsAny(ImmutableSet.of(Items.MELON_SEEDS))) {
+                                    continue;
+                                }
+                            }
                             if (!itemStack.isEmpty()) {
                                 if (plantSeed(itemStack, i, serverWorld, villagerEntity)) {
                                     break;
@@ -148,16 +181,14 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
                     }
                 }
 
-                if (block instanceof CropBlock && !((CropBlock) block).isMature(blockState)) {
-                    this.targetPositions.remove(currentTarget);
-                    this.currentTarget = this.chooseRandomTarget(serverWorld);
-                    if (this.currentTarget != null) {
-                        this.nextResponseTime = l + 20L;
-                        villagerEntity.getBrain().remember(MemoryModuleType.WALK_TARGET,
-                                new WalkTarget(new BlockPosLookTarget(this.currentTarget), 0.5F, 1));
-                        villagerEntity.getBrain()
-                                .remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(this.currentTarget));
-                    }
+                this.targetPositions.remove(currentTarget);
+                this.currentTarget = this.chooseRandomTarget(serverWorld);
+                if (this.currentTarget != null) {
+                    this.nextResponseTime = l + 20L;
+                    villagerEntity.getBrain().remember(MemoryModuleType.WALK_TARGET,
+                            new WalkTarget(new BlockPosLookTarget(this.currentTarget), 0.5F, 1));
+                    villagerEntity.getBrain()
+                            .remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(this.currentTarget));
                 }
             }
 
@@ -177,6 +208,16 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
             blockState2 = Blocks.CARROTS.getDefaultState();
         } else if (itemStack.isOf(Items.BEETROOT_SEEDS)) {
             blockState2 = Blocks.BEETROOTS.getDefaultState();
+        } else if (itemStack.isOf(Items.MELON_SEEDS) || itemStack.isOf(Items.MELON_SLICE)) {
+            // Melon slices convert 1:1 to melon seeds.
+            blockState2 = Blocks.MELON_STEM.getDefaultState();
+        } else if (itemStack.isOf(Items.PUMPKIN_SEEDS) || itemStack.isOf(Items.PUMPKIN)) {
+            if (itemStack.isOf(Items.PUMPKIN)) {
+                // Give the remaining seeds to the farmer, the fourth is used for planting.
+                ItemStack pumpkinSeedItemStack = new ItemStack(Items.PUMPKIN_SEEDS, 3);
+                villagerEntity.getInventory().addStack(pumpkinSeedItemStack);
+            }
+            blockState2 = Blocks.PUMPKIN_STEM.getDefaultState();
         } else {
             return false;
         }
@@ -198,6 +239,12 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
         BlockState blockState = world.getBlockState(pos);
         Block block = blockState.getBlock();
         Block block2 = world.getBlockState(pos.down()).getBlock();
+        if (CONFIG.villagersProfessionConfig.farmersHarvestMelons && block instanceof MelonBlock) {
+            return true;
+        }
+        if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && block instanceof PumpkinBlock) {
+            return true;
+        }
         return ((block instanceof CropBlock && ((CropBlock) block).isMature(blockState)) ||
                 (blockState.isAir() && block2 instanceof FarmlandBlock && villagerEntity.hasSeedToPlant()));
     }

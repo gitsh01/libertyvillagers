@@ -14,7 +14,10 @@ public class GolemsConfig implements ConfigData {
     public boolean golemsAvoidWater = true;
 
     @ConfigEntry.Gui.Tooltip
-    public boolean golemsDontAttackPlayer = false;
+    public boolean golemsDontAttackPlayer = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean golemsDontTrampleCrops = true;
 
     @ConfigEntry.Gui.Tooltip
     public boolean villagersDontSummonGolems = false;

@@ -24,8 +24,14 @@ public class VillagersProfessionConfig implements ConfigData {
     public int findCropRangeHorizontal = 10;
 
     @ConfigEntry.Gui.Tooltip(count = 3)
-    public int findCropRangeVertical = 2;
+    public int findCropRangeVertical = 3;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean preferPlantSameCrop = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean farmersHarvestMelons = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean farmersHarvestPumpkins = true;
 }
