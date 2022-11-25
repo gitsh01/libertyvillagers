@@ -86,12 +86,16 @@ public class VillagerInfo {
                 BlockHitResult blockHit = (BlockHitResult) hit;
                 BlockPos blockPos = blockHit.getBlockPos();
                 BlockState blockState = serverWorld.getBlockState(blockPos);
-                lines = getBlockInfo(serverWorld, blockPos, blockState);
+                if (blockState != null) {
+                    lines = getBlockInfo(serverWorld, blockPos, blockState);
+                }
                 break;
             case ENTITY:
                 EntityHitResult entityHit = (EntityHitResult) hit;
                 Entity entity = entityHit.getEntity();
-                lines = getEntityInfo(serverWorld, entity);
+                if (entity != null) {
+                    lines = getEntityInfo(serverWorld, entity);
+                }
                 break;
         }
 
