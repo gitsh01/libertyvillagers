@@ -102,9 +102,9 @@ public abstract class FindPointOfInterestTaskMixin extends Task<PathAwareEntity>
         return blockState.isIn(BlockTags.BEDS) && blockState.get(BedBlock.OCCUPIED) && !entity.isSleeping();
     }
 
-    @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
+    @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/mob/PathAwareEntity;J)V",
             at = @At("RETURN"))
-    protected void runReturn(ServerWorld world, LivingEntity entity, long time, CallbackInfo ci) {
+    protected void runReturn(ServerWorld world, PathAwareEntity entity, long time, CallbackInfo ci) {
         if (CONFIG.debugConfig.enableVillagerWalkTargetDebug) {
             Optional<GlobalPos> target = entity.getBrain().getOptionalMemory(targetMemoryModuleType);
             target.ifPresent(

@@ -1,7 +1,6 @@
 package com.gitsh01.libertyvillagers.mixin;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.Task;
@@ -59,9 +58,9 @@ public abstract class VillagerWalkTowardsTaskMixin extends Task<VillagerEntity> 
         System.out.printf("VillagerWalkTowardsTask: %s giving up %s\n", villager.getName(), destination);
     }
 
-    @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
+    @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/VillagerEntity;J)V",
             at = @At("RETURN"))
-    protected void runReturn(ServerWorld world, LivingEntity entity, long time, CallbackInfo ci) {
+    protected void runReturn(ServerWorld world, VillagerEntity entity, long time, CallbackInfo ci) {
         if (CONFIG.debugConfig.enableVillagerWalkTargetDebug) {
             Optional<WalkTarget> walkTarget = entity.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET);
             walkTarget.ifPresent(
