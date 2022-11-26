@@ -20,5 +20,5 @@ public class DebugConfig implements ConfigData {
     public boolean enableVillagerBrainDebug = false;
 
     @ConfigEntry.Gui.Tooltip
-    public boolean enableVillagerFindPOIDebug = false;
+    public boolean enableVillagerWalkTargetDebug = false;
 }

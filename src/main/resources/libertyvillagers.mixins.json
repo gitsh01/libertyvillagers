@@ -12,7 +12,12 @@
     "FarmerWorkTaskMixin",
     "FarmlandBlockMixin",
     "FindPointOfInterestTaskMixin",
+    "FindWalkTargetTaskMixin",
+    "ForgetCompletedPointOfInterestTaskMixin",
     "GatherItemsVillagerTaskMixin",
+    "GoToPointOfInterestTaskMixin",
+    "GoToRememberedPositionTaskMixin",
+    "GoTowardsLookTargetMixin",
     "GoToWorkTaskMixin",
     "IronGolemEntityMixin",
     "LivingEntityMixin",
@@ -25,8 +30,10 @@
     "VillagerTaskListProviderMixin",
     "VillagerWalkTowardsTaskMixin",
     "WanderAroundTaskMixin",
+    "WanderIndoorsTaskMixin",
     "WalkHomeTaskMixin",
-    "WalkTowardJobSiteTaskMixin"
+    "WalkTowardJobSiteTaskMixin",
+    "WalkTowardsLookTargetTaskMixin"
   ],
   "client": [],
   "server": [

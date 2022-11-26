@@ -45,6 +45,9 @@ public abstract class WanderAroundTaskMixin {
                                             CallbackInfoReturnable<Boolean> cir) {
         if (CONFIG.villagersGeneralConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
                 entity.getBrain().hasMemoryModule(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE) && this.path != null) {
+            System.out.printf("Last ditch attempt to find path for %s to path to %s at %s\n", entity.getName(),
+                    walkTarget.getLookTarget().getBlockPos().toShortString(),
+                    entity.getBlockPos().toShortString());
             BlockPos blockPos = this.path.getCurrentNodePos();
             Vec3d desiredPos = new Vec3d(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
 
@@ -69,7 +72,7 @@ public abstract class WanderAroundTaskMixin {
         // The default of 0 means that the villagers won't try to get as close as they can to a POI where the completion
         // distance is greater than zero, so replace it with the completion range.
         if (walkTarget != null) {
-            return Math.min(walkTarget.getCompletionRange(), 0);
+            return Math.max(walkTarget.getCompletionRange(), 0);
         }
         return distance;
     }

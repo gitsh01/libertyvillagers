@@ -2,9 +2,15 @@ package com.gitsh01.libertyvillagers.mixin;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.block.BedBlock;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.ai.brain.task.WalkHomeTask;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.RegistryEntry;
@@ -12,9 +18,11 @@ import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -22,6 +30,9 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 @Mixin(WalkHomeTask.class)
 public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
+
+    private ServerWorld world;
+    private LivingEntity entity;
 
     public WalkHomeTaskMixin() {
         super(ImmutableMap.of());
@@ -43,6 +54,24 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
         args.set(3, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 
+    @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
+        at = @At("HEAD"))
+    protected void runHead(ServerWorld world, LivingEntity entity, long time, CallbackInfo ci) {
+        this.world = world;
+        this.entity = entity;
+    }
+
+    @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
+            at = @At("RETURN"))
+    protected void runReturn(ServerWorld world, LivingEntity entity, long time, CallbackInfo ci) {
+        if (CONFIG.debugConfig.enableVillagerWalkTargetDebug) {
+            Optional<WalkTarget> walkTarget = entity.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET);
+            walkTarget.ifPresent(
+                    target -> System.out.printf("WalkHomeTask: %s is walking home to %s\n", entity.getName(),
+                            target.getLookTarget().getBlockPos().toShortString()));
+        }
+    }
+
     @Redirect(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getTypesAndPositions" +
                     "(Ljava/util/function/Predicate;Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;" +
@@ -51,7 +80,20 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
             PointOfInterestStorage pointOfInterestStorage, Predicate<RegistryEntry<PointOfInterestType>> typePredicate,
             Predicate<BlockPos> posPredicate, BlockPos pos, int radius,
             PointOfInterestStorage.OccupationStatus occupationStatus) {
-        return pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, posPredicate, pos,
+        Predicate<BlockPos> newBlockPosPredicate = blockPos -> {
+            if (isBedOccupiedByOthers(this.world, blockPos, this.entity)) {
+                System.out.printf("%s Ignoring bed %s because it is occupied.\n",
+                        this.entity.getCustomName(), blockPos.toShortString());
+                return false;
+            }
+            return posPredicate.test(blockPos);
+        };
+        return pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, newBlockPosPredicate, pos,
                 CONFIG.villagersGeneralConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+    }
+
+    private boolean isBedOccupiedByOthers(ServerWorld world, BlockPos pos, LivingEntity entity) {
+        BlockState blockState = world.getBlockState(pos);
+        return blockState.isIn(BlockTags.BEDS) && blockState.get(BedBlock.OCCUPIED) && !entity.isSleeping();
     }
 }
