@@ -44,8 +44,8 @@ public abstract class VillagerWalkTowardsTaskMixin extends Task<VillagerEntity> 
         completionRange = CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange;
     }
 
-    @Inject(method = "exceedsMaxRange(Lnet/minecraft/entity/passive/VillagerEntity;" +
-            "Lnet/minecraft/util/dynamic/GlobalPos;)Z", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "exceedsMaxRange(Lnet/minecraft/entity/passive/VillagerEntity;Lnet/minecraft/util/math/GlobalPos;)Z",
+            at = @At("HEAD"), cancellable = true)
     private void exceedsMaxRange(VillagerEntity villager, GlobalPos pos, CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(pos.getPos().getManhattanDistance(villager.getBlockPos()) >
                 CONFIG.villagersGeneralConfig.pathfindingMaxRange);
