@@ -2,6 +2,7 @@ package com.gitsh01.libertyvillagers.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.FuzzyTargeting;
+import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.WanderAroundTask;
@@ -69,10 +70,12 @@ public abstract class WanderAroundTaskMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/pathing/EntityNavigation;findPathTo" +
                     "(Lnet/minecraft/util/math/BlockPos;I)Lnet/minecraft/entity/ai/pathing/Path;"), index = 1)
     int replaceDistanceInFindPathToInHasFinishedPath(int distance) {
-        // The default of 0 means that the villagers won't try to get as close as they can to a POI where the completion
-        // distance is greater than zero, so replace it with the completion range.
-        if (walkTarget != null) {
-            return Math.max(walkTarget.getCompletionRange(), 0);
+        // Fix for villagers being unable to path to POIs where that are surrounded by blocks except for one side.
+        // VillagerWalkTowardsTask uses manhattan distance, FindPathTo uses crow-flies distance. Setting the
+        // distance to 1 means that positions all around the POI are valid, but still within the manhattan distance
+        // of 3 (assuming VillagerWalkTowardsTask uses 3).
+        if (walkTarget.getLookTarget() instanceof BlockPosLookTarget) {
+            return Math.max(1, distance);
         }
         return distance;
     }

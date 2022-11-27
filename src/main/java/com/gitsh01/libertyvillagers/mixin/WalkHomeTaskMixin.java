@@ -5,8 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.ai.brain.task.WalkHomeTask;
 import net.minecraft.server.world.ServerWorld;
@@ -21,8 +19,6 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -59,17 +55,6 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
     protected void runHead(ServerWorld world, LivingEntity entity, long time, CallbackInfo ci) {
         this.world = world;
         this.entity = entity;
-    }
-
-    @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
-            at = @At("RETURN"))
-    protected void runReturn(ServerWorld world, LivingEntity entity, long time, CallbackInfo ci) {
-        if (CONFIG.debugConfig.enableVillagerWalkTargetDebug) {
-            Optional<WalkTarget> walkTarget = entity.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET);
-            walkTarget.ifPresent(
-                    target -> System.out.printf("WalkHomeTask: %s is walking home to %s\n", entity.getName(),
-                            target.getLookTarget().getBlockPos().toShortString()));
-        }
     }
 
     @Redirect(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",

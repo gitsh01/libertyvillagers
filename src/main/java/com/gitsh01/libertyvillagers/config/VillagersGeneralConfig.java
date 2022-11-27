@@ -32,7 +32,7 @@ public class VillagersGeneralConfig implements ConfigData {
     public int walkTowardsTaskMaxRunTime = 2400;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
-    public int walkTowardsTaskMinCompletionRange = 2;
+    public int walkTowardsTaskMinCompletionRange = 3;
 
     @ConfigEntry.Gui.Tooltip
     public boolean villagersDontClimb = true;

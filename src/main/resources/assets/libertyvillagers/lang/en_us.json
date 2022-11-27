@@ -29,8 +29,6 @@
   "text.autoconfig.LibertyVillagers.option.debugConfig.enableVillagerInfoOverlay.@Tooltip": "Positions an overlay in the upper left corner with villager info",
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerInfoShowsPath": "Villager Info Shows Path",
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerInfoShowsPath.@Tooltip": "Villager Info also describes the Villager's current path.",
-  "text.autoconfig.LibertyVillagers.option.debugConfig.enableVillagerWalkTargetDebug" : "Enable Walk Target Debug",
-  "text.autoconfig.LibertyVillagers.option.debugConfig.enableVillagerWalkTargetDebug.@Tooltip" : "Unholy but useful console log spam",
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.findPOIRange": "Find POI Range",
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.findPOIRange.@Tooltip[0]": "The Euclidean Distance a villager will search for a bed, bell,",
   "text.autoconfig.LibertyVillagers.option.villagersGeneralConfig.findPOIRange.@Tooltip[1]": "or workplace (expensive). Mojang default: 48. Suggested default: 128.",

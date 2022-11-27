@@ -38,6 +38,8 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
         super(ImmutableMap.of());
     }
 
+    private static final int MAX_RUN_TIME = 20 * 60; // One minute.
+
     @Shadow
     @Nullable
     private BlockPos currentTarget;
@@ -97,6 +99,12 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
             return;
         }
 
+        if ( villagerEntity.getBrain().hasMemoryModule(MemoryModuleType.WALK_TARGET)) {
+            // Wait for the villager to reach the walk target.
+            cir.cancel();
+            return;
+        }
+
         Item preferredSeeds = null;
         BlockPos currentTarget = this.currentTarget;
         int distance = 1;
@@ -107,93 +115,100 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
             // Can't stand directly on top of the gourd bottom, so increase the distance.
             distance = 2;
         }
-        if (currentTarget == null || currentTarget.isWithinDistance(villagerEntity.getPos(), distance)) {
-            if (currentTarget != null && l > this.nextResponseTime) {
-                boolean foundBlockCrop = false;
-                if (CONFIG.villagersProfessionConfig.preferPlantSameCrop) {
-                    if (block instanceof CropBlock && ((CropBlock) block).isMature(blockState)) {
-                        foundBlockCrop = true;
-                        if (block instanceof BeetrootsBlock) {
-                            preferredSeeds = Items.BEETROOT_SEEDS;
-                        } else if (block instanceof PotatoesBlock) {
-                            preferredSeeds = Items.POTATO;
-                        } else if (block instanceof CarrotsBlock) {
-                            preferredSeeds = Items.CARROT;
-                        } else {
-                            preferredSeeds = Items.WHEAT_SEEDS;
-                        }
+        if (currentTarget.isWithinDistance(villagerEntity.getPos(), distance)) {
+            boolean foundBlockCrop = false;
+            if (CONFIG.villagersProfessionConfig.preferPlantSameCrop) {
+                if (block instanceof CropBlock && ((CropBlock) block).isMature(blockState)) {
+                    foundBlockCrop = true;
+                    if (block instanceof BeetrootsBlock) {
+                        preferredSeeds = Items.BEETROOT_SEEDS;
+                    } else if (block instanceof PotatoesBlock) {
+                        preferredSeeds = Items.POTATO;
+                    } else if (block instanceof CarrotsBlock) {
+                        preferredSeeds = Items.CARROT;
+                    } else {
+                        preferredSeeds = Items.WHEAT_SEEDS;
                     }
-                }
-
-                if (block instanceof GourdBlock) {
-                    if (CONFIG.villagersProfessionConfig.farmersHarvestMelons && block instanceof MelonBlock) {
-                        foundBlockCrop = true;
-                    }
-                    if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && block instanceof PumpkinBlock) {
-                        foundBlockCrop = true;
-                    }
-                }
-
-                if (foundBlockCrop) {
-                    serverWorld.breakBlock(currentTarget, true, villagerEntity);
-                    blockState = serverWorld.getBlockState(currentTarget);
-                }
-
-                if (blockState.isAir() && block2 instanceof FarmlandBlock && villagerEntity.hasSeedToPlant()) {
-                    SimpleInventory simpleInventory = villagerEntity.getInventory();
-
-                    // First look for the preferred seed.
-                    boolean plantedPreferredSeeds = false;
-                    if (preferredSeeds != null) {
-                        for (int i = 0; i < simpleInventory.size(); ++i) {
-                            ItemStack itemStack = simpleInventory.getStack(i);
-                            if (!itemStack.isEmpty() && itemStack.isOf(preferredSeeds)) {
-                                plantedPreferredSeeds = plantSeed(itemStack, i, serverWorld, villagerEntity);
-                                if (plantedPreferredSeeds) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!plantedPreferredSeeds) {
-                        // Look for any seed to plant.
-                        for (int i = 0; i < simpleInventory.size(); ++i) {
-                            ItemStack itemStack = simpleInventory.getStack(i);
-                            // Plant pumpkin seeds over pumpkins if possible.
-                            if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && itemStack.isOf(Items.PUMPKIN)) {
-                                if (simpleInventory.containsAny(ImmutableSet.of(Items.PUMPKIN_SEEDS))) {
-                                    continue;
-                                }
-                            }
-                            // Plant melon seeds over melon slices if possible.
-                            if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && itemStack.isOf(Items.MELON_SLICE)) {
-                                if (simpleInventory.containsAny(ImmutableSet.of(Items.MELON_SEEDS))) {
-                                    continue;
-                                }
-                            }
-                            if (!itemStack.isEmpty()) {
-                                if (plantSeed(itemStack, i, serverWorld, villagerEntity)) {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                this.targetPositions.remove(currentTarget);
-                this.currentTarget = this.chooseRandomTarget(serverWorld);
-                if (this.currentTarget != null) {
-                    this.nextResponseTime = l + 20L;
-                    villagerEntity.getBrain().remember(MemoryModuleType.WALK_TARGET,
-                            new WalkTarget(new BlockPosLookTarget(this.currentTarget), 0.5F, 1));
-                    villagerEntity.getBrain()
-                            .remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(this.currentTarget));
                 }
             }
 
-            this.ticksRan++;
+            if (block instanceof GourdBlock) {
+                if (CONFIG.villagersProfessionConfig.farmersHarvestMelons && block instanceof MelonBlock) {
+                    foundBlockCrop = true;
+                }
+                if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && block instanceof PumpkinBlock) {
+                    foundBlockCrop = true;
+                }
+            }
+
+            if (foundBlockCrop) {
+                serverWorld.breakBlock(currentTarget, true, villagerEntity);
+                blockState = serverWorld.getBlockState(currentTarget);
+            }
+
+            if (blockState.isAir() && block2 instanceof FarmlandBlock && villagerEntity.hasSeedToPlant()) {
+                SimpleInventory simpleInventory = villagerEntity.getInventory();
+
+                // First look for the preferred seed.
+                boolean plantedPreferredSeeds = false;
+                if (preferredSeeds != null) {
+                    for (int i = 0; i < simpleInventory.size(); ++i) {
+                        ItemStack itemStack = simpleInventory.getStack(i);
+                        if (!itemStack.isEmpty() && itemStack.isOf(preferredSeeds)) {
+                            plantedPreferredSeeds = plantSeed(itemStack, i, serverWorld, villagerEntity);
+                            if (plantedPreferredSeeds) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!plantedPreferredSeeds) {
+                    // Look for any seed to plant.
+                    for (int i = 0; i < simpleInventory.size(); ++i) {
+                        ItemStack itemStack = simpleInventory.getStack(i);
+                        // Plant pumpkin seeds over pumpkins if possible.
+                        if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && itemStack.isOf(Items.PUMPKIN)) {
+                            if (simpleInventory.containsAny(ImmutableSet.of(Items.PUMPKIN_SEEDS))) {
+                                continue;
+                            }
+                        }
+                        // Plant melon seeds over melon slices if possible.
+                        if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && itemStack.isOf(Items.MELON_SLICE)) {
+                            if (simpleInventory.containsAny(ImmutableSet.of(Items.MELON_SEEDS))) {
+                                continue;
+                            }
+                        }
+                        if (!itemStack.isEmpty()) {
+                            if (plantSeed(itemStack, i, serverWorld, villagerEntity)) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.targetPositions.remove(currentTarget);
+            this.currentTarget = null;
         }
+
+        if (this.currentTarget == null) {
+            this.currentTarget = this.chooseRandomTarget(serverWorld);
+        }
+
+        if (this.currentTarget != null) {
+            this.nextResponseTime = l + 20L;
+            int completionRange = 1;
+            if (serverWorld.getBlockState(this.currentTarget).getBlock() instanceof GourdBlock) {
+                completionRange = 2;
+            }
+            villagerEntity.getBrain().remember(MemoryModuleType.WALK_TARGET,
+                    new WalkTarget(new BlockPosLookTarget(this.currentTarget), 0.5F, completionRange));
+            villagerEntity.getBrain()
+                    .remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(this.currentTarget));
+        }
+
+        this.ticksRan++;
     }
 
     private boolean plantSeed(ItemStack itemStack, int stackIndex, ServerWorld serverWorld,
@@ -252,7 +267,10 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
     @Inject(method = "shouldKeepRunning", at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldKeepRunning(ServerWorld serverWorld, VillagerEntity villagerEntity, long l,
                                             CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(this.currentTarget != null);
+        if (this.currentTarget == null) {
+            this.currentTarget = this.chooseRandomTarget(serverWorld);
+        }
+        cir.setReturnValue(this.currentTarget != null && this.ticksRan < MAX_RUN_TIME);
         cir.cancel();
     }
 }
