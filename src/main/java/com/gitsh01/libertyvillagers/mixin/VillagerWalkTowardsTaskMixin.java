@@ -4,11 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.ai.brain.task.VillagerWalkTowardsTask;
 import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.util.math.GlobalPos;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
@@ -18,11 +19,23 @@ public abstract class VillagerWalkTowardsTaskMixin extends Task<VillagerEntity> 
         super(ImmutableMap.of());
     }
 
-    @Inject(method = "exceedsMaxRange(Lnet/minecraft/entity/passive/VillagerEntity;" +
-            "Lnet/minecraft/util/dynamic/GlobalPos;)Z", at = @At("HEAD"), cancellable = true)
-    private void exceedsMaxRange(VillagerEntity villager, GlobalPos pos, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(pos.getPos().getManhattanDistance(villager.getBlockPos()) >
-                CONFIG.villagersGeneralConfig.pathfindingMaxRange);
-        cir.cancel();
+    @Shadow
+    @Mutable
+    private int maxRunTime;
+
+    @Shadow
+    @Mutable
+    private int completionRange;
+
+    @Shadow
+    @Mutable
+    private int maxRange;
+
+    @Inject(method = "<init>(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)V",
+    at = @At("TAIL"))
+    private void increaseMaxRunTime(CallbackInfo ci) {
+        maxRunTime = CONFIG.villagersGeneralConfig.walkTowardsTaskMaxRunTime;
+        completionRange = CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange;
+        maxRange = CONFIG.villagersGeneralConfig.pathfindingMaxRange;
     }
 }

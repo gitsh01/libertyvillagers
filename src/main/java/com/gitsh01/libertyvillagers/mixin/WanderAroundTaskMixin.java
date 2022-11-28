@@ -2,6 +2,7 @@ package com.gitsh01.libertyvillagers.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.FuzzyTargeting;
+import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.WanderAroundTask;
@@ -45,6 +46,9 @@ public abstract class WanderAroundTaskMixin {
                                             CallbackInfoReturnable<Boolean> cir) {
         if (CONFIG.villagersGeneralConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
                 entity.getBrain().hasMemoryModule(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE) && this.path != null) {
+            System.out.printf("Last ditch attempt to find path for %s to path to %s at %s\n", entity.getName(),
+                    walkTarget.getLookTarget().getBlockPos().toShortString(),
+                    entity.getBlockPos().toShortString());
             BlockPos blockPos = this.path.getCurrentNodePos();
             Vec3d desiredPos = new Vec3d(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
 
@@ -66,10 +70,12 @@ public abstract class WanderAroundTaskMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/pathing/EntityNavigation;findPathTo" +
                     "(Lnet/minecraft/util/math/BlockPos;I)Lnet/minecraft/entity/ai/pathing/Path;"), index = 1)
     int replaceDistanceInFindPathToInHasFinishedPath(int distance) {
-        // The default of 0 means that the villagers won't try to get as close as they can to a POI where the completion
-        // distance is greater than zero, so replace it with the completion range.
-        if (walkTarget != null) {
-            return Math.min(walkTarget.getCompletionRange(), 0);
+        // Fix for villagers being unable to path to POIs where that are surrounded by blocks except for one side.
+        // VillagerWalkTowardsTask uses manhattan distance, FindPathTo uses crow-flies distance. Setting the
+        // distance to 1 means that positions all around the POI are valid, but still within the manhattan distance
+        // of 3 (assuming VillagerWalkTowardsTask uses 3).
+        if (walkTarget.getLookTarget() instanceof BlockPosLookTarget) {
+            return Math.max(1, distance);
         }
         return distance;
     }

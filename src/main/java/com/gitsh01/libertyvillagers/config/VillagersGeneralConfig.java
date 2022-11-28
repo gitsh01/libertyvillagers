@@ -28,6 +28,12 @@ public class VillagersGeneralConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean villagerWanderingFix = true;
 
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int walkTowardsTaskMaxRunTime = 2400;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int walkTowardsTaskMinCompletionRange = 3;
+
     @ConfigEntry.Gui.Tooltip
     public boolean villagersDontClimb = true;
 
@@ -47,10 +53,19 @@ public class VillagersGeneralConfig implements ConfigData {
     public boolean villagersEatMelons = true;
 
     @ConfigEntry.Gui.Tooltip
+    public boolean villagersEatPumpkinPie = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean villagersDontTrampleCrops = true;
+
+    @ConfigEntry.Gui.Tooltip
     public boolean noNitwitVillagers = false;
 
     @ConfigEntry.Gui.Tooltip
     public boolean allNitwitVillagers = false;
+
+    @ConfigEntry.Gui.Tooltip
+    public int growUpTime = 24000;
 
     @ConfigEntry.Gui.Tooltip
     public boolean allBabyVillagers = false;

@@ -145,7 +145,7 @@ tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
 
 curseforge {
 	if (project.getProjectProperty('curse_key') != null) {
-		apiKey = System.getenv("CURSE_KEY");
+		apiKey = System.getenv("CURSE_KEY")
 	}
 
 	if (project.hasProperty('curseforge_id')) {
@@ -213,8 +213,11 @@ curseforge {
 }
 
 task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
-	file = file("changelog.md");
-	fromRepo = file(".");
+	file = file("changelog.md")
+	fromRepo = file(".")
+	prependToFile = true
+	fromRef = "1.0.3+1.19.2"
+	toRef = "1.0.4+1.19.2"
 	templateContent = """
 {{#tags}}
 {{#ifEquals name "Unreleased"}}
@@ -244,7 +247,7 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 
 {{/ifEquals}}
 {{/tags}}
- """;
+ """
 }
 
 task release(dependsOn: [tasks.githubRelease, tasks.curseforge, tasks.modrinth]) {
