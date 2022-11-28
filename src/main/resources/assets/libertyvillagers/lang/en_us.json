@@ -23,7 +23,7 @@
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerStatRange": "Villagerstats Command Range",
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerStatRange.@Tooltip[0]": "Euclidean Distance used for finding villagers for the",
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerStatRange.@Tooltip[1]": "villagerstats command.",
-  "text.autoconfig.LibertyVillagers.option.debugConfig.enableVillagerBrainDebug": "Enable villager Brain console debug",
+  "text.autoconfig.LibertyVillagers.option.debugConfig.enableVillagerBrainDebug": "Enable Villager Brain Console Debug",
   "text.autoconfig.LibertyVillagers.option.debugConfig.enableVillagerBrainDebug.@Tooltip": "Debug console statements about villager memories.",
   "text.autoconfig.LibertyVillagers.option.debugConfig.enableVillagerInfoOverlay": "Enable Villager Info Overlay",
   "text.autoconfig.LibertyVillagers.option.debugConfig.enableVillagerInfoOverlay.@Tooltip": "Positions an overlay in the upper left corner with villager info",
