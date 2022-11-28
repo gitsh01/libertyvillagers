@@ -195,7 +195,7 @@ public class VillagerStats {
         return pageString;
     }
 
-    protected static String translatedProfession(VillagerProfession profession) {
+    public static String translatedProfession(VillagerProfession profession) {
         String villagerTranslationKey = EntityType.VILLAGER.getTranslationKey();
         return
                 Text.translatable(villagerTranslationKey + "." + Registry.VILLAGER_PROFESSION.getId(profession).getPath()).getString();

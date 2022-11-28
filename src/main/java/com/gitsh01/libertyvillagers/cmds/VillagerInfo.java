@@ -117,16 +117,17 @@ public class VillagerInfo {
             return lines;
         }
 
-        String occupation = ((VillagerEntity) entity).getVillagerData().getProfession().id();
+        VillagerEntity villager = (VillagerEntity)entity;
+        String occupation =
+                VillagerStats.translatedProfession(villager.getVillagerData().getProfession());
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.occupation", occupation));
 
+        // Client-side villagers don't have memories.
         if (serverWorld == null) {
             lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.needsServer"));
             return lines;
         }
 
-        // Client-side villagers don't have memories.
-        VillagerEntity villager = (VillagerEntity) serverWorld.getEntity(entity.getUuid());
         Optional<GlobalPos> home = villager.getBrain().getOptionalMemory(MemoryModuleType.HOME);
         String homeCoords = home.isPresent() ? home.get().getPos().toShortString() : BLANK_COORDS;
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.home", homeCoords));
