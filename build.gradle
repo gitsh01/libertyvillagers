@@ -133,7 +133,7 @@ modrinth {
 	projectId = '264clomZ' // The ID of your Modrinth project. Slugs will not work.
 	versionType = 'release'
 	uploadFile = remapJar // Tells Minotaur to use the remapped jar
-	gameVersions = ['1.19.2'] // An array of game versions the version supports
+	gameVersions = ['1.18.2'] // An array of game versions the version supports
 	loaders = ['fabric'] // Self-explanatory.
 	changelog = 'changelog.md'
 	dependencies = [
@@ -216,8 +216,8 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 	file = file("changelog.md")
 	fromRepo = file(".")
 	prependToFile = true
-	fromRef = "1.0.3+1.19.2"
-	toRef = "1.0.4+1.19.2"
+	fromRef = "1.0.3+1.18.2"
+	toRef = "1.0.4+1.18.2"
 	templateContent = """
 {{#tags}}
 {{#ifEquals name "Unreleased"}}

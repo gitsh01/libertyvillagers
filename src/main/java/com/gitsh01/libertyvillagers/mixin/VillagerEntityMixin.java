@@ -13,8 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.util.dynamic.GlobalPos;
 import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
@@ -94,10 +93,9 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("HEAD"), method = "initBrain(Lnet/minecraft/entity/ai/brain/Brain;)V")
     private void changeVillagerProfession(Brain<VillagerEntity> brain, CallbackInfo ci) {
-        if (!(this.world instanceof ServerWorld)) {
+        if (!(this.world instanceof ServerWorld world)) {
             return;
         }
-        ServerWorld world = (ServerWorld) this.world;
 
         VillagerProfession profession = this.getVillagerData().getProfession();
         if (CONFIG.villagersGeneralConfig.noNitwitVillagers && profession == VillagerProfession.NITWIT) {
@@ -121,8 +119,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
                 return;
             }
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
-            Optional<RegistryEntry<PointOfInterestType>> optional = pointOfInterestStorage.getType(pos.getPos());
-            BiPredicate<VillagerEntity, RegistryEntry<PointOfInterestType>> biPredicate = POINTS_OF_INTEREST.get(memoryModuleType);
+            Optional<PointOfInterestType> optional = pointOfInterestStorage.getType(pos.getPos());
+            BiPredicate<VillagerEntity, PointOfInterestType> biPredicate = POINTS_OF_INTEREST.get(memoryModuleType);
             if (optional.isPresent() && biPredicate.test((VillagerEntity) ((Object) this), optional.get())) {
                 pointOfInterestStorage.releaseTicket(pos.getPos());
                 DebugInfoSender.sendPointOfInterest(serverWorld, pos.getPos());

@@ -1,9 +1,6 @@
 package com.gitsh01.libertyvillagers.mixin;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.BedBlock;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.ai.brain.task.WalkHomeTask;
@@ -11,12 +8,12 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.function.Predicate;
@@ -58,11 +55,11 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
     }
 
     @Redirect(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getTypesAndPositions" +
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getPositions" +
                     "(Ljava/util/function/Predicate;Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;" +
                     "ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;"))
-    public Stream<Pair<RegistryEntry<PointOfInterestType>, BlockPos>> modifyGetTypesAndPositions(
-            PointOfInterestStorage pointOfInterestStorage, Predicate<RegistryEntry<PointOfInterestType>> typePredicate,
+    public Stream<BlockPos> modifyGetTypesAndPositions(
+            PointOfInterestStorage pointOfInterestStorage, Predicate<PointOfInterestType> typePredicate,
             Predicate<BlockPos> posPredicate, BlockPos pos, int radius,
             PointOfInterestStorage.OccupationStatus occupationStatus) {
         Predicate<BlockPos> newBlockPosPredicate = blockPos -> {
@@ -73,7 +70,7 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
             }
             return posPredicate.test(blockPos);
         };
-        return pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, newBlockPosPredicate, pos,
+        return pointOfInterestStorage.getSortedPositions(typePredicate, newBlockPosPredicate, pos,
                 CONFIG.villagersGeneralConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 
