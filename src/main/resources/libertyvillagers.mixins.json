@@ -20,6 +20,7 @@
     "MobEntityMixin",
     "PointOfInterestTypesMixin",
     "SecondaryPointsOfInterestSensorMixin",
+    "SleepTaskMixin",
     "TakeJobSiteTaskMixin",
     "TaskMixin",
     "VillagerBreedTaskMixin",
