@@ -17,5 +17,4 @@ public class WalkTowardJobSiteTaskMixin {
     private int replaceCompletionRangeInClaimSite(int completionRange) {
         return Math.max(completionRange, CONFIG.villagersGeneralConfig.minimumPOISearchDistance);
     }
-
 }

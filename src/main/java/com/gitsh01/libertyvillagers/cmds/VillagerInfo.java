@@ -85,12 +85,16 @@ public class VillagerInfo {
                 BlockHitResult blockHit = (BlockHitResult) hit;
                 BlockPos blockPos = blockHit.getBlockPos();
                 BlockState blockState = serverWorld.getBlockState(blockPos);
-                lines = getBlockInfo(serverWorld, blockPos, blockState);
+                if (blockState != null) {
+                    lines = getBlockInfo(serverWorld, blockPos, blockState);
+                }
                 break;
             case ENTITY:
                 EntityHitResult entityHit = (EntityHitResult) hit;
                 Entity entity = entityHit.getEntity();
-                lines = getEntityInfo(serverWorld, entity);
+                if (entity != null) {
+                    lines = getEntityInfo(serverWorld, entity);
+                }
                 break;
         }
 
@@ -112,16 +116,17 @@ public class VillagerInfo {
             return lines;
         }
 
-        String occupation = ((VillagerEntity) entity).getVillagerData().getProfession().getId();
+        VillagerEntity villager = (VillagerEntity)entity;
+        String occupation =
+                VillagerStats.translatedProfession(villager.getVillagerData().getProfession());
         lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.occupation", occupation));
 
+        // Client-side villagers don't have memories.
         if (serverWorld == null) {
             lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.needsServer"));
             return lines;
         }
 
-        // Client-side villagers don't have memories.
-        VillagerEntity villager = (VillagerEntity) serverWorld.getEntity(entity.getUuid());
         Optional<GlobalPos> home = villager.getBrain().getOptionalMemory(MemoryModuleType.HOME);
         String homeCoords = home.isPresent() ? home.get().getPos().toShortString() : BLANK_COORDS;
         lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.home", homeCoords));

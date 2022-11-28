@@ -60,6 +60,21 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
             ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
             ITEM_FOOD_VALUES.put(Items.MELON_SLICE, 1);
         }
+        if (CONFIG.villagersProfessionConfig.farmersHarvestMelons) {
+            GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
+            GATHERABLE_ITEMS.add(Items.MELON_SLICE);
+        }
+        if (CONFIG.villagersGeneralConfig.villagersEatPumpkinPie) {
+            ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
+            ITEM_FOOD_VALUES.put(Items.PUMPKIN_PIE, 1);
+            GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
+            GATHERABLE_ITEMS.add(Items.PUMPKIN_PIE);
+        }
+        if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins) {
+            GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
+            GATHERABLE_ITEMS.add(Items.PUMPKIN_SEEDS);
+            GATHERABLE_ITEMS.add(Items.PUMPKIN);
+        }
     }
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
@@ -111,6 +126,25 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
                 DebugInfoSender.sendPointOfInterest(serverWorld, pos.getPos());
             }
         });
+    }
+
+    @Inject(method = "hasSeedToPlant()Z",
+            at = @At("HEAD"),
+            cancellable = true)
+    public void hasExtraSeedToPlant(CallbackInfoReturnable<Boolean> cir) {
+        Set<Item> extraSeeds = new HashSet<>();
+        if (CONFIG.villagersProfessionConfig.farmersHarvestMelons) {
+            extraSeeds.add(Items.MELON_SLICE);
+            extraSeeds.add(Items.MELON_SEEDS);
+        }
+        if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins) {
+            extraSeeds.add(Items.PUMPKIN);
+            extraSeeds.add(Items.PUMPKIN_SEEDS);
+        }
+        if (!extraSeeds.isEmpty() && this.getInventory().containsAny(extraSeeds)) {
+            cir.setReturnValue(true);
+            cir.cancel();
+        }
     }
 
     @Inject(method = "onGrowUp()V", at = @At("HEAD"), cancellable = true)

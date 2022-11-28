@@ -26,6 +26,7 @@ public abstract class VillagerTaskListProviderMixin {
 
     private static final int SECONDARY_WORK_TASK_PRIORITY = 5; // Mojang default: 5.
     private static final int THIRD_WORK_TASK_PRIORITY = 7;
+    private static final int PRIMARY_WORK_TASK_PRIORITY = 7;
 
     public VillagerTaskListProviderMixin() {
     }
@@ -38,9 +39,10 @@ public abstract class VillagerTaskListProviderMixin {
     @Inject(method = "createWorkTasks", at = @At("Head"), cancellable = true)
     private static void replaceCreateWorkTasks(VillagerProfession profession, float speed,
                                                CallbackInfoReturnable<List<Pair<Integer, ? extends Task<? super VillagerEntity>>>> cir) {
-        VillagerWorkTask villagerWorkTask = new VillagerWorkTask(); // Plays working sounds on the job site.
-        Task<VillagerEntity> secondaryWorkTask = null;
-        Task<VillagerEntity> thirdWorkTask = null;
+        Task<? super VillagerEntity> villagerWorkTask = new VillagerWorkTask(); // Plays working sounds on the job site.
+        Task<? super VillagerEntity> secondaryWorkTask = null;
+        // GoToIfNearby makes the villager wander around the job site.
+        Task<? super VillagerEntity> thirdWorkTask = new GoToIfNearbyTask(MemoryModuleType.JOB_SITE, 0.4f, 4);
         switch (profession.toString()) {
             case "armorer":
                 if (CONFIG.villagersProfessionConfig.armorerHealsGolems) {
@@ -54,17 +56,18 @@ public abstract class VillagerTaskListProviderMixin {
                 }
                 break;
             case "farmer":
-                villagerWorkTask = new FarmerWorkTask(); // Compost.
-                secondaryWorkTask = new FarmerVillagerTask(); // Harvest / plant seeds.
+                villagerWorkTask = new FarmerVillagerTask(); // Harvest / plant seeds.
+                secondaryWorkTask = new FarmerWorkTask(); // Compost.
                 thirdWorkTask = new BoneMealTask(); // Apply bonemeal to crops.
                 break;
         }
 
         ArrayList<Pair<Task<? super VillagerEntity>, Integer>> randomTasks = new ArrayList<>(
-                ImmutableList.of(Pair.of(villagerWorkTask, 7),
-                        Pair.of(new GoToIfNearbyTask(MemoryModuleType.JOB_SITE, 0.4f, 4), 2),
-                        Pair.of(new GoToNearbyPositionTask(MemoryModuleType.JOB_SITE, 0.4f, 1, 10), 5),
-                        Pair.of(new GoToSecondaryPositionTask(MemoryModuleType.SECONDARY_JOB_SITE, speed, 1, 6,
+                ImmutableList.of(Pair.of(villagerWorkTask, PRIMARY_WORK_TASK_PRIORITY),
+                        Pair.of(new GoToNearbyPositionTask(MemoryModuleType.JOB_SITE, 0.4f,
+                                CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange, 10), 5),
+                        Pair.of(new GoToSecondaryPositionTask(MemoryModuleType.SECONDARY_JOB_SITE, speed,
+                                CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange, 6,
                                 MemoryModuleType.JOB_SITE), 5)));
 
         if (secondaryWorkTask != null) {

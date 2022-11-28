@@ -215,8 +215,9 @@ curseforge {
 task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask) {
 	file = file("changelog.md")
 	fromRepo = file(".")
-	fromRef = "master"
-	toRef = "1.18"
+	prependToFile = true
+	fromRef = "1.0.3+1.18.2"
+	toRef = "1.0.4+1.18.2"
 	templateContent = """
 {{#tags}}
 {{#ifEquals name "Unreleased"}}

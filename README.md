@@ -11,24 +11,25 @@ provide a better experience for your villagers!
 
 ### General
 
-* Adjust the range which Villagers will find Points Of Interest (useful for vertical or large cities)
-* Adjust how long a Villager will travel to Points of Interest
-* Adjust how close a Villager needs to get to use a Point of Interest
+* Adjust the range which villagers will find Points Of Interest (useful for vertical or large cities)
+* Adjust how long a villager will travel to Points of Interest
+* Adjust how close a villager needs to get to use a Point of Interest
 * Optional - Heal Villagers when they wake up (like Bedrock)
-* Optional - Prioritize Villagers avoiding cactus and water
+* Optional - Prioritize villagers avoiding cactus and water
 * Optional - Pathfinding fix for villagers becoming "stuck" near walls/fences
-* Optional - Prevent Villagers from climbing up ladders and vines (they don't know how to climb back down, poor dears)
-* Adjust the distance Villagers will consider "safe" for jumping down from ledges.
-* Optional - Villagers can consume melon slices for food.
-* Optional - Prevent Villagers from breeding (for when you've got a bed that isn't pathable that is causing a population
+* Optional - Prevent villagers from climbing up ladders and vines (they don't know how to climb back down, poor dears)
+* Adjust the distance villagers will consider "safe" for jumping down from ledges
+* Optional - Villagers can consume melon slices and pumpkin pie for food
+* Optional - Prevent villagers from breeding (for when you've got a bed that isn't pathable that is causing a population
   boom)
 * Optional - Require a free workstation when Villagers decide to have a baby
-* Optional - Prevent Villagers from summoning Golems (for when there's a Golem overpopulation problem)
-* Optional - Stop Villagers from seeking workstations and meeting points in the middle of the night
-* Optional - No nitwit Villagers
-* Optional - Every Villager is a Nitwit
-* Optional - Every Villager is a Baby
+* Optional - Prevent villagers from trampling crops
+* Optional - Stop villagers from seeking workstations and meeting points in the middle of the night
+* Optional - No nitwit villagers
+* Optional - Every villager is a nitwit
+* Optional - Every villager is a baby
 * Optional - Babies never grow up
+* Optional - Configure the time it takes for a baby villager to grow up
 
 ### Villager Professions
 
@@ -36,24 +37,28 @@ provide a better experience for your villagers!
 * Optional - Clerics seek out and heal Villagers and Players during work hours
 * Adjust how far farmers will look for crops in x/z and y planes.
 * Optional - Farmers prefer to plant the same type of crop they just harvested
+* Optional - Farmers can plant and harvest melons and/or pumpkins
 
 ### Golems
 
 * Optional - Golems avoid cactus
 * Optional - Golems avoid water
 * Optional - Golems don't attack players
-* Optional - Choose how many golems can spawn in a specified radius.
+* Optional - Prevent Villagers from summoning Golems (for when there's a Golem overpopulation problem)
+* Optional - Choose how many golems can spawn in a specified radius
 
 ### Cats
 
-* Optional - Choose how many cats can spawn in a specified radius.
-* Optional - Cats don't despawn.
+* Optional - Choose how many cats can spawn in a specified radius
+* Optional - Cats don't despawn
+* Optional - Black cats can spawn at any time (not just during a full moon)
+* Optional - Every cat is a black cat (as ordered by my cat)
 
 ### Debug
 
 * Villagerstats command which gives you a summary how how many Villagers are in your town and what their occupations
   are, how many are homeless, number of golems, number and types of cats, and how many open beds are available, in an
-  easy to read book format.
+  easy-to-read book format.
 * Villagerinfo command which tells you a summary of a Villager standing before you - where there bed is, where their
   workstation is, where their meeting place is, and what they are holding in their inventory. If looking at a Point of
   Interest (such as a workplace, bed, or bell), it will tell you whether that POI is claimed by a Villager.
@@ -64,18 +69,25 @@ provide a better experience for your villagers!
   look around, useful for quick debugging during the Villager's meeting times.
 
 ## Screenshots
+![Villagers General #1](https://user-images.githubusercontent.com/56774556/204126062-88d94ea3-b933-4671-82a3-e11aa09775a8.png)
+![Villagers General #2](https://user-images.githubusercontent.com/56774556/204126072-a67d7cfc-452e-41b5-b1e3-eace50e8664e.png)
+![Villagers General #3](https://user-images.githubusercontent.com/56774556/204126087-6df8ea10-460f-42e6-b437-2f22371fbf1c.png)
+![Villagers General #4](https://user-images.githubusercontent.com/56774556/204126098-47b53700-57e8-4a84-8ff8-b750e188e846.png)
+![Villagers Professions #1](https://user-images.githubusercontent.com/56774556/204126106-4dbd3999-48f5-400d-bb30-46eb1060980d.png)
+![Villagers Professions #2](https://user-images.githubusercontent.com/56774556/204126110-21d06d08-51fa-461a-8b20-46c63307e1da.png)
+![Golems #1](https://user-images.githubusercontent.com/56774556/204126114-533644b7-63d6-420b-97b9-290a0306e456.png)
+![Golems #2](https://user-images.githubusercontent.com/56774556/204126119-3a9939d6-1a84-4d54-aa48-5253fb8f1350.png)
+![Cats #1](https://user-images.githubusercontent.com/56774556/204126122-402e6e94-b971-4be2-bc67-e615ba97c84f.png)
+![Debug #1](https://user-images.githubusercontent.com/56774556/204126125-f4f7ed8a-b3ad-424e-8fbb-e8a31ce7ea5b.png)
+![Villager Info Overlay](https://user-images.githubusercontent.com/56774556/204127033-5e14ab13-b208-4aa1-80c5-67f05b3a8503.png)
 
-![Villagers General #1](https://user-images.githubusercontent.com/56774556/198503647-5926ddcb-6380-4df0-b01c-8d0d6e33c69f.png)
-![Villagers General #2](https://user-images.githubusercontent.com/56774556/198503643-b9a43345-1030-4cd0-bafd-3c4559b9f63c.png)
-![Villagers General #3](https://user-images.githubusercontent.com/56774556/198503639-55e24002-4a6f-47b1-97fb-ccd21842f3db.png)
-![Professions #1](https://user-images.githubusercontent.com/56774556/198503654-4bbaa481-5ab5-4dd8-a416-570d0e8f7b08.png)
-![Professions #2](https://user-images.githubusercontent.com/56774556/198503653-5f3a2bf0-402e-42f0-8049-5e06e1c7386b.png)
-![Golems #1](https://user-images.githubusercontent.com/56774556/198503651-e23bef7b-dbce-4af1-9828-c97ccb84b722.png)
-![Debug #1](https://user-images.githubusercontent.com/56774556/198503649-06e800f5-96e2-4f5b-bc1c-20fa31b1e06d.png)
-![Villager Info Overlay](https://user-images.githubusercontent.com/56774556/198504095-c56833cb-04b9-4b89-9ce0-307180dce9ea.png)
-![Villager Stats 1](https://user-images.githubusercontent.com/56774556/201022033-e4dd03c3-4125-43c2-bc93-54611daa17fc.png)
-![Villager Stats 2](https://user-images.githubusercontent.com/56774556/201022028-c436d3d4-905c-47fc-ba5e-f69543e3eb71.png)
-![Villager Stats 3](https://user-images.githubusercontent.com/56774556/201022036-77711894-b7ec-482d-b8e4-6fd288fe32a8.png)
+![Villager Stats Title](https://user-images.githubusercontent.com/56774556/204127110-ae7cd50e-c643-4b67-b427-13e05e38a67a.png)
+![Villager Stats Jobs](https://user-images.githubusercontent.com/56774556/204127111-64508eca-3aea-4b73-bcae-4b6b7df7b8e5.png)
+![Villager Stats Workstations](https://user-images.githubusercontent.com/56774556/204127120-d554df12-e05d-4a5f-addc-7835c0ef4386.png)
+![Villager Stats - Homeless](https://user-images.githubusercontent.com/56774556/204127188-2c36a9cd-247b-44bc-830d-564376bb801a.png)
+![Villager Stats Beds](https://user-images.githubusercontent.com/56774556/204127134-01998696-2cfe-43be-b397-ec9161af4905.png)
+![Villager Stats Golems](https://user-images.githubusercontent.com/56774556/204127145-8b29a4e7-7731-4a4d-96b9-10681715d5ef.png)
+![Villager Stats Cats](https://user-images.githubusercontent.com/56774556/204127151-95777fd9-f6a9-4ee5-a864-b2f973652ed7.png)
 
 ## Dependencies
 

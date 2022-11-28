@@ -28,7 +28,8 @@ public class GoToWorkTaskMixin extends Task<VillagerEntity> {
         if (villagerEntity.getBrain().getOptionalMemory(MemoryModuleType.POTENTIAL_JOB_SITE).isPresent()) {
             BlockPos blockPos =
                     villagerEntity.getBrain().getOptionalMemory(MemoryModuleType.POTENTIAL_JOB_SITE).get().getPos();
-            cir.setReturnValue(blockPos.isWithinDistance(villagerEntity.getPos(), CONFIG.villagersGeneralConfig.minimumPOISearchDistance) || villagerEntity.isNatural());
+            cir.setReturnValue(blockPos.isWithinDistance(villagerEntity.getPos(),
+                    CONFIG.villagersGeneralConfig.minimumPOISearchDistance + 1) || villagerEntity.isNatural());
             cir.cancel();
         }
     }
@@ -38,10 +39,10 @@ public class GoToWorkTaskMixin extends Task<VillagerEntity> {
     @ModifyArg(
             method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/VillagerEntity;)Z",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/util/math/Vec3i;isWithinDistance(Lnet/minecraft/util/math/Vec3i;D)Z"),
+                    target = "Lnet/minecraft/util/math/Vec3i;isWithinDistance(Lnet/minecraft/util/math/Position;D)Z"),
             index = 1)
     private double modifyDistanceInShouldRun(double distance) {
-        return Math.max(distance, CONFIG.villagersGeneralConfig.minimumPOISearchDistance);
+        return Math.max(distance, CONFIG.villagersGeneralConfig.minimumPOISearchDistance + 1);
     }
      */
 }
