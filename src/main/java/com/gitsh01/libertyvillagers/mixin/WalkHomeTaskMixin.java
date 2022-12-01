@@ -68,8 +68,6 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
             PointOfInterestStorage.OccupationStatus occupationStatus) {
         Predicate<BlockPos> newBlockPosPredicate = blockPos -> {
             if (isBedOccupiedByOthers(this.world, blockPos, this.entity)) {
-                System.out.printf("%s Ignoring bed %s because it is occupied.\n",
-                        this.entity.getCustomName(), blockPos.toShortString());
                 return false;
             }
             return posPredicate.test(blockPos);

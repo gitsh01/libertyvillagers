@@ -39,6 +39,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
         this.entity = entity;
     }
 
+    @SuppressWarnings("unchecked")
     @Inject(method = "setMemory(Lnet/minecraft/entity/ai/brain/MemoryModuleType;Ljava/util/Optional;)V",
             at = @At(value = "Head"))
     <U> void setMemory(MemoryModuleType<U> type, Optional<? extends Memory<?>> memory, CallbackInfo ci) {
@@ -53,7 +54,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
         // Only look for certain memories.
         if (type != MemoryModuleType.WALK_TARGET && type != MemoryModuleType.HOME &&
                 type != MemoryModuleType.POTENTIAL_JOB_SITE && type != MemoryModuleType.JOB_SITE &&
-                type != MemoryModuleType.PATH && type != MemoryModuleType.SECONDARY_JOB_SITE) {
+                type != MemoryModuleType.PATH) { //  && type != MemoryModuleType.SECONDARY_JOB_SITE) {
             return;
         }
         String className = "";
@@ -71,7 +72,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
                 break;
             }
         }
-
+        
         String name = entity != null ? entity.getName().toString() : "null";
         if (entity != null && entity.getDisplayName() instanceof TranslatableText) {
             TranslatableText content = (TranslatableText)entity.getName();
@@ -91,7 +92,8 @@ public abstract class BrainMixin<E extends LivingEntity> {
             GlobalPos globalPos = (GlobalPos)memory.get().getValue();
             target = new StringBuilder(String.format("Position set to %s", globalPos.getPos().toShortString()));
         } else if (type == MemoryModuleType.SECONDARY_JOB_SITE) {
-            List<GlobalPos> globalPosList = (List<GlobalPos>)memory.get().getValue();
+            List<GlobalPos> globalPosList;
+            globalPosList = (List<GlobalPos>)memory.get().getValue();
             for (GlobalPos globalPos : globalPosList) {
                 target.append("{ ").append(globalPos.getPos().toShortString()).append(" } ");
             }

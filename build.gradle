@@ -1,3 +1,5 @@
+//file:noinspection UnnecessaryQualifiedReference
+//file:noinspection GroovyMissingReturnStatement
 plugins {
 	id 'fabric-loom' version '1.0-SNAPSHOT'
 	id 'maven-publish'
@@ -135,7 +137,7 @@ modrinth {
 	uploadFile = remapJar // Tells Minotaur to use the remapped jar
 	gameVersions = ['1.18.2'] // An array of game versions the version supports
 	loaders = ['fabric'] // Self-explanatory.
-	changelog = 'changelog.md'
+	changelog = file('changelog.md').text
 	dependencies = [
 			new ModDependency('P7dR8mSH', 'required') // Creates a new required dependency on Fabric API
 	]
@@ -195,6 +197,7 @@ curseforge {
 								include "${it}"
 							}
 						}
+
 					}
 				}
 			}
@@ -216,8 +219,8 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 	file = file("changelog.md")
 	fromRepo = file(".")
 	prependToFile = true
-	fromRef = "1.0.3+1.18.2"
-	toRef = "1.0.4+1.18.2"
+	fromRef = "1.0.4+1.18.2"
+	toRef = "1.0.5+1.18.2"
 	templateContent = """
 {{#tags}}
 {{#ifEquals name "Unreleased"}}

@@ -1,3 +1,13 @@
+
+## [1.0.5+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.5+1.18.2) (2022-12-01)
+
+
+### Bug Fixes
+
+ -  Removed console debug spam. ([8f553294b82ce81](https://gitlab.com/html-validate/html-validate/commit/8f553294b82ce815538c35f10019673ea97999ec))
+ -  Further improvements for villager bed pathfinding. ([c9561a6cd872c4e](https://gitlab.com/html-validate/html-validate/commit/c9561a6cd872c4ee3f51caa68bf2b8b33d923b8e))
+
+ 
 ## [1.0.4+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.4+1.18.2) (2022-11-28)
 
 ### Features
