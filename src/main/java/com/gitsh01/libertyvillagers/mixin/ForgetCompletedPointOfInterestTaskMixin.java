@@ -42,12 +42,9 @@ public abstract class ForgetCompletedPointOfInterestTaskMixin  {
             BlockPos blockPos = globalPos.getPos();
             ServerWorld serverWorld = world.getServer().getWorld(globalPos.getDimension());
             if (serverWorld == null || this.hasCompletedPointOfInterest(serverWorld, blockPos)) {
-                System.out.printf("%s Forgetting memory module %s\n", entity.getCustomName(), this.memoryModule.toString());
                 brain.forget(MemoryModuleType.WALK_TARGET);
                 brain.forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
             } else if (this.isBedOccupiedByOthers(serverWorld, blockPos, entity)) {
-                System.out.printf("%s Someone is in my bed %s at %s\n", entity.getCustomName(), this.memoryModule.toString(),
-                        blockPos.toShortString());
                 brain.forget(MemoryModuleType.WALK_TARGET);
                 brain.forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
             }

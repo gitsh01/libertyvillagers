@@ -97,9 +97,8 @@ To edit the mod's options on the client, you will need to the "Mod Menu" mod.
 
 ## Credits
 
-Thanks to <a href="https://gitlab.com/supersaiyansubtlety/enchantment_lore">SuperSaiyanSubtlety's Enchantment Lore
-fabric mod</a>
-for writing code under the <a href="https://will-lucic.mit-license.org/">MIT license</a> for opening the book UI on the
+Thanks to [SuperSaiyanSubtlety's Enchantment Lore fabic mod](https://gitlab.com/supersaiyansubtlety/enchantment_lore)
+for writing code under the [MIT license](https://will-lucic.mit-license.org) for opening the book UI on the
 server.
 
 Thanks to kressety for the Simplified Chinese translations.

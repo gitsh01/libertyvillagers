@@ -216,6 +216,7 @@ public class VillagerInfo {
             return lines;
         }
 
+        @SuppressWarnings("deprecation")
         int freeTickets = storage.getFreeTickets(blockPos);
         Text isOccupied =
                 freeTickets < poiType.ticketCount() ? Text.translatable("text.LibertyVillagers.villagerInfo.true") :
