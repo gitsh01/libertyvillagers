@@ -19,7 +19,6 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -238,8 +237,6 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
         }
 
         serverWorld.setBlockState(currentTarget, blockState2);
-        serverWorld.emitGameEvent(GameEvent.BLOCK_PLACE, currentTarget,
-                GameEvent.Emitter.of(villagerEntity, blockState2));
 
         serverWorld.playSound(null, currentTarget.getX(), currentTarget.getY(), currentTarget.getZ(),
                 SoundEvents.ITEM_CROP_PLANT, SoundCategory.BLOCKS, 1.0F, 1.0F);

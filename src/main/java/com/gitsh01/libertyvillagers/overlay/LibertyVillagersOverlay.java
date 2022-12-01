@@ -63,7 +63,11 @@ public class LibertyVillagersOverlay {
             int windowScaledWidth = client.getWindow().getScaledWidth();
             TextRenderer renderer = client.textRenderer;
             MultilineText multilineText = MultilineText.createFromTexts(renderer, lines);
-            int multilineWidth = multilineText.getMaxWidth() + TEXT_PADDING;
+            int maxWidth = 0;
+            for (Text line : lines) {
+                maxWidth = Math.max(renderer.getWidth(line), maxWidth);
+            }
+            int multilineWidth = maxWidth + TEXT_PADDING;
             int x = windowScaledWidth - multilineWidth;
             multilineText.fillBackground(matrices, x + (multilineWidth / 2) - (BACKGROUND_PADDING / 2), TEXT_PADDING,
                     renderer.fontHeight, BACKGROUND_PADDING, BACKGROUND_COLOR);
