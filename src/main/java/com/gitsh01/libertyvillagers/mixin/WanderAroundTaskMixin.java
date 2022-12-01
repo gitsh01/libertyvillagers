@@ -46,9 +46,6 @@ public abstract class WanderAroundTaskMixin {
                                             CallbackInfoReturnable<Boolean> cir) {
         if (CONFIG.villagersGeneralConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
                 entity.getBrain().hasMemoryModule(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE) && this.path != null) {
-            System.out.printf("Last ditch attempt to find path for %s to path to %s at %s\n", entity.getName(),
-                    walkTarget.getLookTarget().getBlockPos().toShortString(),
-                    entity.getBlockPos().toShortString());
             BlockPos blockPos = this.path.getCurrentNodePos();
             Vec3d desiredPos = new Vec3d(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
 
