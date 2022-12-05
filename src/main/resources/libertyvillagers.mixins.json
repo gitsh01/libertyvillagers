@@ -17,20 +17,20 @@
     "GoToWorkTaskMixin",
     "IronGolemEntityMixin",
     "LivingEntityMixin",
+    "MemoryQueryResultAccessorMixin",
     "MobEntityMixin",
     "PointOfInterestTypesMixin",
     "SecondaryPointsOfInterestSensorMixin",
     "SleepTaskMixin",
     "TakeJobSiteTaskMixin",
-    "TaskMixin",
     "VillagerBreedTaskMixin",
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
     "VillagerWalkTowardsTaskMixin",
-    "WanderAroundTaskMixin",
     "WalkHomeTaskMixin",
     "WalkToNearestVisibleWantedItemTaskMixin",
-    "WalkTowardJobSiteTaskMixin"
+    "WalkTowardJobSiteTaskMixin",
+    "WanderAroundTaskMixin"
   ],
   "client": [],
   "server": [

@@ -7,6 +7,7 @@ import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.passive.CatVariant;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -41,7 +42,7 @@ public abstract class CatEntityMixin extends TameableEntity {
         }
 
         if (CONFIG.catsConfig.allBlackCats) {
-            this.setVariant(CatVariant.ALL_BLACK);
+            this.setVariant(Registries.CAT_VARIANT.get(CatVariant.ALL_BLACK));
         }
     }
 

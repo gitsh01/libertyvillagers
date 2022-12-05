@@ -29,9 +29,6 @@ public abstract class EntityNavigationMixin {
     @Shadow
     private Path currentPath;
 
-    public EntityNavigationMixin(MobEntity entity, World world) {
-    }
-
     @Inject(method = "adjustPath", at = @At(value = "TAIL"))
     public void checkForCactus(CallbackInfo ci) {
         if ((!CONFIG.golemsConfig.golemsAvoidCactus && !CONFIG.golemsConfig.golemsAvoidWater) ||

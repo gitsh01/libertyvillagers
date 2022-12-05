@@ -1,13 +1,11 @@
 package com.gitsh01.libertyvillagers.mixin;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.FarmerVillagerTask;
-import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
@@ -33,11 +31,7 @@ import java.util.List;
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 @Mixin(FarmerVillagerTask.class)
-public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
-    public FarmerVillagerTaskMixin() {
-        super(ImmutableMap.of());
-    }
-
+public abstract class FarmerVillagerTaskMixin  {
     private static final int MAX_RUN_TIME = 20 * 60; // One minute.
 
     @Shadow
