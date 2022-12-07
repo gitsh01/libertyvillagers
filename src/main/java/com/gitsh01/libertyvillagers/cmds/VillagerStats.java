@@ -222,7 +222,7 @@ public class VillagerStats {
 
         for (VillagerEntity villager : villagers) {
             if (villager.isBaby()) {
-                String babyText = new TranslatableText("text.LibertyVillagers.villagerStats.baby").toString();
+                String babyText = new TranslatableText("text.LibertyVillagers.villagerStats.baby").getString();
                 villagerProfessionMap.merge(babyText, new ProfessionInfo(villager.getVillagerData().getProfession(), 1),
                         ProfessionInfo::mergeProfessionInfo);
             } else {
