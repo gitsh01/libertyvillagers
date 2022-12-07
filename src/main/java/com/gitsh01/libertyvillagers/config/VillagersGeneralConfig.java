@@ -26,6 +26,9 @@ public class VillagersGeneralConfig implements ConfigData {
     public boolean villagersAvoidWater = true;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean villagersAvoidRail = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean villagerWanderingFix = true;
 
     @ConfigEntry.Gui.Tooltip(count = 2)

@@ -55,6 +55,9 @@ public class LibertyVillagersOverlay {
             case ENTITY:
                 EntityHitResult entityHit = (EntityHitResult) hit;
                 Entity entity = entityHit.getEntity();
+                if (client.isIntegratedServerRunning()) {
+                    entity = world.getEntity(entity.getUuid());
+                }
                 lines = VillagerInfo.getEntityInfo(world, entity);
                 break;
         }
