@@ -33,6 +33,21 @@ public abstract class WanderAroundTaskMixin {
     @Shadow
     abstract boolean hasReached(MobEntity entity, WalkTarget walkTarget);
 
+    @ModifyArg(
+            method = "<init>(II)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/brain/task/MultiTickTask;<init>(Ljava/util/Map;II)V"), index = 1)
+    static private int replaceMinTimeForTask(int maxTime) {
+        return Math.max(maxTime, 20 * 60 - 100);
+    }
+
+    @ModifyArg(
+            method = "<init>(II)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/brain/task/MultiTickTask;<init>" +
+                    "(Ljava/util/Map;II)V"), index = 2)
+    static private int replaceMaxTimeForTask(int maxTime) {
+        return Math.max(maxTime, 20 * 60);
+    }
+
     @Inject(method = "hasFinishedPath(Lnet/minecraft/entity/mob/MobEntity;Lnet/minecraft/entity/ai/brain/WalkTarget;J)Z",
             at = @At("HEAD"), cancellable = true)
     private void storeWalkTargetFromHasFinishedPath(MobEntity entity, WalkTarget walkTarget, long time,
