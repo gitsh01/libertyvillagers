@@ -31,6 +31,9 @@ public abstract class IronGolemEntityMixin extends PathAwareEntity {
             this.setPathfindingPenalty(PathNodeType.WATER, -1);
             this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1);
         }
+        if (CONFIG.golemsConfig.golemsAvoidRail) {
+            this.setPathfindingPenalty(PathNodeType.RAIL, -1);
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "canTarget", cancellable = true)
