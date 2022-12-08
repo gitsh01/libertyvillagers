@@ -69,7 +69,7 @@ public abstract class WanderAroundTaskMixin {
                     !desiredPos.equals(entity.getPos()) && blockPos.isWithinDistance(entity.getPos(), 1.f)) {
 
                 long cantReachWalkTargetSince = time -
-                        entity.getBrain().getMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+                        entity.getBrain().getOptionalMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE).get();
 
                 // First attempt at 10 second.
                 if (cantReachWalkTargetSince > 200) {
