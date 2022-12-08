@@ -1,4 +1,15 @@
+## [1.0.6+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.6+1.19.2) (2022-12-07)
 
+### Features
+
+ -  Added support for villagers and golems avoiding rails. Default is true. Closes #33 ([a6d6387e6e1369a](https://gitlab.com/html-validate/html-validate/commit/a6d6387e6e1369a748165415c4bf5ce33ae89ef5))
+
+### Bug Fixes
+
+ -  Better handling of when villagers get "stuck" on each other. At 10 seconds, attempt to fuzzy logic to a new location. At 100 seconds, teleport to the desired next path location. ([be64a3735651933](https://gitlab.com/html-validate/html-validate/commit/be64a37356519332b0c3758b2042135622e65412))
+ -  Fixed villagers and golems getting stuck on Azalea bushes. ([9b2df1baab7bf24](https://gitlab.com/html-validate/html-validate/commit/9b2df1baab7bf240b4482616910ab47e7849e890))
+ -  Fixed villager info overlay not showing villager memories in integrated server mode. ([997ffcc88d076bf](https://gitlab.com/html-validate/html-validate/commit/997ffcc88d076bfef6643d04fa1d542d1453ccaa))
+ -  Fixed untranslated string "baby" in villager stats. ([ee54c7dce01ddfe](https://gitlab.com/html-validate/html-validate/commit/ee54c7dce01ddfe684f6273310806b55cc337051))
 
 ## [1.0.5+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.5+1.19.2) (2022-12-01)
 
