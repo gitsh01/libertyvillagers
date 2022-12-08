@@ -87,6 +87,9 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
             this.setPathfindingPenalty(PathNodeType.WATER, -1);
             this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16);
         }
+        if (CONFIG.villagersGeneralConfig.villagersAvoidRail) {
+            this.setPathfindingPenalty(PathNodeType.RAIL, -1);
+        }
         if (CONFIG.villagersGeneralConfig.allBabyVillagers) {
             this.setBaby(true);
         }

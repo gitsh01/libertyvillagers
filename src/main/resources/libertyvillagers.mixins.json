@@ -16,6 +16,7 @@
     "GatherItemsVillagerTaskMixin",
     "GoToWorkTaskMixin",
     "IronGolemEntityMixin",
+    "LandPathNodeMakerMixin",
     "LivingEntityMixin",
     "MemoryQueryResultAccessorMixin",
     "MobEntityMixin",
