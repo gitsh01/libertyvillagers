@@ -220,7 +220,7 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 	fromRepo = file(".")
 	prependToFile = true
 	fromRef = "1.0.4+1.19.2"
-	toRef = "1.0.5+1.19.2"
+	toRef = "1.0.6+1.19.2"
 	templateContent = """
 {{#tags}}
 {{#ifEquals name "Unreleased"}}
@@ -228,21 +228,21 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 
 ## [{{name}}](https://gitlab.com/html-validate/html-validate/compare/{{name}}) ({{tagDate .}})
 
-  {{#ifContainsType commits type='feat'}}
+  {{#ifContainsType commits type='Feat'}}
 ### Features
 
     {{#commits}}
-      {{#ifCommitType . type='feat'}}
+      {{#ifCommitType . type='Feat'}}
  - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://gitlab.com/html-validate/html-validate/commit/{{hashFull}}))
       {{/ifCommitType}}
     {{/commits}}
   {{/ifContainsType}}
 
-  {{#ifContainsType commits type='fix'}}
+  {{#ifContainsType commits type='Fix'}}
 ### Bug Fixes
 
     {{#commits}}
-      {{#ifCommitType . type='fix'}}
+      {{#ifCommitType . type='Fix'}}
  - {{#eachCommitScope .}} **{{.}}** {{/eachCommitScope}} {{{commitDescription .}}} ([{{hash}}](https://gitlab.com/html-validate/html-validate/commit/{{hashFull}}))
       {{/ifCommitType}}
     {{/commits}}
