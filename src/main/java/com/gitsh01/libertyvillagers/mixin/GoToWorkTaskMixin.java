@@ -12,7 +12,7 @@ public class GoToWorkTaskMixin {
     // Inject into the lambda called by Task.trigger.
     @SuppressWarnings("target")
     @ModifyConstant(
-            method = "method_46890(Lbjg$b;Lbjh;Lbjh;Lahm;Lbwc;J)Z",
+            method = "method_46890",
             constant = @Constant(doubleValue = 2.0))
     static private double modifyDistanceInShouldRun(double distance) {
         return Math.max(distance, CONFIG.villagersGeneralConfig.minimumPOISearchDistance + 1);

@@ -28,8 +28,7 @@ public abstract class WalkHomeTaskMixin {
 
     /* Prevents villagers from getting confused about a door directly below their bed. */
     @SuppressWarnings("target")
-    @Redirect(method = "method_47054(Lorg/apache/commons/lang3/mutable/MutableLong;" +
-            "Lit/unimi/dsi/fastutil/longs/Long2LongMap;Lbjh;FLahm;Lbep;J)Z",
+    @Redirect(method = "method_47054",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/util/math/BlockPos;getSquaredDistance(Lnet/minecraft/util/math/Vec3i;)D"))
     private static double replaceSquaredDistanceWithManhattan(BlockPos origin, Vec3i dest) {
@@ -37,8 +36,7 @@ public abstract class WalkHomeTaskMixin {
     }
 
     @SuppressWarnings("target")
-    @ModifyArgs(method = "method_47054(Lorg/apache/commons/lang3/mutable/MutableLong;" +
-            "Lit/unimi/dsi/fastutil/longs/Long2LongMap;Lbjh;FLahm;Lbep;J)Z",
+    @ModifyArgs(method = "method_47054",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"))
     private static void modifyShouldRunGetNearestPositionArgs(Args args) {
@@ -47,8 +45,7 @@ public abstract class WalkHomeTaskMixin {
     }
 
     @SuppressWarnings("target")
-    @Inject(method = "method_47054(Lorg/apache/commons/lang3/mutable/MutableLong;" +
-            "Lit/unimi/dsi/fastutil/longs/Long2LongMap;Lbjh;FLahm;Lbep;J)Z",
+    @Inject(method = "method_47054",
             at = @At("HEAD"))
     private static void runHead(MutableLong mutableLong, Long2LongMap map, MemoryQueryResult result, float speed,
                            ServerWorld serverWorld,
@@ -58,8 +55,7 @@ public abstract class WalkHomeTaskMixin {
     }
 
     @SuppressWarnings("target")
-    @ModifyArgs(method = "method_47054(Lorg/apache/commons/lang3/mutable/MutableLong;" +
-            "Lit/unimi/dsi/fastutil/longs/Long2LongMap;Lbjh;FLahm;Lbep;J)Z",
+    @ModifyArgs(method = "method_47054",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getTypesAndPositions(Ljava/util/function/Predicate;Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;"))
     private static void modifyShouldRunGetTypesAndPositions(Args args) {

@@ -31,9 +31,10 @@ public abstract class FindPointOfInterestTaskMixin {
 
     // Calling into the lambda for Task.trigger.
     @SuppressWarnings("target")
-    @Inject(method = "method_46885(ZLorg/apache/commons/lang3/mutable/MutableLong;Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;Ljava/util/function/Predicate;Lbjh;Ljava/util/Optional;Lahm;Lbep;J)Z",
-            at = @At(value = "Head"), cancellable = true)
-    static private void dontFindWorkstationsAtNight(boolean foo, MutableLong mutableLong, Long2ObjectMap objectMap,
+    @Inject(method = "method_46885",
+           at = @At(value = "Head"), cancellable = true)
+    static private void dontFindWorkstationsAtNight(boolean onlyRunIfChild, MutableLong mutableLong,
+                                                    Long2ObjectMap objectMap,
                                                     Predicate predicate, MemoryQueryResult result, Optional optional,
                                                     ServerWorld serverWorld, PathAwareEntity entity, long time,
                                                     CallbackInfoReturnable<Boolean> cir) {
@@ -52,8 +53,7 @@ public abstract class FindPointOfInterestTaskMixin {
     }
 
     @SuppressWarnings("target")
-    @ModifyArgs(method = "method_46885(ZLorg/apache/commons/lang3/mutable/MutableLong;" +
-            "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;Ljava/util/function/Predicate;Lbjh;Ljava/util/Optional;Lahm;Lbep;J)Z",
+    @ModifyArgs(method = "method_46885",
             at = @At(value = "Invoke", target = "Lnet/minecraft/world/poi/PointOfInterestStorage;" +
                     "getSortedTypesAndPositions(Ljava/util/function/Predicate;Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;"))
     static private void filterForOccupiedBedsAndIncreasePOIRange(Args args) {

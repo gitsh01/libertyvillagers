@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 public abstract class ForgetCompletedPointOfInterestTaskMixin  {
 
     @SuppressWarnings("target")
-    @Inject(method = "method_47187(Lbjg$b;Lbjh;Ljava/util/function/Predicate;Lahm;Lbeg;J)Z",
+    @Inject(method = "method_47187",
             at = @At("HEAD"),
             cancellable = true)
     private static void shouldRun(TaskTriggerer.TaskContext context, MemoryQueryResult poiPos, Predicate predicate,

@@ -21,7 +21,7 @@ public abstract class WalkToNearestVisibleWantedItemTaskMixin {
 
     // Injecting into the lambda of the TaskTriggerer.
     @SuppressWarnings("target")
-    @Inject(method = "method_46945(Lbjg$b;Lbjh;Lbjh;Ljava/util/function/Predicate;IFLbjh;Lbjh;Lahm;Lbeg;J)Z",
+    @Inject(method = "method_46945",
             at = @At("HEAD"),
             cancellable = true)
     static private void dontMoveIfOnTopOfItem(TaskTriggerer.TaskContext context,
