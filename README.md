@@ -15,7 +15,7 @@ provide a better experience for your villagers!
 * Adjust how long a villager will travel to Points of Interest
 * Adjust how close a villager needs to get to use a Point of Interest
 * Optional - Heal Villagers when they wake up (like Bedrock)
-* Optional - Prioritize villagers avoiding cactus and water
+* Optional - Prioritize villagers avoiding cactus, water, and rails
 * Optional - Pathfinding fix for villagers becoming "stuck" near walls/fences
 * Optional - Prevent villagers from climbing up ladders and vines (they don't know how to climb back down, poor dears)
 * Adjust the distance villagers will consider "safe" for jumping down from ledges
@@ -43,6 +43,7 @@ provide a better experience for your villagers!
 
 * Optional - Golems avoid cactus
 * Optional - Golems avoid water
+* Optional - Golems avoid rails
 * Optional - Golems don't attack players
 * Optional - Prevent Villagers from summoning Golems (for when there's a Golem overpopulation problem)
 * Optional - Choose how many golems can spawn in a specified radius
