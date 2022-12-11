@@ -57,6 +57,13 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
     @Nullable
     abstract BlockPos chooseRandomTarget(ServerWorld world);
 
+    @Inject(method = "<init>()V",
+            at = @At("TAIL"))
+    public void replaceFarmerVillagerTaskRunTime(CallbackInfo ci) {
+        ((TaskAccessorMixin)this).setMaxRunTime(MAX_RUN_TIME);
+        ((TaskAccessorMixin)this).setMinRunTime(MAX_RUN_TIME);
+    }
+
     @Inject(method = "shouldRun", at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity,
                                     CallbackInfoReturnable<Boolean> cir) {
@@ -99,7 +106,7 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
             return;
         }
 
-        if ( villagerEntity.getBrain().hasMemoryModule(MemoryModuleType.WALK_TARGET)) {
+        if (villagerEntity.getBrain().hasMemoryModule(MemoryModuleType.WALK_TARGET)) {
             // Wait for the villager to reach the walk target.
             cir.cancel();
             return;
@@ -107,14 +114,11 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
 
         Item preferredSeeds = null;
         BlockPos currentTarget = this.currentTarget;
-        int distance = 1;
+        // Can't stand directly on top of the gourd bottom, so increase the distance.
+        int distance = 2;
         BlockState blockState = serverWorld.getBlockState(currentTarget);
         Block block = blockState.getBlock();
         Block block2 = serverWorld.getBlockState(currentTarget.down()).getBlock();
-        if (block instanceof GourdBlock) {
-            // Can't stand directly on top of the gourd bottom, so increase the distance.
-            distance = 2;
-        }
         if (currentTarget.isWithinDistance(villagerEntity.getPos(), distance)) {
             boolean foundBlockCrop = false;
             if (CONFIG.villagersProfessionConfig.preferPlantSameCrop) {
@@ -198,7 +202,7 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
 
         if (this.currentTarget != null) {
             this.nextResponseTime = l + 20L;
-            int completionRange = 1;
+            int completionRange = 0;
             if (serverWorld.getBlockState(this.currentTarget).getBlock() instanceof GourdBlock) {
                 completionRange = 2;
             }
@@ -209,6 +213,7 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
         }
 
         this.ticksRan++;
+        cir.cancel();
     }
 
     private boolean plantSeed(ItemStack itemStack, int stackIndex, ServerWorld serverWorld,
