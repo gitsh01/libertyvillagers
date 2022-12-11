@@ -17,9 +17,9 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(WalkTowardJobSiteTask.class)
 public class WalkTowardJobSiteTaskMixin {
 
-    @Inject(method = "<init>()V",
+    @Inject(method = "<init>(F)V",
             at = @At("TAIL"))
-    public void replaceRequiredMemoryMOdule(CallbackInfo ci) {
+    public void replaceRequiredMemoryModule(float speed, CallbackInfo ci) {
         // Prevent the task from spamming walk towards job site over and over once a walk target
         // has already been set.
         ((TaskAccessorMixin)this).setRequiredMemoryStates(
