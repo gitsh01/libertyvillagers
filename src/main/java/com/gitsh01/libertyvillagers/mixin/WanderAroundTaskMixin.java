@@ -106,7 +106,7 @@ public abstract class WanderAroundTaskMixin {
                 entity.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
                 this.previousEntityPosTime = 0;
                 return shouldRun;
-            } else {
+            } else if (cantReachWalkTargetSince > 3 * 20) {
                 // Fix for really difficult pathing situations such as the armorer's house in the SkyVillage mod using
                 // fuzzy pathing to wiggle out of the area.
                 Vec3d vec3d = FuzzyTargeting.findTo((PathAwareEntity) entity, 5, 5,
