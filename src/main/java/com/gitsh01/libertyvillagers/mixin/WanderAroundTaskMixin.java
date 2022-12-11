@@ -6,6 +6,7 @@ import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.WanderAroundTask;
+import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -57,11 +58,11 @@ public abstract class WanderAroundTaskMixin {
         this.walkTarget = walkTarget;
     }
 
-    @Inject(method = "keepRunning",
-        at = @At("HEAD"))
-    private void checkToSeeIfVillagerHasMoved(ServerWorld serverWorld, MobEntity entity, long time, CallbackInfo ci) {
-        if (previousEntityPos == null || !previousEntityPos.isWithinDistance(entity.getBlockPos(), 1)) {
-            previousEntityPos = entity.getBlockPos();
+    private void checkToSeeIfVillagerHasMoved(ServerWorld serverWorld, MobEntity entity, long time) {
+        BlockPos entityPos = new BlockPos(entity.getBlockX(), LandPathNodeMaker.getFeetY(serverWorld,
+                entity.getBlockPos()), entity.getBlockZ());
+        if (previousEntityPos == null || !previousEntityPos.isWithinDistance(entityPos, 1)) {
+            previousEntityPos = entityPos;
             previousEntityPosTime = time;
             entity.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
         }
@@ -71,37 +72,75 @@ public abstract class WanderAroundTaskMixin {
     }
 
     @Inject(method = "keepRunning",
-            at = @At("TAIL"))
-    private void lastDitchAttemptToFindPath(ServerWorld serverWorld, MobEntity entity, long time, CallbackInfo ci) {
+            at = @At("HEAD"))
+    private void keepRunningCheckToSeeIfVillagerHasMoved(ServerWorld serverWorld, MobEntity entity, long time,
+                                                 CallbackInfo ci) {
+        checkToSeeIfVillagerHasMoved(serverWorld,entity, time);
+    }
+
+    @Inject(method = "shouldRun",
+            at = @At("HEAD"))
+    protected void shouldRun(ServerWorld serverWorld, MobEntity entity, CallbackInfoReturnable<Boolean> cir) {
+        long time = serverWorld.getTime();
+        checkToSeeIfVillagerHasMoved(serverWorld, entity, time);
+    }
+
+    private boolean lastDitchAttemptToFindPath(MobEntity entity, long time) {
         if (CONFIG.villagersGeneralConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
-                entity.getBrain().getOptionalMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE).isPresent() && this.path != null) {
-            BlockPos blockPos = this.path.getCurrentNodePos();
-            Vec3d desiredPos = new Vec3d(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
-
-            long storedTime = entity.getBrain().getOptionalMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE).get();
-            long cantReachWalkTargetSince = time - storedTime;
-
+                entity.getBrain().getOptionalMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE).isPresent() &&
+                previousEntityPosTime > 0) {
+            long cantReachWalkTargetSince = time - previousEntityPosTime;
             // Fuzzy pathing has failed, teleport.
-            if (cantReachWalkTargetSince > 8 * 20 || cantReachWalkTargetSince < 0) {
-                // Fix for getting stuck on other villagers.
+            if (cantReachWalkTargetSince > 8 * 20) {
+                Vec3d desiredPos;
+                boolean shouldRun = false;
+                if (this.path != null) {
+                    BlockPos blockPos = this.path.getCurrentNodePos();
+                    desiredPos = new Vec3d(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
+                    shouldRun = true;
+                } else {
+                    BlockPos blockPos = this.walkTarget.getLookTarget().getBlockPos();
+                    desiredPos = new Vec3d(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
+                }
                 entity.teleport(desiredPos.x, desiredPos.y, desiredPos.z, true);
                 entity.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-            } else if (cantReachWalkTargetSince > 3 * 20) {
+                this.previousEntityPosTime = 0;
+                return shouldRun;
+            } else {
                 // Fix for really difficult pathing situations such as the armorer's house in the SkyVillage mod using
                 // fuzzy pathing to wiggle out of the area.
-                Vec3d vec3d = FuzzyTargeting.findTo((PathAwareEntity) entity, 5, 5, Vec3d.ofBottomCenter(blockPos));
+                Vec3d vec3d = FuzzyTargeting.findTo((PathAwareEntity) entity, 5, 5,
+                        Vec3d.ofBottomCenter(this.walkTarget.getLookTarget().getBlockPos()));
                 if (vec3d != null) {
                     this.path = entity.getNavigation().findPathTo(vec3d.x, vec3d.y, vec3d.z, 0);
                 }
+                return this.path != null;
             }
         }
+        return false;
     }
 
-    @Inject(method = "finishRunning",
+    @Inject(method = "keepRunning",
             at = @At("TAIL"))
-    protected void finishRunning(ServerWorld serverWorld, MobEntity mobEntity, long l, CallbackInfo ci) {
-        previousEntityPos = null;
-        previousEntityPosTime = 0;
+    private void keepRunninglastDitchAttemptToFindPath(ServerWorld serverWorld, MobEntity entity, long time,
+                                                 CallbackInfo ci) {
+        if (this.walkTarget == null) {
+            if (entity.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET).isEmpty()) {
+                return;
+            }
+            this.walkTarget = entity.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET).get();
+        }
+        lastDitchAttemptToFindPath(entity, time);
+    }
+
+    @Inject(method = "hasFinishedPath(Lnet/minecraft/entity/mob/MobEntity;Lnet/minecraft/entity/ai/brain/WalkTarget;J)Z",
+            at = @At("RETURN"), cancellable = true)
+    private void hasFinishedPathLastDitchAttemptToFindPath(MobEntity entity, WalkTarget walkTarget, long time,
+                                            CallbackInfoReturnable<Boolean> cir) {
+        if (lastDitchAttemptToFindPath(entity, time)) {
+            cir.setReturnValue(true);
+            cir.cancel();
+        }
     }
 
         @ModifyArg(
