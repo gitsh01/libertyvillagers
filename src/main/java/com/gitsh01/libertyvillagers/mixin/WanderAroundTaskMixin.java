@@ -9,6 +9,7 @@ import net.minecraft.entity.ai.brain.task.WanderAroundTask;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
@@ -24,56 +26,82 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(WanderAroundTask.class)
 public abstract class WanderAroundTaskMixin {
 
+    static private final int MAX_RUN_TIME = 20 * 60; // One minute.
+    static private final long STUCK_TIME = 20 * 3; // Three seconds.
+
     @Nullable
     @Shadow
     private Path path;
 
     private WalkTarget walkTarget = null;
 
+    @Nullable
+    private BlockPos previousEntityPos = null;
+
+    private long previousEntityPosTime;
+
     @Shadow
     abstract boolean hasReached(MobEntity entity, WalkTarget walkTarget);
 
+    @Inject(method = "<init>()V",
+            at = @At("TAIL"))
+    public void replaceFarmerVillagerTaskRunTime(CallbackInfo ci) {
+        ((TaskAccessorMixin)this).setMaxRunTime(MAX_RUN_TIME);
+        ((TaskAccessorMixin)this).setMinRunTime(MAX_RUN_TIME);
+    }
+
     @Inject(method = "hasFinishedPath(Lnet/minecraft/entity/mob/MobEntity;Lnet/minecraft/entity/ai/brain/WalkTarget;J)Z",
-            at = @At("HEAD"), cancellable = true)
+            at = @At("HEAD"))
     private void storeWalkTargetFromHasFinishedPath(MobEntity entity, WalkTarget walkTarget, long time,
                                                     CallbackInfoReturnable<Boolean> cir) {
         this.walkTarget = walkTarget;
     }
 
-    @Inject(method = "hasFinishedPath(Lnet/minecraft/entity/mob/MobEntity;Lnet/minecraft/entity/ai/brain/WalkTarget;J)Z",
-            at = @At("RETURN"), cancellable = true)
-    private void lastDitchAttemptToFindPath(MobEntity entity, WalkTarget walkTarget, long time,
-                                            CallbackInfoReturnable<Boolean> cir) {
-        if (CONFIG.villagersGeneralConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
-                entity.getBrain().hasMemoryModule(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE) && this.path != null) {
+    @Inject(method = "keepRunning",
+        at = @At("HEAD"))
+    private void checkToSeeIfVillagerHasMoved(ServerWorld serverWorld, MobEntity entity, long time, CallbackInfo ci) {
+        if (previousEntityPos == null || !previousEntityPos.isWithinDistance(entity.getBlockPos(), 1)) {
+            previousEntityPos = entity.getBlockPos();
+            previousEntityPosTime = time;
+            entity.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+        }
+        if ((time - previousEntityPosTime > STUCK_TIME) && !entity.getBrain().hasMemoryModule(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE)) {
+            entity.getBrain().remember(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE, previousEntityPosTime);
+        }
+    }
 
+    @Inject(method = "keepRunning",
+            at = @At("TAIL"))
+    private void lastDitchAttemptToFindPath(ServerWorld serverWorld, MobEntity entity, long time, CallbackInfo ci) {
+        if (CONFIG.villagersGeneralConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
+                entity.getBrain().getOptionalMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE).isPresent() && this.path != null) {
             BlockPos blockPos = this.path.getCurrentNodePos();
             Vec3d desiredPos = new Vec3d(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f);
 
-            if (!this.hasReached(entity, walkTarget) && !this.path.isFinished() &&
-                    !desiredPos.equals(entity.getPos()) && blockPos.isWithinDistance(entity.getPos(), 1.f)) {
+            long storedTime = entity.getBrain().getOptionalMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE).get();
+            long cantReachWalkTargetSince = time - storedTime;
 
-                long cantReachWalkTargetSince = time -
-                        entity.getBrain().getMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-
-                // First attempt at 10 second.
-                if (cantReachWalkTargetSince > 200) {
-                    // Fix for really difficult pathing situations such as the armorer's house in the SkyVillage mod.
-                    Vec3d vec3d = FuzzyTargeting.findTo((PathAwareEntity) entity, 5, 5, Vec3d.ofBottomCenter(blockPos));
-                    if (vec3d != null) {
-                        this.path = entity.getNavigation().findPathTo(vec3d.x, vec3d.y, vec3d.z, 0);
-                    }
-                    cir.setReturnValue(this.path != null);
-                    cir.cancel();
-                    // Second attempt at 100 seconds.
-                } else if (cantReachWalkTargetSince > 2000) {
-                    // Fix for getting stuck on other villagers.
-                    entity.teleport(desiredPos.x, desiredPos.y, desiredPos.z, true);
-                    cir.setReturnValue(false);
-                    cir.cancel();
+            // Fuzzy pathing has failed, teleport.
+            if (cantReachWalkTargetSince > 8 * 20 || cantReachWalkTargetSince < 0) {
+                // Fix for getting stuck on other villagers.
+                entity.teleport(desiredPos.x, desiredPos.y, desiredPos.z, true);
+                entity.getBrain().forget(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+            } else if (cantReachWalkTargetSince > 3 * 20) {
+                // Fix for really difficult pathing situations such as the armorer's house in the SkyVillage mod using
+                // fuzzy pathing to wiggle out of the area.
+                Vec3d vec3d = FuzzyTargeting.findTo((PathAwareEntity) entity, 5, 5, Vec3d.ofBottomCenter(blockPos));
+                if (vec3d != null) {
+                    this.path = entity.getNavigation().findPathTo(vec3d.x, vec3d.y, vec3d.z, 0);
                 }
             }
         }
+    }
+
+    @Inject(method = "finishRunning",
+            at = @At("TAIL"))
+    protected void finishRunning(ServerWorld serverWorld, MobEntity mobEntity, long l, CallbackInfo ci) {
+        previousEntityPos = null;
+        previousEntityPosTime = 0;
     }
 
         @ModifyArg(
