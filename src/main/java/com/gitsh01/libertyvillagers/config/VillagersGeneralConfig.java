@@ -7,44 +7,8 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 @Config(name = "VillagersGeneral")
 public class VillagersGeneralConfig implements ConfigData {
 
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public int findPOIRange = 128;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public int pathfindingMaxRange = 256;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public int minimumPOISearchDistance = 3;
-
     @ConfigEntry.Gui.Tooltip
     public boolean healOnWake = true;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public boolean villagersAvoidCactus = true;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public boolean villagersAvoidWater = true;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public boolean villagersAvoidRail = true;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public boolean villagersAvoidTrapdoor = true;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public boolean villagerWanderingFix = true;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public int walkTowardsTaskMaxRunTime = 2400;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public int walkTowardsTaskMinCompletionRange = 3;
-
-    @ConfigEntry.Gui.Tooltip
-    public boolean villagersDontClimb = true;
-
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    public int villagerSafeFallDistance = 2;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean villagersDontBreed = false;

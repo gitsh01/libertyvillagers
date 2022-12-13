@@ -46,7 +46,7 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"))
     protected void modifyShouldRunGetNearestPositionArgs(Args args) {
-        args.set(2, CONFIG.villagersGeneralConfig.findPOIRange);
+        args.set(2, CONFIG.villagerPathfindingConfig.findPOIRange);
         args.set(3, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 
@@ -72,7 +72,7 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
             return posPredicate.test(blockPos);
         };
         return pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, newBlockPosPredicate, pos,
-                CONFIG.villagersGeneralConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+                CONFIG.villagerPathfindingConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 
     private boolean isBedOccupiedByOthers(ServerWorld world, BlockPos pos, LivingEntity entity) {

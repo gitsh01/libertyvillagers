@@ -28,9 +28,6 @@ public abstract class VillagerTaskListProviderMixin {
     private static final int THIRD_WORK_TASK_PRIORITY = 7;
     private static final int PRIMARY_WORK_TASK_PRIORITY = 7;
 
-    public VillagerTaskListProviderMixin() {
-    }
-
     @Invoker("createBusyFollowTask")
     public static Pair<Integer, Task<LivingEntity>> invokeCreateBusyFollowTask() {
         throw new AssertionError();
@@ -65,9 +62,9 @@ public abstract class VillagerTaskListProviderMixin {
         ArrayList<Pair<Task<? super VillagerEntity>, Integer>> randomTasks = new ArrayList<>(
                 ImmutableList.of(Pair.of(villagerWorkTask, PRIMARY_WORK_TASK_PRIORITY),
                         Pair.of(new GoToNearbyPositionTask(MemoryModuleType.JOB_SITE, 0.4f,
-                                CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange, 10), 5),
+                                CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange, 10), 5),
                         Pair.of(new GoToSecondaryPositionTask(MemoryModuleType.SECONDARY_JOB_SITE, speed,
-                                CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange, 6,
+                                CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange, 6,
                                 MemoryModuleType.JOB_SITE), 5)));
 
         if (secondaryWorkTask != null) {
@@ -84,7 +81,7 @@ public abstract class VillagerTaskListProviderMixin {
                         Pair.of(10, new HoldTradeOffersTask(400, 1600)),
                         Pair.of(10, new FindInteractionTargetTask(EntityType.PLAYER, 4)), Pair.of(2,
                                 new VillagerWalkTowardsTask(MemoryModuleType.JOB_SITE, speed, 9,
-                                        CONFIG.villagersGeneralConfig.pathfindingMaxRange, 1200)),
+                                        CONFIG.villagerPathfindingConfig.pathfindingMaxRange, 1200)),
                         Pair.of(3, new GiveGiftsToHeroTask(100)), Pair.of(99, new ScheduleActivityTask()));
         cir.setReturnValue(ImmutableList.copyOf(tasks));
         cir.cancel();

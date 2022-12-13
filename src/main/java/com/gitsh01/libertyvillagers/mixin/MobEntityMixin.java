@@ -22,7 +22,7 @@ public abstract class MobEntityMixin extends LivingEntity {
     public void replaceGetSafeFallDistance(CallbackInfoReturnable<Integer> cir) {
         LivingEntity entity = this;
         if (entity.getType() == EntityType.VILLAGER) {
-            cir.setReturnValue(CONFIG.villagersGeneralConfig.villagerSafeFallDistance);
+            cir.setReturnValue(CONFIG.villagerPathfindingConfig.villagerSafeFallDistance);
             cir.cancel();
         }
     }

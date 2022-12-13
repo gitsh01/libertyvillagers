@@ -83,7 +83,7 @@ public abstract class WanderAroundTaskMixin {
     }
 
     private boolean lastDitchAttemptToFindPath(MobEntity entity, long time) {
-        if (CONFIG.villagersGeneralConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
+        if (CONFIG.villagerPathfindingConfig.villagerWanderingFix && entity.getType() == EntityType.VILLAGER &&
                 previousEntityPosTime > 0 && (time - previousEntityPosTime > STUCK_TIME)) {
             // Fuzzy pathing has failed, teleport.
             if (fuzzyTries > 3) {

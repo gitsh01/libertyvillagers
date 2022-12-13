@@ -43,6 +43,6 @@ public class WalkTowardJobSiteTaskMixin {
             target = "Lnet/minecraft/entity/ai/brain/task/LookTargetUtil;walkTowards" +
                     "(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/util/math/BlockPos;FI)V"), index = 3)
     private int replaceCompletionRangeInClaimSite(int completionRange) {
-        return Math.max(completionRange, CONFIG.villagersGeneralConfig.minimumPOISearchDistance);
+        return Math.max(completionRange, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance);
     }
 }
