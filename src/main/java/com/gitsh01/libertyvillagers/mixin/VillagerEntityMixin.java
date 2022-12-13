@@ -90,6 +90,9 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
         if (CONFIG.villagersGeneralConfig.villagersAvoidRail) {
             this.setPathfindingPenalty(PathNodeType.RAIL, -1);
         }
+        if (CONFIG.villagersGeneralConfig.villagersAvoidTrapdoor) {
+            this.setPathfindingPenalty(PathNodeType.TRAPDOOR, -1);
+        }
         if (CONFIG.villagersGeneralConfig.allBabyVillagers) {
             this.setBaby(true);
         }
