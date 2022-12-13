@@ -28,6 +28,9 @@ public class VillagerPathfindingConfig implements ConfigData {
     public boolean villagersAvoidTrapdoor = true;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean villagersAvoidPowderedSnow = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean villagerWanderingFix = true;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
