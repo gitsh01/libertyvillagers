@@ -10,7 +10,7 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 public class GoToWorkTaskMixin {
 
     // Inject into the lambda called by Task.trigger.
-    @SuppressWarnings("target")
+    @SuppressWarnings({"target", "descriptor"})
     @ModifyConstant(
             method = "method_46890",
             constant = @Constant(doubleValue = 2.0))

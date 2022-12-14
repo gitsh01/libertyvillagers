@@ -51,13 +51,6 @@ public abstract class FarmerVillagerTaskMixin  {
     @Nullable
     abstract BlockPos chooseRandomTarget(ServerWorld world);
 
-    @Inject(method = "<init>()V",
-            at = @At("TAIL"))
-    public void replaceFarmerVillagerTaskRunTime(CallbackInfo ci) {
-        ((TaskAccessorMixin)this).setMaxRunTime(MAX_RUN_TIME);
-        ((TaskAccessorMixin)this).setMinRunTime(MAX_RUN_TIME);
-    }
-
     @Inject(method = "shouldRun", at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity,
                                     CallbackInfoReturnable<Boolean> cir) {

@@ -13,14 +13,14 @@ public abstract class VillagerWalkTowardsTaskMixin {
             at = @At("HEAD"),
             ordinal = 0)
     private static int increaseCompletionRange(int completionRange) {
-        return CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange;
+        return CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange;
     }
 
     @ModifyVariable(method = "create(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)Lnet/minecraft/entity/ai/brain/task/SingleTickTask;",
             at = @At("HEAD"),
             ordinal = 1)
     private static int increaseMaxDistance(int maxDistance) {
-        return CONFIG.villagersGeneralConfig.pathfindingMaxRange;
+        return CONFIG.villagerPathfindingConfig.pathfindingMaxRange;
     }
 
     @ModifyVariable(method = "create(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)Lnet/minecraft/entity/ai/brain/task/SingleTickTask;",

@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 public abstract class WalkToNearestVisibleWantedItemTaskMixin {
 
     // Injecting into the lambda of the TaskTriggerer.
-    @SuppressWarnings("target")
+    @SuppressWarnings({"target", "descriptor"})
     @Inject(method = "method_46945",
             at = @At("HEAD"),
             cancellable = true)

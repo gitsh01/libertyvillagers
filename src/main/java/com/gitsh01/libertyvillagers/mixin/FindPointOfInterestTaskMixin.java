@@ -45,8 +45,7 @@ public abstract class FindPointOfInterestTaskMixin {
         if (accessorMixin.getMemory() == MemoryModuleType.HOME) {
             return;
         }
-        if (CONFIG.villagersGeneral
-        .villagersDontLookForWorkstationsAtNight &&
+        if (CONFIG.villagersGeneralConfig.villagersDontLookForWorkstationsAtNight &&
                 entity.getType() == EntityType.VILLAGER && timeOfDay > TIME_NIGHT) {
             cir.setReturnValue(false);
             cir.cancel();
