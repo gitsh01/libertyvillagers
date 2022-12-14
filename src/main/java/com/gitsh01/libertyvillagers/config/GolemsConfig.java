@@ -16,6 +16,12 @@ public class GolemsConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public boolean golemsAvoidRail = true;
 
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean golemsAvoidTrapdoor = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean golemsAvoidPowderedSnow = true;
+
     @ConfigEntry.Gui.Tooltip
     public boolean golemsDontAttackPlayer = true;
 

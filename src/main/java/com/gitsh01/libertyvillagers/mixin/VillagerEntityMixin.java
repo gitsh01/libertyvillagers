@@ -80,15 +80,22 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
     public void villagerInit(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {
-        if (CONFIG.villagersGeneralConfig.villagersAvoidCactus) {
+        if (CONFIG.villagerPathfindingConfig.villagersAvoidCactus) {
             this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
         }
-        if (CONFIG.villagersGeneralConfig.villagersAvoidWater) {
+        if (CONFIG.villagerPathfindingConfig.villagersAvoidWater) {
             this.setPathfindingPenalty(PathNodeType.WATER, -1);
             this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16);
         }
-        if (CONFIG.villagersGeneralConfig.villagersAvoidRail) {
+        if (CONFIG.villagerPathfindingConfig.villagersAvoidRail) {
             this.setPathfindingPenalty(PathNodeType.RAIL, -1);
+        }
+        if (CONFIG.villagerPathfindingConfig.villagersAvoidTrapdoor) {
+            this.setPathfindingPenalty(PathNodeType.TRAPDOOR, -1);
+        }
+        if (CONFIG.villagerPathfindingConfig.villagersAvoidPowderedSnow) {
+            this.setPathfindingPenalty(PathNodeType.POWDER_SNOW, -1);
+            this.setPathfindingPenalty(PathNodeType.DANGER_POWDER_SNOW, 16);
         }
         if (CONFIG.villagersGeneralConfig.allBabyVillagers) {
             this.setBaby(true);

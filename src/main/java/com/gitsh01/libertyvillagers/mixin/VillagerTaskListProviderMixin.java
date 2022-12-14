@@ -61,11 +61,11 @@ public abstract class VillagerTaskListProviderMixin {
 
         ArrayList<Pair<Task<? super VillagerEntity>, Integer>> randomTasks = new ArrayList<>(
                 ImmutableList.of(Pair.of(villagerWorkTask, PRIMARY_WORK_TASK_PRIORITY),
-                        Pair.of(GoToNearbyPositionTask.create(MemoryModuleType.JOB_SITE, 0.4f,
-                                CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange, 10), 5),
-                        Pair.of(GoToSecondaryPositionTask.create(MemoryModuleType.SECONDARY_JOB_SITE, speed,
-                                CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange, 6,
-                                MemoryModuleType.JOB_SITE), 5)));
+                        Pair.of(GoToNearbyPositionTask(MemoryModuleType.JOB_SITE, 0.4f,
+                                CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange, 10).create(), 5),
+                        Pair.of(GoToSecondaryPositionTask(MemoryModuleType.SECONDARY_JOB_SITE, speed,
+                                CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange, 6,
+                                MemoryModuleType.JOB_SITE).create(), 5)));
 
         if (secondaryWorkTask != null) {
             randomTasks.add(Pair.of(secondaryWorkTask, SECONDARY_WORK_TASK_PRIORITY));
@@ -82,7 +82,7 @@ public abstract class VillagerTaskListProviderMixin {
                         Pair.of(10, new HoldTradeOffersTask(400, 1600)),
                         Pair.of(10, FindInteractionTargetTask.create(EntityType.PLAYER, 4)),
                         Pair.of(2, VillagerWalkTowardsTask.create(MemoryModuleType.JOB_SITE, speed, 9,
-                                        CONFIG.villagersGeneralConfig.pathfindingMaxRange, 1200)),
+                                        CONFIG.villagerPathfindingConfig.pathfindingMaxRange, 1200)),
                         Pair.of(3, new GiveGiftsToHeroTask(100)),
                         Pair.of(99, ScheduleActivityTask.create()));
         cir.setReturnValue(ImmutableList.copyOf(tasks));

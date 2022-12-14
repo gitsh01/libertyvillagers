@@ -15,7 +15,7 @@ public class TakeJobSiteTaskMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/brain/task/LookTargetUtil;walkTowards" +
                     "(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/util/math/BlockPos;FI)V"), index = 3)
     static private int replaceCompletionRangeInClaimSite(int completionRange) {
-        return Math.max(completionRange, CONFIG.villagersGeneralConfig.minimumPOISearchDistance + 1);
+        return Math.max(completionRange, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance + 1);
     }
 
 }

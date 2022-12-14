@@ -45,7 +45,8 @@ public abstract class FindPointOfInterestTaskMixin {
         if (accessorMixin.getMemory() == MemoryModuleType.HOME) {
             return;
         }
-        if (CONFIG.villagersGeneralConfig.villagersDontLookForWorkstationsAtNight &&
+        if (CONFIG.villagersGeneral
+        .villagersDontLookForWorkstationsAtNight &&
                 entity.getType() == EntityType.VILLAGER && timeOfDay > TIME_NIGHT) {
             cir.setReturnValue(false);
             cir.cancel();
@@ -67,7 +68,7 @@ public abstract class FindPointOfInterestTaskMixin {
         args.set(1, newPredicate);
 
         int radius = args.get(3);
-        args.set(3, Math.max(radius, CONFIG.villagersGeneralConfig.findPOIRange));
+        args.set(3, Math.max(radius, CONFIG.villagerPathfindingConfig.findPOIRange));
     }
 
     private static boolean isBedOccupied(BlockPos pos) {
@@ -81,6 +82,6 @@ public abstract class FindPointOfInterestTaskMixin {
                     "(Ljava/util/Set;I)Lnet/minecraft/entity/ai/pathing/Path;"))
     static private void increaseMinimumPOIClaimDistance(Args args) {
         int distance = args.get(1);
-        args.set(1, Math.max(distance, CONFIG.villagersGeneralConfig.minimumPOISearchDistance));
+        args.set(1, Math.max(distance, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance));
     }
 }

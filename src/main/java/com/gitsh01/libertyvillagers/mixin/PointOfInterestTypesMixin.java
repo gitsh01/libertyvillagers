@@ -17,6 +17,6 @@ public class PointOfInterestTypesMixin {
                     "Lnet/minecraft/world/poi/PointOfInterestType;"),
             index = 4)
     private static int modifySearchDistance(int searchDistance) {
-        return Math.max(searchDistance, CONFIG.villagersGeneralConfig.minimumPOISearchDistance);
+        return Math.max(searchDistance, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance);
     }
 }

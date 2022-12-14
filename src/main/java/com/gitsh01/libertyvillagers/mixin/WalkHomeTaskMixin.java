@@ -40,7 +40,7 @@ public abstract class WalkHomeTaskMixin {
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"))
     private static void modifyShouldRunGetNearestPositionArgs(Args args) {
-        args.set(2, CONFIG.villagersGeneralConfig.findPOIRange);
+        args.set(2, CONFIG.villagerPathfindingConfig.findPOIRange);
         args.set(3, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 
@@ -67,7 +67,7 @@ public abstract class WalkHomeTaskMixin {
             return posPredicate.test(blockPos);
         };
         args.set(1, newBlockPosPredicate);
-        args.set(3, CONFIG.villagersGeneralConfig.findPOIRange);
+        args.set(3, CONFIG.villagerPathfindingConfig.findPOIRange);
         args.set(4, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 

@@ -27,6 +27,6 @@ public abstract class VillagerWalkTowardsTaskMixin {
             at = @At("HEAD"),
             ordinal = 2)
     private static int increaseMaxRunTime(int maxRunTime) {
-        return CONFIG.villagersGeneralConfig.walkTowardsTaskMaxRunTime;
+        return CONFIG.villagerPathfindingConfig.walkTowardsTaskMaxRunTime;
     }
 }
