@@ -18,6 +18,7 @@
     "IronGolemEntityMixin",
     "LandPathNodeMakerMixin",
     "LivingEntityMixin",
+    "MemoryQueryResultAccessorMixin",
     "MobEntityMixin",
     "PointOfInterestTypesMixin",
     "SecondaryPointsOfInterestSensorMixin",
@@ -28,10 +29,10 @@
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
     "VillagerWalkTowardsTaskMixin",
-    "WanderAroundTaskMixin",
     "WalkHomeTaskMixin",
     "WalkToNearestVisibleWantedItemTaskMixin",
-    "WalkTowardJobSiteTaskMixin"
+    "WalkTowardJobSiteTaskMixin",
+    "WanderAroundTaskMixin"
   ],
   "client": [],
   "server": [
