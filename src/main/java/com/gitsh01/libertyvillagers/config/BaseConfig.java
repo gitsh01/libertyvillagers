@@ -8,6 +8,8 @@ import me.shedaniel.autoconfig.serializer.PartitioningSerializer;
 @Config(name = "LibertyVillagers")
 @Config.Gui.Background("minecraft:textures/block/emerald_block.png")
 @Config.Gui.CategoryBackground(category = "VillagersGeneral", background = "minecraft:textures/block/copper_block.png")
+@Config.Gui.CategoryBackground(category = "VillagersPathfinding",
+        background = "minecraft:textures/block/honeycomb_block" + ".png")
 @Config.Gui.CategoryBackground(category = "VillagersProfession",
         background = "minecraft:textures/block/diamond_block" + ".png")
 @Config.Gui.CategoryBackground(category = "Golems", background = "minecraft:textures/block/emerald_block.png")
@@ -17,6 +19,10 @@ public class BaseConfig extends PartitioningSerializer.GlobalData implements Con
     @ConfigEntry.Category(value = "VillagersGeneral")
     @ConfigEntry.Gui.TransitiveObject
     public final VillagersGeneralConfig villagersGeneralConfig = new VillagersGeneralConfig();
+
+    @ConfigEntry.Category(value = "VillagerPathfinding")
+    @ConfigEntry.Gui.TransitiveObject
+    public final VillagerPathfindingConfig villagerPathfindingConfig = new VillagerPathfindingConfig();
 
     @ConfigEntry.Category(value = "VillagersProfession")
     @ConfigEntry.Gui.TransitiveObject

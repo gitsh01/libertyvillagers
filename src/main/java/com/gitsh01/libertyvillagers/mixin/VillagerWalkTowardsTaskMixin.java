@@ -34,8 +34,8 @@ public abstract class VillagerWalkTowardsTaskMixin extends Task<VillagerEntity> 
     @Inject(method = "<init>(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)V",
     at = @At("TAIL"))
     private void increaseMaxRunTime(CallbackInfo ci) {
-        maxRunTime = CONFIG.villagersGeneralConfig.walkTowardsTaskMaxRunTime;
-        completionRange = CONFIG.villagersGeneralConfig.walkTowardsTaskMinCompletionRange;
-        maxRange = CONFIG.villagersGeneralConfig.pathfindingMaxRange;
+        maxRunTime = CONFIG.villagerPathfindingConfig.walkTowardsTaskMaxRunTime;
+        completionRange = CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange;
+        maxRange = CONFIG.villagerPathfindingConfig.pathfindingMaxRange;
     }
 }
