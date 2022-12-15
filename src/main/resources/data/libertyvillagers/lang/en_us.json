@@ -20,6 +20,8 @@
   "text.LibertyVillagers.villagerInfo.true": "true",
   "text.LibertyVillagers.villagerInfo.false": "false",
   "text.LibertyVillagers.villagerInfo.notAPOI": "Not a registered Point of Interest.",
+  "text.LibertyVillagers.villagerInfo.numBees": "Number of Bees: %d",
+  "text.LibertyVillagers.villagerInfo.numHoney": "Amount of Honey: %d",
   "text.LibertyVillagers.villagerreset" : "Villager reset complete.",
   "text.LibertyVillagers.villagerSetPOI.miss": "VillagerSetPOI Error: Unable to find block.",
   "text.LibertyVillagers.villagerSetPOI.entity": "VillagerSetPOI Error: Entity between player and block.",

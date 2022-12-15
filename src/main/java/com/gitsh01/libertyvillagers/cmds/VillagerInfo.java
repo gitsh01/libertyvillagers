@@ -2,8 +2,11 @@ package com.gitsh01.libertyvillagers.cmds;
 
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BeehiveBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
@@ -182,12 +185,25 @@ public class VillagerInfo {
         List<Text> lines = new ArrayList<>();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.title"));
         Block block = blockState.getBlock();
+        if (block == null) {
+            return lines;
+        }
         Text name = block.getName();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.name", name));
 
         if (serverWorld == null) {
             lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.needsServer"));
             return lines;
+        }
+        if (block instanceof BeehiveBlock) {
+            BlockEntity blockEntity = serverWorld.getBlockEntity(blockPos);
+            if (blockEntity instanceof BeehiveBlockEntity) {
+                BeehiveBlockEntity beehiveBlockEntity = (BeehiveBlockEntity) blockEntity;
+                int numBees = beehiveBlockEntity.getBeeCount();
+                lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.numBees", numBees));
+            }
+            int numHoney = block.getComparatorOutput(blockState, serverWorld, blockPos);
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.numHoney", numHoney));
         }
 
         Optional<RegistryEntry<PointOfInterestType>> optionalRegistryEntry =
