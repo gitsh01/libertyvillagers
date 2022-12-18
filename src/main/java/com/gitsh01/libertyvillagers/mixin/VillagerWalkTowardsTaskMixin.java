@@ -13,7 +13,7 @@ public abstract class VillagerWalkTowardsTaskMixin {
             at = @At("HEAD"),
             ordinal = 0)
     private static int increaseCompletionRange(int completionRange) {
-        return CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange;
+        return CONFIG.villagerPathfindingConfig.minimumPOISearchDistance;
     }
 
     @ModifyVariable(method = "create(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)Lnet/minecraft/entity/ai/brain/task/SingleTickTask;",

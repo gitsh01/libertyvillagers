@@ -63,9 +63,9 @@ public abstract class VillagerTaskListProviderMixin {
         ArrayList<Pair<Task<? super VillagerEntity>, Integer>> randomTasks = new ArrayList<>(
                 ImmutableList.of(Pair.of(villagerWorkTask, PRIMARY_WORK_TASK_PRIORITY),
                         Pair.of(GoToNearbyPositionTask.create(MemoryModuleType.JOB_SITE, 0.4f,
-                                CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange, 10), 5),
+                                CONFIG.villagerPathfindingConfig.minimumPOISearchDistance, 10), 5),
                         Pair.of(GoToSecondaryPositionTask.create(MemoryModuleType.SECONDARY_JOB_SITE, speed,
-                                CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange, 6,
+                                CONFIG.villagerPathfindingConfig.minimumPOISearchDistance, 6,
                                 MemoryModuleType.JOB_SITE), 5)));
 
         if (secondaryWorkTask != null) {
