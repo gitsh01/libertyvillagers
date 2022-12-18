@@ -35,7 +35,7 @@ public abstract class VillagerWalkTowardsTaskMixin extends Task<VillagerEntity> 
     at = @At("TAIL"))
     private void increaseMaxRunTime(CallbackInfo ci) {
         maxRunTime = CONFIG.villagerPathfindingConfig.walkTowardsTaskMaxRunTime;
-        completionRange = CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange;
+        completionRange = Math.max(completionRange, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance);
         maxRange = CONFIG.villagerPathfindingConfig.pathfindingMaxRange;
     }
 }

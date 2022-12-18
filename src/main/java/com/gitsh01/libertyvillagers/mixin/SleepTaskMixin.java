@@ -14,6 +14,6 @@ public class SleepTaskMixin {
             method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z",
             constant = @Constant(doubleValue = 2.0))
     private double replaceGetReachableBedDistance(double value) {
-        return CONFIG.villagerPathfindingConfig.minimumPOISearchDistance;
+        return CONFIG.villagerPathfindingConfig.minimumPOISearchDistance + 1;
     }
 }

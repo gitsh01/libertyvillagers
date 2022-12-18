@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
@@ -62,9 +63,9 @@ public abstract class VillagerTaskListProviderMixin {
         ArrayList<Pair<Task<? super VillagerEntity>, Integer>> randomTasks = new ArrayList<>(
                 ImmutableList.of(Pair.of(villagerWorkTask, PRIMARY_WORK_TASK_PRIORITY),
                         Pair.of(new GoToNearbyPositionTask(MemoryModuleType.JOB_SITE, 0.4f,
-                                CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange, 10), 5),
+                                CONFIG.villagerPathfindingConfig.minimumPOISearchDistance, 10), 5),
                         Pair.of(new GoToSecondaryPositionTask(MemoryModuleType.SECONDARY_JOB_SITE, speed,
-                                CONFIG.villagerPathfindingConfig.walkTowardsTaskMinCompletionRange, 6,
+                                CONFIG.villagerPathfindingConfig.minimumPOISearchDistance, 6,
                                 MemoryModuleType.JOB_SITE), 5)));
 
         if (secondaryWorkTask != null) {
@@ -85,5 +86,14 @@ public abstract class VillagerTaskListProviderMixin {
                         Pair.of(3, new GiveGiftsToHeroTask(100)), Pair.of(99, new ScheduleActivityTask()));
         cir.setReturnValue(ImmutableList.copyOf(tasks));
         cir.cancel();
+    }
+
+    @ModifyArg(method = "createMeetTasks(Lnet/minecraft/village/VillagerProfession;F)" +
+            "Lcom/google/common/collect/ImmutableList;",
+            at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/entity/ai/brain/task/VillagerWalkTowardsTask;<init>(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)V"),
+            index = 2)
+    private static int replaceCompletionRangeForWalkTowardsMeetTask(int completionRange) {
+        return Math.max(CONFIG.villagerPathfindingConfig.minimumPOISearchDistance, completionRange) + 3;
     }
 }
