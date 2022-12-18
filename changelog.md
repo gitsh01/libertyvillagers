@@ -1,3 +1,24 @@
+
+## [1.0.7+1.19.3](https://gitlab.com/html-validate/html-validate/compare/1.0.7+1.19.2) (2022-12-18)
+
+### Features
+
+ -  Added honey level and number of bees to villager info. ([ea93dd1c0de5f89](https://gitlab.com/html-validate/html-validate/commit/ea93dd1c0de5f894a8ace9aa80bdec9848a253a3))
+ -  Added options for golems to avoid trapdoors and powdered snow. ([bd66ae8aaa80f98](https://gitlab.com/html-validate/html-validate/commit/bd66ae8aaa80f986688c28c8c5fffeae8b4da3e3))
+ -  Added option for villagers to avoid powdered snow. ([2be62cb9c3611da](https://gitlab.com/html-validate/html-validate/commit/2be62cb9c3611dab785aa432a2de9a50532a1ec7))
+ -  Added a "pathfinding" settings tab to make pathfinding settings easier to find. ([9ee5f01241313fa](https://gitlab.com/html-validate/html-validate/commit/9ee5f01241313fabd5c18761d8af9e853592f182))
+ -  Added "villagers avoid trapdoors" option for keeping villagers from smashing into open trapdoors used as decorative fences. ([49735d962fb3238](https://gitlab.com/html-validate/html-validate/commit/49735d962fb32380244b75c8f0ba7b7555356698))
+ -  Added "villagerreset", which forces villagers to find new meeting points and jobs near their current beds. ([5a3156d3d0511f2](https://gitlab.com/html-validate/html-validate/commit/5a3156d3d0511f2046c1573c232bd64b926c3b1f))
+
+### Bug Fixes
+
+ -  Fix for catSpawnLimitRange not actually working for the spawn limit range. ([a23aa66f64dc917](https://gitlab.com/html-validate/html-validate/commit/a23aa66f64dc917c5bae5daf5709c0e4d8e1cfa5))
+ -  Improved the range for sleep task to account more accurate pathfinding. ([7d6c93f33207cfe](https://gitlab.com/html-validate/html-validate/commit/7d6c93f33207cfefdc437c781eac22a6618dc9cb))
+ -  Fix for villagers spamming fuzzy targeting when stuck. ([98553aa05faab8f](https://gitlab.com/html-validate/html-validate/commit/98553aa05faab8fab80f5c7d9bc790330f96e10d))
+ -  Improved "stuck" handling for pathfinding. ([f326fcdbb0b4007](https://gitlab.com/html-validate/html-validate/commit/f326fcdbb0b4007b07c483a3db570899fb076c81))
+ -  Improvements to applying fuzzy logic and teleporting when the villager is stuck. ([23cfb5485fc0206](https://gitlab.com/html-validate/html-validate/commit/23cfb5485fc0206beba883a8b9e515e7a65bd998))
+ -  Improving farmer logic when harvesting crops. ([085a894acb1e990](https://gitlab.com/html-validate/html-validate/commit/085a894acb1e9906b80b1b8559ccea08512589a7))
+
 ## [1.0.6+1.19.3](https://gitlab.com/html-validate/html-validate/compare/1.0.6+1.19.2) (2022-12-07)
 
 ### Features

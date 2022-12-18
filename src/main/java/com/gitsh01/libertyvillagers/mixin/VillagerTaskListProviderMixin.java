@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
@@ -87,5 +88,14 @@ public abstract class VillagerTaskListProviderMixin {
                         Pair.of(99, ScheduleActivityTask.create()));
         cir.setReturnValue(ImmutableList.copyOf(tasks));
         cir.cancel();
+    }
+
+    @ModifyArg(method = "createMeetTasks(Lnet/minecraft/village/VillagerProfession;F)" +
+            "Lcom/google/common/collect/ImmutableList;",
+            at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/entity/ai/brain/task/VillagerWalkTowardsTask;<init>(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)V"),
+            index = 2)
+    private static int replaceCompletionRangeForWalkTowardsMeetTask(int completionRange) {
+        return Math.max(CONFIG.villagerPathfindingConfig.minimumPOISearchDistance, completionRange) + 3;
     }
 }
