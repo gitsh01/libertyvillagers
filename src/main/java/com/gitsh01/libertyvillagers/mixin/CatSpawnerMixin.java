@@ -12,8 +12,18 @@ public class CatSpawnerMixin {
 
     @ModifyConstant(
             method = "spawnInHouse(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;)I",
-            constant = @Constant(intValue = 48))
-    private int replaceCatSpawnDistance(int value) {
+            constant = @Constant(doubleValue = 48.0))
+    private double replaceCatSpawnDistanceXZ(double value) {
+        if (CONFIG.catsConfig.catsSpawnLimit) {
+            return CONFIG.catsConfig.catsSpawnLimitRange;
+        }
+        return value;
+    }
+
+    @ModifyConstant(
+            method = "spawnInHouse(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;)I",
+            constant = @Constant(doubleValue = 8.0))
+    private double replaceCatSpawnDistanceY(double value) {
         if (CONFIG.catsConfig.catsSpawnLimit) {
             return CONFIG.catsConfig.catsSpawnLimitRange;
         }

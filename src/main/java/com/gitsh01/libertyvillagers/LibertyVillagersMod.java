@@ -1,6 +1,7 @@
 package com.gitsh01.libertyvillagers;
 
 import com.gitsh01.libertyvillagers.cmds.VillagerInfo;
+import com.gitsh01.libertyvillagers.cmds.VillagerReset;
 import com.gitsh01.libertyvillagers.cmds.VillagerSetPOI;
 import com.gitsh01.libertyvillagers.cmds.VillagerStats;
 import com.gitsh01.libertyvillagers.config.BaseConfig;
@@ -34,6 +35,7 @@ public class LibertyVillagersMod implements ModInitializer {
     @Override
     public void onInitialize() {
         VillagerInfo.register();
+        VillagerReset.register();
         VillagerSetPOI.register();
         VillagerStats.register();
     }

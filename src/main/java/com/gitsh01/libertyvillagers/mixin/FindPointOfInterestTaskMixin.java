@@ -77,7 +77,7 @@ public abstract class FindPointOfInterestTaskMixin extends Task<PathAwareEntity>
             return posPredicate.test(blockPos);
         };
         return pointOfInterestStorage.getSortedPositions(typePredicate, newBlockPosPredicate, pos,
-                CONFIG.villagersGeneralConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+                CONFIG.villagerPathfindingConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 
     private boolean isBedOccupiedByOthers(ServerWorld world, BlockPos pos, LivingEntity entity) {

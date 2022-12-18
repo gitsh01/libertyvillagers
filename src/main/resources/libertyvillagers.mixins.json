@@ -23,7 +23,7 @@
     "SecondaryPointsOfInterestSensorMixin",
     "SleepTaskMixin",
     "TakeJobSiteTaskMixin",
-    "TaskMixin",
+    "TaskAccessorMixin",
     "VillagerBreedTaskMixin",
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
