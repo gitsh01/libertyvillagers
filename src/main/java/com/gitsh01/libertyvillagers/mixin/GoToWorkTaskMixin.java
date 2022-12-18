@@ -29,7 +29,7 @@ public class GoToWorkTaskMixin extends Task<VillagerEntity> {
             BlockPos blockPos =
                     villagerEntity.getBrain().getOptionalMemory(MemoryModuleType.POTENTIAL_JOB_SITE).get().getPos();
             cir.setReturnValue(blockPos.isWithinDistance(villagerEntity.getPos(),
-                    CONFIG.villagersGeneralConfig.minimumPOISearchDistance + 1) || villagerEntity.isNatural());
+                    CONFIG.villagerPathfindingConfig.minimumPOISearchDistance + 1) || villagerEntity.isNatural());
             cir.cancel();
         }
     }
@@ -42,7 +42,7 @@ public class GoToWorkTaskMixin extends Task<VillagerEntity> {
                     target = "Lnet/minecraft/util/math/Vec3i;isWithinDistance(Lnet/minecraft/util/math/Position;D)Z"),
             index = 1)
     private double modifyDistanceInShouldRun(double distance) {
-        return Math.max(distance, CONFIG.villagersGeneralConfig.minimumPOISearchDistance + 1);
+        return Math.max(distance, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance + 1);
     }
      */
 }

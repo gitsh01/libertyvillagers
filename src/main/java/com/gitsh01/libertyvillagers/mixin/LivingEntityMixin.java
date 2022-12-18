@@ -24,7 +24,7 @@ public abstract class LivingEntityMixin extends Entity {
     public void replaceIsClimbing(CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity == null) return;
-        if (entity.getType() == EntityType.VILLAGER && CONFIG.villagersGeneralConfig.villagersDontClimb) {
+        if (entity.getType() == EntityType.VILLAGER && CONFIG.villagerPathfindingConfig.villagersDontClimb) {
             cir.setReturnValue(false);
             cir.cancel();
         }
@@ -36,7 +36,7 @@ public abstract class LivingEntityMixin extends Entity {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity == null) return;
         if (entity.getType() == EntityType.VILLAGER && attribute == EntityAttributes.GENERIC_FOLLOW_RANGE) {
-            cir.setReturnValue((double) CONFIG.villagersGeneralConfig.findPOIRange);
+            cir.setReturnValue((double) CONFIG.villagerPathfindingConfig.findPOIRange);
             cir.cancel();
         }
     }

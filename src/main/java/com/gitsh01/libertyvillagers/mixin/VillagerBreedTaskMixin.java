@@ -38,7 +38,7 @@ public abstract class VillagerBreedTaskMixin extends Task<VillagerEntity> {
             Optional<BlockPos> optionalWorkstation = world.getPointOfInterestStorage()
                     .getPosition(VillagerProfession.NONE.getWorkStation().getCompletionCondition(),
                             (pos) -> this.canReachHome(first, pos), first.getBlockPos(),
-                            CONFIG.villagersGeneralConfig.findPOIRange);
+                            CONFIG.villagerPathfindingConfig.findPOIRange);
             if (optionalWorkstation.isEmpty()) {
                 world.sendEntityStatus(second, EntityStatuses.ADD_VILLAGER_ANGRY_PARTICLES);
                 world.sendEntityStatus(first, EntityStatuses.ADD_VILLAGER_ANGRY_PARTICLES);
@@ -51,7 +51,7 @@ public abstract class VillagerBreedTaskMixin extends Task<VillagerEntity> {
             method = "getReachableHome(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/VillagerEntity;)Ljava/util/Optional;",
             constant = @Constant(intValue = 48))
     private int replaceGetReachableHomeDistance(int value) {
-        return CONFIG.villagersGeneralConfig.findPOIRange;
+        return CONFIG.villagerPathfindingConfig.findPOIRange;
     }
 
 
