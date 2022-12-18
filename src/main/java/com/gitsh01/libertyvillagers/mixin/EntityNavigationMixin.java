@@ -20,9 +20,6 @@ public abstract class EntityNavigationMixin {
     @Shadow
     private Path currentPath;
 
-    public EntityNavigationMixin(MobEntity entity, World world) {
-    }
-
     @Inject(method = "continueFollowingPath", at = @At("HEAD"), cancellable = true)
     protected void continueFollowingPath(CallbackInfo ci) {
         if (this.entity.getType() == EntityType.VILLAGER || this.entity.getType() == EntityType.IRON_GOLEM) {

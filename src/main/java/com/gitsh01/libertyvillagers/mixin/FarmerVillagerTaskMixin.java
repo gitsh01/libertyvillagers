@@ -1,13 +1,11 @@
 package com.gitsh01.libertyvillagers.mixin;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.FarmerVillagerTask;
-import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
@@ -33,11 +31,7 @@ import java.util.List;
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 @Mixin(FarmerVillagerTask.class)
-public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
-    public FarmerVillagerTaskMixin() {
-        super(ImmutableMap.of());
-    }
-
+public abstract class FarmerVillagerTaskMixin  {
     private static final int MAX_RUN_TIME = 20 * 60; // One minute.
 
     @Shadow
@@ -56,13 +50,6 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
     @Shadow
     @Nullable
     abstract BlockPos chooseRandomTarget(ServerWorld world);
-
-    @Inject(method = "<init>()V",
-            at = @At("TAIL"))
-    public void replaceFarmerVillagerTaskRunTime(CallbackInfo ci) {
-        ((TaskAccessorMixin)this).setMaxRunTime(MAX_RUN_TIME);
-        ((TaskAccessorMixin)this).setMinRunTime(MAX_RUN_TIME);
-    }
 
     @Inject(method = "shouldRun", at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity,
