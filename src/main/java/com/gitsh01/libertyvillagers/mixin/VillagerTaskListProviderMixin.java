@@ -90,10 +90,9 @@ public abstract class VillagerTaskListProviderMixin {
         cir.cancel();
     }
 
-    @ModifyArg(method = "createMeetTasks(Lnet/minecraft/village/VillagerProfession;F)" +
-            "Lcom/google/common/collect/ImmutableList;",
+    @ModifyArg(method = "createMeetTasks(Lnet/minecraft/village/VillagerProfession;F)Lcom/google/common/collect/ImmutableList;",
             at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/entity/ai/brain/task/VillagerWalkTowardsTask;<init>(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)V"),
+            target = "Lnet/minecraft/entity/ai/brain/task/VillagerWalkTowardsTask;create(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)Lnet/minecraft/entity/ai/brain/task/SingleTickTask;"),
             index = 2)
     private static int replaceCompletionRangeForWalkTowardsMeetTask(int completionRange) {
         return Math.max(CONFIG.villagerPathfindingConfig.minimumPOISearchDistance, completionRange) + 3;
