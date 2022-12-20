@@ -1,4 +1,10 @@
 
+## [1.0.8+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
+
+
+### Bug Fixes
+
+ -  Fixed a crash on tick in server mode with optimizations. ([aafd4538b40256f](https://gitlab.com/html-validate/html-validate/commit/aafd4538b40256f7b658da29f65a90a140e18e23))
 
 ## [1.0.7+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.7+1.19.2) (2022-12-18)
 
