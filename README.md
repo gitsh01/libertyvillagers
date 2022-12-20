@@ -15,7 +15,7 @@ provide a better experience for your villagers!
 * Adjust how long a villager will travel to Points of Interest
 * Adjust how close a villager needs to get to use a Point of Interest
 * Optional - Heal Villagers when they wake up (like Bedrock)
-* Optional - Prioritize villagers avoiding cactus, water, rails, trapdoors, and powerdered snow.
+* Optional - Prioritize villagers avoiding cactus, water, rails, trapdoors, and powdered snow.
 * Optional - Pathfinding fix for villagers becoming "stuck" near walls/fences
 * Optional - Prevent villagers from climbing up ladders and vines (they don't know how to climb back down, poor dears)
 * Adjust the distance villagers will consider "safe" for jumping down from ledges
