@@ -1,7 +1,5 @@
 package com.gitsh01.libertyvillagers.mixin;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.WalkTowardJobSiteTask;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -16,17 +14,6 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 @Mixin(WalkTowardJobSiteTask.class)
 public class WalkTowardJobSiteTaskMixin {
-
-    @Inject(method = "<init>(F)V",
-            at = @At("TAIL"))
-    public void replaceRequiredMemoryModule(float speed, CallbackInfo ci) {
-        // Prevent the task from spamming walk towards job site over and over once a walk target
-        // has already been set.
-        ((TaskAccessorMixin)this).setRequiredMemoryStates(
-                ImmutableMap.of(MemoryModuleType.POTENTIAL_JOB_SITE, MemoryModuleState.VALUE_PRESENT,
-                        MemoryModuleType.WALK_TARGET, MemoryModuleState.VALUE_ABSENT));
-    }
-
     @Inject(method = "keepRunning",
             at = @At("HEAD"),
             cancellable = true)
