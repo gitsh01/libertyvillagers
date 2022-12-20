@@ -219,8 +219,8 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 	file = file("changelog.md")
 	fromRepo = file(".")
 	prependToFile = true
-	fromRef = "1.0.6+1.19.3"
-	toRef = "1.0.7+1.19.3"
+	fromRef = "1.0.7+1.19.3"
+	toRef = "1.0.8+1.19.3"
 	templateContent = """
 {{#tags}}
 {{#ifEquals name "Unreleased"}}
