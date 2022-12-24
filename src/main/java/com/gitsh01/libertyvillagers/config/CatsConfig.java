@@ -24,4 +24,10 @@ public class CatsConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean allBlackCats = false;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean catsStayNearBell = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int catsMaxBellRange = 128;
 }

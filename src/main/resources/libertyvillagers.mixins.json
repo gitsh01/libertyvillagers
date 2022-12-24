@@ -30,6 +30,7 @@
     "VillagerTaskListProviderMixin",
     "VillagerWalkTowardsTaskMixin",
     "WanderAroundTaskMixin",
+    "WanderAroundFarGoalMixin",
     "WanderNearTargetGoalMixin",
     "WalkHomeTaskMixin",
     "WalkToNearestVisibleWantedItemTaskMixin",
