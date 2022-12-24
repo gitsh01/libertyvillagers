@@ -39,4 +39,10 @@ public class GolemsConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int golemSpawnLimitRange = 128;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean golemStayNearBell = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int golemMaxBellRange = 128;
 }
