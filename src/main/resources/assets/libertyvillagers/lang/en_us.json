@@ -27,6 +27,8 @@
   "text.autoconfig.LibertyVillagers.option.catsConfig.catsMaxBellRange": "Cat Max Bell Range",
   "text.autoconfig.LibertyVillagers.option.catsConfig.catsMaxBellRange.@Tooltip[0]": "The maximum distance a cat will move",
   "text.autoconfig.LibertyVillagers.option.catsConfig.catsMaxBellRange.@Tooltip[1]": "away from the nearest bell.",
+  "text.autoconfig.LibertyVillagers.option.catsConfig.catsDontClimb": "Cats Don't Climb",
+  "text.autoconfig.LibertyVillagers.option.catsConfig.catsDontClimb.@Tooltip": "Prevents cats from climbing up vines/ladders they can't climb down.",
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerStatRange": "Villagerstats Command Range",
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerStatRange.@Tooltip[0]": "Euclidean Distance used for finding villagers for the",
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerStatRange.@Tooltip[1]": "villagerstats command.",

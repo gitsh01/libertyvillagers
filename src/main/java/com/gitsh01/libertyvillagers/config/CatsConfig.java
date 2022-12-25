@@ -30,4 +30,7 @@ public class CatsConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int catsMaxBellRange = 128;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean catsDontClimb = true;
 }

@@ -32,6 +32,10 @@ public abstract class LivingEntityMixin extends Entity {
             cir.setReturnValue(false);
             cir.cancel();
         }
+        if (entity.getType() == EntityType.CAT && CONFIG.catsConfig.catsDontClimb) {
+            cir.setReturnValue(false);
+            cir.cancel();
+        }
     }
 
     @Inject(method = "getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D", at = @At(value = "HEAD"),
