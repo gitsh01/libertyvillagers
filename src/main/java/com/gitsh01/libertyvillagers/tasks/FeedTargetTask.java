@@ -16,23 +16,24 @@ public class FeedTargetTask extends HealTargetTask {
     private static final int COMPLETION_RANGE = 3;
 
     private final Class<? extends LivingEntity> entityClass;
-    private final Item foodType;
+    private final ImmutableSet<Item> foodTypes;
 
     private final double range;
 
     private final int maxEntities;
 
-    public FeedTargetTask(Class<? extends LivingEntity> entityClass, Item foodType, double range, int maxEntities) {
+    public FeedTargetTask(Class<? extends LivingEntity> entityClass, ImmutableSet<Item> foodTypes, double range,
+                          int maxEntities) {
         super(COMPLETION_RANGE);
         this.entityClass = entityClass;
-        this.foodType = foodType;
+        this.foodTypes = foodTypes;
         this.range = range;
         this.maxEntities = maxEntities;
     }
 
     @SuppressWarnings("unchecked")
     protected List<LivingEntity> getPossiblePatients(ServerWorld serverWorld, VillagerEntity villagerEntity) {
-        if (!villagerEntity.getInventory().containsAny(ImmutableSet.of(foodType))) {
+        if (!villagerEntity.getInventory().containsAny(foodTypes)) {
             return Lists.newArrayList();
         }
 
@@ -56,13 +57,13 @@ public class FeedTargetTask extends HealTargetTask {
             return;
         }
         SimpleInventory simpleInventory = villagerEntity.getInventory();
-        if (!simpleInventory.containsAny(ImmutableSet.of(foodType))) {
+        if (!simpleInventory.containsAny(foodTypes)) {
             return;
         }
 
         for (int i = 0; i < simpleInventory.size(); ++i) {
             ItemStack itemStack = simpleInventory.getStack(i);
-            if (itemStack.isEmpty() || itemStack.getItem() != foodType) continue;
+            if (itemStack.isEmpty() || !foodTypes.contains(itemStack.getItem())) continue;
             animal.lovePlayer(null);
             itemStack.decrement(1);
             break;
