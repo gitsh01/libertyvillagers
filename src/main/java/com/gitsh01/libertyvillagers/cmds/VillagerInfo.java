@@ -113,6 +113,9 @@ public class VillagerInfo {
     public static List<Text> getEntityInfo(ServerWorld serverWorld, Entity entity) {
         List<Text> lines = new ArrayList<>();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.title"));
+        if (entity == null) {
+            return lines;
+        }
         Text name = entity.getDisplayName();
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.name", name));
 

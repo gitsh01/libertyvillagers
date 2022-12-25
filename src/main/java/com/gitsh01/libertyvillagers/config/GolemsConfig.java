@@ -45,4 +45,13 @@ public class GolemsConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int golemMaxBellRange = 128;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean golemMoveToShore = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int golemMoveToShoreRange = 128;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean golemsDontClimb = true;
 }

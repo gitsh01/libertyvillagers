@@ -28,14 +28,20 @@ public abstract class LivingEntityMixin extends Entity {
             cir.setReturnValue(false);
             cir.cancel();
         }
+        if (entity.getType() == EntityType.IRON_GOLEM && CONFIG.golemsConfig.golemsDontClimb) {
+            cir.setReturnValue(false);
+            cir.cancel();
+        }
     }
 
     @Inject(method = "getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D", at = @At(value = "HEAD"),
             cancellable = true)
-    public void replaceAttributeValueForVillagers(EntityAttribute attribute, CallbackInfoReturnable<Double> cir) {
+    public void replaceAttributeValueForVillagersAndGolems(EntityAttribute attribute,
+                                                         CallbackInfoReturnable<Double> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity == null) return;
-        if (entity.getType() == EntityType.VILLAGER && attribute == EntityAttributes.GENERIC_FOLLOW_RANGE) {
+        if ((entity.getType() == EntityType.VILLAGER || entity.getType() == EntityType.IRON_GOLEM) &&
+                attribute == EntityAttributes.GENERIC_FOLLOW_RANGE) {
             cir.setReturnValue((double) CONFIG.villagerPathfindingConfig.findPOIRange);
             cir.cancel();
         }

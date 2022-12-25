@@ -26,13 +26,13 @@ public abstract class WanderNearTargetGoalMixin {
 
     @Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
     private void canStartIfNotTooFarFromBell(CallbackInfoReturnable<Boolean> cir) {
-        if (!CONFIG.golemsConfig.golemStayNearBell) {
-            return;
-        }
         if (this.mob.getType() != EntityType.IRON_GOLEM) {
             return;
         }
-        if (this.mob.getTarget() != null) {
+        if (this.mob.getTarget() == null) {
+            return;
+        }
+        if (CONFIG.golemsConfig.golemStayNearBell) {
             Vec3d targetPos = this.mob.getTarget().getPos();
             ServerWorld serverWorld = (ServerWorld) this.mob.world;
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
@@ -47,6 +47,12 @@ public abstract class WanderNearTargetGoalMixin {
                     cir.setReturnValue(false);
                     cir.cancel();
                 }
+            }
+        }
+        if (CONFIG.golemsConfig.golemsAvoidWater) {
+            if (this.mob.getTarget().isTouchingWater()) {
+                cir.setReturnValue(false);
+                cir.cancel();
             }
         }
     }
