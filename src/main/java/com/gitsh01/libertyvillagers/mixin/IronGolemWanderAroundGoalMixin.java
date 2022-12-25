@@ -14,7 +14,9 @@ import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestTypes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
@@ -83,5 +85,12 @@ public abstract class IronGolemWanderAroundGoalMixin extends WanderAroundGoal {
                 cir.cancel();
             }
         }
+    }
+
+    @ModifyConstant(
+            method = "findVillagerPos",
+            constant = @Constant(doubleValue = 32.0))
+    private double replaceFindVillagerRange(double value) {
+        return CONFIG.villagerPathfindingConfig.findPOIRange;
     }
 }
