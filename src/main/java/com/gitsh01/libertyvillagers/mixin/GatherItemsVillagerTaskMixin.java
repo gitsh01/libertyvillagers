@@ -17,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Set;
 
+import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
+
 @Mixin(GatherItemsVillagerTask.class)
 public abstract class GatherItemsVillagerTaskMixin {
 
@@ -40,5 +42,11 @@ public abstract class GatherItemsVillagerTaskMixin {
             GatherItemsVillagerTaskMixin.giveHalfOfStack(villagerEntity, ImmutableSet.of(Items.PUMPKIN),
                     villagerEntity2);
         }
+        if ((CONFIG.villagersProfessionConfig.leatherworkersFeedCows && villagerEntity2.getVillagerData().getProfession() == VillagerProfession.LEATHERWORKER) ||
+            (CONFIG.villagersProfessionConfig.butchersFeedCows && villagerEntity2.getVillagerData().getProfession() == VillagerProfession.BUTCHER)) {
+            GatherItemsVillagerTaskMixin.giveHalfOfStack(villagerEntity, ImmutableSet.of(Items.WHEAT),
+                    villagerEntity2);
+        }
+
     }
 }

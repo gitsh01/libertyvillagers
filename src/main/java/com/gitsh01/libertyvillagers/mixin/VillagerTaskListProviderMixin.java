@@ -1,5 +1,6 @@
 package com.gitsh01.libertyvillagers.mixin;
 
+import com.gitsh01.libertyvillagers.tasks.FeedTargetTask;
 import com.gitsh01.libertyvillagers.tasks.HealGolemTask;
 import com.gitsh01.libertyvillagers.tasks.ThrowRegenPotionAtTask;
 import com.google.common.collect.ImmutableList;
@@ -8,7 +9,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.*;
+import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.village.VillagerProfession;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -47,6 +50,13 @@ public abstract class VillagerTaskListProviderMixin {
                     secondaryWorkTask = new HealGolemTask();
                 }
                 break;
+            case "butcher":
+                if (CONFIG.villagersProfessionConfig.butchersFeedCows) {
+                    secondaryWorkTask = new FeedTargetTask(CowEntity.class, Items.WHEAT,
+                            CONFIG.villagersProfessionConfig.butchersFeedCowsRange,
+                            CONFIG.villagersProfessionConfig.butchersMaxCows);
+                }
+                break;
             case "cleric":
                 if (CONFIG.villagersProfessionConfig.clericThrowsPotionsAtPlayers ||
                         CONFIG.villagersProfessionConfig.clericThrowsPotionsAtVillagers) {
@@ -57,6 +67,13 @@ public abstract class VillagerTaskListProviderMixin {
                 villagerWorkTask = new FarmerVillagerTask(); // Harvest / plant seeds.
                 secondaryWorkTask = new FarmerWorkTask(); // Compost.
                 thirdWorkTask = new BoneMealTask(); // Apply bonemeal to crops.
+                break;
+            case "leatherworker":
+                if (CONFIG.villagersProfessionConfig.leatherworkersFeedCows) {
+                    secondaryWorkTask = new FeedTargetTask(CowEntity.class, Items.WHEAT,
+                            CONFIG.villagersProfessionConfig.butchersFeedCowsRange,
+                            CONFIG.villagersProfessionConfig.butchersMaxCows);
+                }
                 break;
         }
 

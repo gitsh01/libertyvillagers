@@ -34,4 +34,16 @@ public class VillagersProfessionConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     public boolean farmersHarvestPumpkins = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public boolean butchersFeedCows = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean leatherworkersFeedCows = true;
+
+    @ConfigEntry.Gui.Tooltip
+    public int butchersFeedCowsRange = 20;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int butchersMaxCows = 30;
 }
