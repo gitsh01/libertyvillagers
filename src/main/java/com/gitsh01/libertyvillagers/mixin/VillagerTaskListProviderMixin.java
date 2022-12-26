@@ -1,14 +1,17 @@
 package com.gitsh01.libertyvillagers.mixin;
 
+import com.gitsh01.libertyvillagers.tasks.FeedTargetTask;
 import com.gitsh01.libertyvillagers.tasks.HealGolemTask;
 import com.gitsh01.libertyvillagers.tasks.ThrowRegenPotionAtTask;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.*;
-import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.*;
+import net.minecraft.item.Items;
 import net.minecraft.village.VillagerProfession;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -47,6 +50,39 @@ public abstract class VillagerTaskListProviderMixin {
                     secondaryWorkTask = new HealGolemTask();
                 }
                 break;
+            case "butcher":
+                ArrayList<Pair<Task<? super VillagerEntity>, Integer>> randomTasks = new ArrayList<>();
+                if (CONFIG.villagersProfessionConfig.butchersFeedChickens) {
+                    randomTasks.add(Pair.of(new FeedTargetTask(ChickenEntity.class, ImmutableSet.of(Items.WHEAT_SEEDS,
+                            Items.BEETROOT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS),
+                            CONFIG.villagersProfessionConfig.feedAnimalsRange,
+                            CONFIG.villagersProfessionConfig.feedMaxAnimals), SECONDARY_WORK_TASK_PRIORITY));
+                }
+                if (CONFIG.villagersProfessionConfig.butchersFeedCows) {
+                    randomTasks.add(Pair.of(new FeedTargetTask(CowEntity.class, ImmutableSet.of(Items.WHEAT),
+                            CONFIG.villagersProfessionConfig.feedAnimalsRange,
+                            CONFIG.villagersProfessionConfig.feedMaxAnimals), SECONDARY_WORK_TASK_PRIORITY));
+                }
+                if (CONFIG.villagersProfessionConfig.butchersFeedPigs) {
+                    randomTasks.add(Pair.of(new FeedTargetTask(PigEntity.class, ImmutableSet.of(Items.BEETROOT,
+                            Items.POTATO, Items.CARROT),
+                            CONFIG.villagersProfessionConfig.feedAnimalsRange,
+                            CONFIG.villagersProfessionConfig.feedMaxAnimals), SECONDARY_WORK_TASK_PRIORITY));
+                }
+                if (CONFIG.villagersProfessionConfig.butchersFeedRabbits) {
+                    randomTasks.add(Pair.of(new FeedTargetTask(RabbitEntity.class, ImmutableSet.of(Items.CARROT),
+                            CONFIG.villagersProfessionConfig.feedAnimalsRange,
+                            CONFIG.villagersProfessionConfig.feedMaxAnimals), SECONDARY_WORK_TASK_PRIORITY));
+                }
+                if (CONFIG.villagersProfessionConfig.butchersFeedSheep) {
+                    randomTasks.add(Pair.of(new FeedTargetTask(SheepEntity.class, ImmutableSet.of(Items.WHEAT),
+                            CONFIG.villagersProfessionConfig.feedAnimalsRange,
+                            CONFIG.villagersProfessionConfig.feedMaxAnimals), SECONDARY_WORK_TASK_PRIORITY));
+                }
+                if (randomTasks.size() > 0) {
+                    secondaryWorkTask = new RandomTask<>(ImmutableList.copyOf(randomTasks));
+                }
+                break;
             case "cleric":
                 if (CONFIG.villagersProfessionConfig.clericThrowsPotionsAtPlayers ||
                         CONFIG.villagersProfessionConfig.clericThrowsPotionsAtVillagers) {
@@ -57,6 +93,28 @@ public abstract class VillagerTaskListProviderMixin {
                 villagerWorkTask = new FarmerVillagerTask(); // Harvest / plant seeds.
                 secondaryWorkTask = new FarmerWorkTask(); // Compost.
                 thirdWorkTask = new BoneMealTask(); // Apply bonemeal to crops.
+                break;
+            case "fletcher":
+                if (CONFIG.villagersProfessionConfig.fletchersFeedChickens) {
+                    secondaryWorkTask = new FeedTargetTask(ChickenEntity.class, ImmutableSet.of(Items.WHEAT_SEEDS,
+                            Items.BEETROOT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS),
+                            CONFIG.villagersProfessionConfig.feedAnimalsRange,
+                            CONFIG.villagersProfessionConfig.feedMaxAnimals);
+                }
+                break;
+            case "leatherworker":
+                if (CONFIG.villagersProfessionConfig.leatherworkersFeedCows) {
+                    secondaryWorkTask = new FeedTargetTask(CowEntity.class,ImmutableSet.of(Items.WHEAT),
+                            CONFIG.villagersProfessionConfig.feedAnimalsRange,
+                            CONFIG.villagersProfessionConfig.feedMaxAnimals);
+                }
+                break;
+            case "shepherd":
+                if (CONFIG.villagersProfessionConfig.shepherdsFeedSheep) {
+                    secondaryWorkTask = new FeedTargetTask(SheepEntity.class, ImmutableSet.of(Items.WHEAT),
+                            CONFIG.villagersProfessionConfig.feedAnimalsRange,
+                            CONFIG.villagersProfessionConfig.feedMaxAnimals);
+                }
                 break;
         }
 

@@ -38,6 +38,12 @@ provide a better experience for your villagers!
 * Adjust how far farmers will look for crops in x/z and y planes.
 * Optional - Farmers prefer to plant the same type of crop they just harvested
 * Optional - Farmers can plant and harvest melons and/or pumpkins
+* Optional - Butchers can feed chickens, cows, pigs, rabbits, and sheep if they have the appropriate food
+* Optional - Fletchers can feed chickens if they have seeds.
+* Optional - Leatherworkers can feed cows if they have wheat.
+* Optional - Shepherds can feed sheep if they have wheat.
+* Adjust how far villagers will look for animals to feed.
+* Prevent the villager from feeding if there are too many specific animals in range.
 
 ### Golems
 
@@ -45,6 +51,9 @@ provide a better experience for your villagers!
 * Optional - Golems don't attack players
 * Optional - Prevent Villagers from summoning Golems (for when there's a Golem overpopulation problem)
 * Optional - Choose how many golems can spawn in a specified radius
+* Optional - Underwater Golems path back to shore when done attacking monsters.
+* Optional - Provide a maxmum range for Golems to path away from the nearest meeting point.
+* Optional - Prevent Golems from climbing up ladders/vines.
 
 ### Cats
 
@@ -52,6 +61,8 @@ provide a better experience for your villagers!
 * Optional - Cats don't despawn
 * Optional - Black cats can spawn at any time (not just during a full moon)
 * Optional - Every cat is a black cat (as ordered by my cat)
+* Optional - Provide a maxmum range for cats to path away from the nearest meeting point.
+* Optional - Prevent cats from climbing up ladders/vines.
 
 ### Debug
 

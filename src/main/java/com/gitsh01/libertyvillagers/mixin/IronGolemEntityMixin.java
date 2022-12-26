@@ -26,10 +26,9 @@ public abstract class IronGolemEntityMixin extends PathAwareEntity {
         if (CONFIG.golemsConfig.golemsAvoidCactus) {
             this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, -1);
         }
-
         if (CONFIG.golemsConfig.golemsAvoidWater) {
-            this.setPathfindingPenalty(PathNodeType.WATER, -1);
-            this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1);
+            this.setPathfindingPenalty(PathNodeType.WATER, 2);
+            this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 1);
         }
         if (CONFIG.golemsConfig.golemsAvoidRail) {
             this.setPathfindingPenalty(PathNodeType.RAIL, -1);

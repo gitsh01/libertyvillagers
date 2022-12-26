@@ -16,6 +16,7 @@
     "GatherItemsVillagerTaskMixin",
     "GoToWorkTaskMixin",
     "IronGolemEntityMixin",
+    "IronGolemWanderAroundGoalMixin",
     "LandPathNodeMakerMixin",
     "LivingEntityMixin",
     "MemoryQueryResultAccessorMixin",
@@ -31,7 +32,9 @@
     "WalkHomeTaskMixin",
     "WalkToNearestVisibleWantedItemTaskMixin",
     "WalkTowardJobSiteTaskMixin",
-    "WanderAroundTaskMixin"
+    "WanderAroundTaskMixin",
+    "WanderAroundFarGoalMixin",
+    "WanderNearTargetGoalMixin"
   ],
   "client": [],
   "server": [
