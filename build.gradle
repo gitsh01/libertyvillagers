@@ -18,7 +18,7 @@ apply from: 'https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/s
 apply from: 'https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/publish/changelog.gradle'
 
 archivesBaseName = project.archives_base_name
-version = "${project.mod_version}+${project.minecraft_version}"
+version = "${project.mod_version}+fabric+${project.minecraft_version}"
 group = project.maven_group
 
 repositories {
@@ -219,8 +219,8 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 	file = file("changelog.md")
 	fromRepo = file(".")
 	prependToFile = true
-	fromRef = "1.0.7+1.19.2"
-	toRef = "1.0.8+1.19.2"
+	fromRef = "1.0.8+${project.minecraft_version}"
+	toRef = "${project.mod_version}+fabric+${project.minecraft_version}"
 	templateContent = """
 {{#tags}}
 {{#ifEquals name "Unreleased"}}

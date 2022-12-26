@@ -16,6 +16,7 @@
     "GatherItemsVillagerTaskMixin",
     "GoToWorkTaskMixin",
     "IronGolemEntityMixin",
+    "IronGolemWanderAroundGoalMixin",
     "LandPathNodeMakerMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
@@ -29,6 +30,8 @@
     "VillagerTaskListProviderMixin",
     "VillagerWalkTowardsTaskMixin",
     "WanderAroundTaskMixin",
+    "WanderAroundFarGoalMixin",
+    "WanderNearTargetGoalMixin",
     "WalkHomeTaskMixin",
     "WalkToNearestVisibleWantedItemTaskMixin",
     "WalkTowardJobSiteTaskMixin"
