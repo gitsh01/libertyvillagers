@@ -17,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Set;
 
+import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
+
 @Mixin(GatherItemsVillagerTask.class)
 public abstract class GatherItemsVillagerTaskMixin {
 
@@ -38,6 +40,34 @@ public abstract class GatherItemsVillagerTaskMixin {
         }
         if (villagerEntity2.getVillagerData().getProfession() == VillagerProfession.FARMER) {
             GatherItemsVillagerTaskMixin.giveHalfOfStack(villagerEntity, ImmutableSet.of(Items.PUMPKIN),
+                    villagerEntity2);
+        }
+        if ((CONFIG.villagersProfessionConfig.leatherworkersFeedCows &&
+                villagerEntity2.getVillagerData().getProfession() == VillagerProfession.LEATHERWORKER) ||
+                (CONFIG.villagersProfessionConfig.butchersFeedCows &&
+                        villagerEntity2.getVillagerData().getProfession() == VillagerProfession.BUTCHER) ||
+                (CONFIG.villagersProfessionConfig.butchersFeedSheep &&
+                        villagerEntity2.getVillagerData().getProfession() == VillagerProfession.BUTCHER) ||
+                (CONFIG.villagersProfessionConfig.shepherdsFeedSheep &&
+                        villagerEntity2.getVillagerData().getProfession() == VillagerProfession.SHEPHERD)) {
+            GatherItemsVillagerTaskMixin.giveHalfOfStack(villagerEntity, ImmutableSet.of(Items.WHEAT), villagerEntity2);
+        }
+        if (CONFIG.villagersProfessionConfig.butchersFeedPigs &&
+                villagerEntity2.getVillagerData().getProfession() == VillagerProfession.BUTCHER) {
+            GatherItemsVillagerTaskMixin.giveHalfOfStack(villagerEntity, ImmutableSet.of(Items.CARROT, Items.POTATO),
+                    villagerEntity2);
+        }
+        if ((CONFIG.villagersProfessionConfig.butchersFeedChickens &&
+                villagerEntity2.getVillagerData().getProfession() == VillagerProfession.BUTCHER) ||
+                (CONFIG.villagersProfessionConfig.fletchersFeedChickens &&
+                        villagerEntity2.getVillagerData().getProfession() == VillagerProfession.FLETCHER)) {
+            GatherItemsVillagerTaskMixin.giveHalfOfStack(villagerEntity,
+                    ImmutableSet.of(Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.MELON_SEEDS, Items.PUMPKIN_SEEDS),
+                    villagerEntity2);
+        }
+        if (CONFIG.villagersProfessionConfig.butchersFeedRabbits &&
+                villagerEntity2.getVillagerData().getProfession() == VillagerProfession.BUTCHER) {
+            GatherItemsVillagerTaskMixin.giveHalfOfStack(villagerEntity, ImmutableSet.of(Items.CARROT),
                     villagerEntity2);
         }
     }

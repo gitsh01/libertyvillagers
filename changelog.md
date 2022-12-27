@@ -1,6 +1,18 @@
 
-## [1.0.8+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
+## [1.0.9+fabric+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.9+fabric+1.19.2) (2022-12-26)
 
+### Features
+
+ -  Added option for butchers to feed rabbits, chickens, sheep, and pigs. ([32524bf5ef99ef0](https://gitlab.com/html-validate/html-validate/commit/32524bf5ef99ef091a7950a505403535a7d5485b))
+ -  Added option for leatherworkers and butchers to feed cows with a specified range and max number of cows. ([ecd537abec64b74](https://gitlab.com/html-validate/html-validate/commit/ecd537abec64b74a79b0412220190c6bf56e9f4c))
+ -  Added option to prevent cats from climbing up ladders/vines they can't climb down. ([454961b1ef53cf9](https://gitlab.com/html-validate/html-validate/commit/454961b1ef53cf9439c1f44c98d4e1b93daa4d78))
+ -  Increased range of Golems searching for scared villagers from 32 to findPOIRange. ([682587dfeffb004](https://gitlab.com/html-validate/html-validate/commit/682587dfeffb00437014674a213135bd31ccb24a))
+ -  Added option to make Golems move back to shore when in water. ([f8bba3d96d6b6ee](https://gitlab.com/html-validate/html-validate/commit/f8bba3d96d6b6ee73d47c5c9eb2c3e9dbdd0573d))
+ -  Added option to force Cats to stay within a specified range of the nearest meeting bell. ([bc240f038b7de1c](https://gitlab.com/html-validate/html-validate/commit/bc240f038b7de1ca9eb00691e4ae56336599d64b))
+ -  Added option to force Iron Golems to stay within a specified range of the nearest meeting bell. ([f02472e272d0ca6](https://gitlab.com/html-validate/html-validate/commit/f02472e272d0ca6d6b33e5d548a045bc00309d65))
+
+
+## [1.0.8+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
 
 ### Bug Fixes
 

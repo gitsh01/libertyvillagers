@@ -1,5 +1,6 @@
 package com.gitsh01.libertyvillagers.mixin;
 
+import com.gitsh01.libertyvillagers.goal.ReturnToShoreGoal;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -26,10 +27,9 @@ public abstract class IronGolemEntityMixin extends PathAwareEntity {
         if (CONFIG.golemsConfig.golemsAvoidCactus) {
             this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, -1);
         }
-
         if (CONFIG.golemsConfig.golemsAvoidWater) {
-            this.setPathfindingPenalty(PathNodeType.WATER, -1);
-            this.setPathfindingPenalty(PathNodeType.WATER_BORDER, -1);
+            this.setPathfindingPenalty(PathNodeType.WATER, 2);
+            this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 1);
         }
         if (CONFIG.golemsConfig.golemsAvoidRail) {
             this.setPathfindingPenalty(PathNodeType.RAIL, -1);
@@ -49,5 +49,12 @@ public abstract class IronGolemEntityMixin extends PathAwareEntity {
             cir.setReturnValue(false);
             cir.cancel();
         }
+    }
+
+    @Inject(method = "initGoals",
+        at = @At("HEAD"),
+        cancellable = true)
+    protected void initGoalsAddReturnToShore(CallbackInfo ci) {
+        this.goalSelector.add(1, new ReturnToShoreGoal(this, 1.0));
     }
 }
