@@ -197,7 +197,7 @@
   "text.autoconfig.LibertyVillagers.option.golemsConfig.golemMoveToShore.@Tooltip[1]": "entering water.",
   "text.autoconfig.LibertyVillagers.option.golemsConfig.golemMoveToShoreRange": "Golems Move To Shore Range",
   "text.autoconfig.LibertyVillagers.option.golemsConfig.golemMoveToShoreRange.@Tooltip[0]": "Maximum range from the golem that the golem will",
-  "text.autoconfig.LibertyVillagers.option.golemsConfig.golemMoveToShoreRange.@Tooltip[1]": "use to seek land.",
+  "text.autoconfig.LibertyVillagers.option.golemsConfig.golemMoveToShoreRange.@Tooltip[1]": "use to seek land. EXTREMELY EXPENSIVE.",
   "text.autoconfig.LibertyVillagers.option.golemsConfig.golemsDontClimb": "Golems Don't Climb",
   "text.autoconfig.LibertyVillagers.option.golemsConfig.golemsDontClimb.@Tooltip[0]": "Iron Golems cannot climb ladders or vines, as they",
   "text.autoconfig.LibertyVillagers.option.golemsConfig.golemsDontClimb.@Tooltip[1]": "cannot pathfind down.",

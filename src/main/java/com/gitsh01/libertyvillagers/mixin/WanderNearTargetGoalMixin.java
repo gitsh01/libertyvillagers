@@ -24,8 +24,7 @@ public abstract class WanderNearTargetGoalMixin {
     @Shadow
     private PathAwareEntity mob;
 
-    @Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
-    private void canStartIfNotTooFarFromBell(CallbackInfoReturnable<Boolean> cir) {
+    void checkForValidTarget(CallbackInfoReturnable<Boolean> cir) {
         if (this.mob.getType() != EntityType.IRON_GOLEM) {
             return;
         }
@@ -55,5 +54,15 @@ public abstract class WanderNearTargetGoalMixin {
                 cir.cancel();
             }
         }
+    }
+
+    @Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
+    private void canStartIfNotTooFarFromBell(CallbackInfoReturnable<Boolean> cir) {
+        checkForValidTarget(cir);
+    }
+
+    @Inject(method = "shouldContinue", at = @At("HEAD"), cancellable = true)
+    public void shouldContinueIfNotTooFarFromBell(CallbackInfoReturnable<Boolean> cir) {
+        checkForValidTarget(cir);
     }
 }
