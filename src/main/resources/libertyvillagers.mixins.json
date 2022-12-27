@@ -29,12 +29,12 @@
     "VillagerEntityMixin",
     "VillagerTaskListProviderMixin",
     "VillagerWalkTowardsTaskMixin",
-    "WanderAroundTaskMixin",
-    "WanderAroundFarGoalMixin",
-    "WanderNearTargetGoalMixin",
     "WalkHomeTaskMixin",
     "WalkToNearestVisibleWantedItemTaskMixin",
-    "WalkTowardJobSiteTaskMixin"
+    "WalkTowardJobSiteTaskMixin",
+    "WanderAroundFarGoalMixin",
+    "WanderAroundTaskMixin",
+    "WanderNearTargetGoalMixin"
   ],
   "client": [],
   "server": [
