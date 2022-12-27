@@ -22,6 +22,7 @@ public class ReturnToShoreGoal extends WanderAroundGoal {
 
         public ReturnToShoreGoal(PathAwareEntity pathAwareEntity, double speed) {
             super(pathAwareEntity, speed, MIN_CHANCE, false);
+            this.ignoringChance = false;
         }
 
         @Override
