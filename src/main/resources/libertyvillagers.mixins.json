@@ -20,7 +20,7 @@
     "LandPathNodeMakerMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
-    "PointOfInterestTypesMixin",
+    "PointOfInterestTypeMixin",
     "SecondaryPointsOfInterestSensorMixin",
     "SleepTaskMixin",
     "TakeJobSiteTaskMixin",

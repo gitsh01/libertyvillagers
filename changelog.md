@@ -1,6 +1,5 @@
 
-
-## [1.0.9+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.9+fabric+1.19.2) (2022-12-26)
+## [1.0.9+fabric+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.9+fabric+1.19.2) (2022-12-26)
 
 ### Features
 
@@ -13,16 +12,13 @@
  -  Added option to force Iron Golems to stay within a specified range of the nearest meeting bell. ([f02472e272d0ca6](https://gitlab.com/html-validate/html-validate/commit/f02472e272d0ca6d6b33e5d548a045bc00309d65))
 
 
-## [1.0.8+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
-
+## [1.0.8+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
 
 ### Bug Fixes
 
  -  Fixed a crash on tick in server mode with optimizations. ([aafd4538b40256f](https://gitlab.com/html-validate/html-validate/commit/aafd4538b40256f7b658da29f65a90a140e18e23))
 
- 
-
-## [1.0.7+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.7+1.19.2) (2022-12-18)
+## [1.0.7+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.7+1.19.2) (2022-12-18)
 
 ### Features
 
@@ -42,7 +38,7 @@
  -  Improvements to applying fuzzy logic and teleporting when the villager is stuck. ([23cfb5485fc0206](https://gitlab.com/html-validate/html-validate/commit/23cfb5485fc0206beba883a8b9e515e7a65bd998))
  -  Improving farmer logic when harvesting crops. ([085a894acb1e990](https://gitlab.com/html-validate/html-validate/commit/085a894acb1e9906b80b1b8559ccea08512589a7))
 
- ## [1.0.6+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.6+1.19.2) (2022-12-07)
+ ## [1.0.6+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.6+1.19.2) (2022-12-07)
 
 ### Features
 
@@ -55,8 +51,7 @@
  -  Fixed villager info overlay not showing villager memories in integrated server mode. ([997ffcc88d076bf](https://gitlab.com/html-validate/html-validate/commit/997ffcc88d076bfef6643d04fa1d542d1453ccaa))
  -  Fixed untranslated string "baby" in villager stats. ([ee54c7dce01ddfe](https://gitlab.com/html-validate/html-validate/commit/ee54c7dce01ddfe684f6273310806b55cc337051))
 
-## [1.0.5+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.5+1.19.2) (2022-12-01)
-
+## [1.0.5+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.5+1.18.2) (2022-12-01)
 
 ### Bug Fixes
 
@@ -64,8 +59,7 @@
  -  Further improvements for villager bed pathfinding. ([c9561a6cd872c4e](https://gitlab.com/html-validate/html-validate/commit/c9561a6cd872c4ee3f51caa68bf2b8b33d923b8e))
 
  
-
-## [1.0.4+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.4+1.19.2) (2022-11-28)
+## [1.0.4+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.4+1.18.2) (2022-11-28)
 
 ### Features
 
@@ -82,28 +76,11 @@
 -  Fixed translations of villager professions in VillagerInfo. ([36fee31bb2f44f6](https://gitlab.com/html-validate/html-validate/commit/36fee31bb2f44f62c643cc12f69830b9ab27239f))
 -  Fix for crash when doing villagerinfo at a villager who is about to die. ([bc9b31a3e47b6eb](https://gitlab.com/html-validate/html-validate/commit/bc9b31a3e47b6ebd6973070e47c043b92c4599ce))
 
-
-## [1.0.3+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.3+1.19.2) (2022-11-18)
+## [1.0.3+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.3+1.18.2) (2022-11-19)
 
 ### Features
 
-- Updated README.md with latest
-  changes. ([a0cce546292fd6c](https://gitlab.com/html-validate/html-validate/commit/a0cce546292fd6c6bf1f4cb43cc8c4df1aaf371e))
-- Added thanks to Kressety for the simplified chinese
-  translations. ([49cba31dae407d6](https://gitlab.com/html-validate/html-validate/commit/49cba31dae407d61566a581b78424dc539aae1ea))
-- Options for cats: configure how many cats spawn in which radius, prevent cats from
-  despawning. ([3be29f707c91af8](https://gitlab.com/html-validate/html-validate/commit/3be29f707c91af8aaadc624bc8a5196a32628139))
-- Added option to cap the number of golems spawned by
-  villagers. ([505db7dad670735](https://gitlab.com/html-validate/html-validate/commit/505db7dad670735419fdcd1f6a17bab626e46dca))
-- Added number and position of golems, number and variant types of cats to Villager
-  Stats. ([de89c22c2614434](https://gitlab.com/html-validate/html-validate/commit/de89c22c26144341a95f6a82af59e8587cd5141d))
-- Added options for villagers to gather and consume melons as a food
-  type. ([a0de7af2903e9ff](https://gitlab.com/html-validate/html-validate/commit/a0de7af2903e9ff50a096e9ecbcb40fc713ce98c))
-- Added support for uploading to curseforge, and more support for uploading to
-  github. ([8625be72da715dc](https://gitlab.com/html-validate/html-validate/commit/8625be72da715dc319d6c830e74d8a1755cb9aa3))
-
-## [1.0.2+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.2+1.19.2) (2022-11-10)
-
+ -  Added support for 1.18.2. ([0dd1f1000e0b4b6](https://gitlab.com/html-validate/html-validate/commit/0dd1f1000e0b4b67b0accb3db528c148e3826d2d))
 
 
  
