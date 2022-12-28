@@ -10,6 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
+
 @Mixin(VillagerProfession.class)
 public abstract class VillagerProfessionMixin {
 
@@ -22,8 +24,10 @@ public abstract class VillagerProfessionMixin {
     void replaceSecondaryJobSites(CallbackInfoReturnable<ImmutableSet<Block>> cir) {
         switch (id) {
             case "librarian" -> {
-                cir.setReturnValue(ImmutableSet.of(Blocks.BOOKSHELF));
-                cir.cancel();
+                if (CONFIG.villagersProfessionConfig.librariansLookAtBooks) {
+                    cir.setReturnValue(ImmutableSet.of(Blocks.BOOKSHELF));
+                    cir.cancel();
+                }
             }
         }
     }
