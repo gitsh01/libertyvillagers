@@ -8,9 +8,8 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.math.GlobalPos;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.dynamic.GlobalPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -73,20 +72,12 @@ public abstract class BrainMixin<E extends LivingEntity> {
                 break;
             }
         }
-
-        StringBuilder name = new StringBuilder(entity != null ? entity.getName().toString() : "null");
-        if (entity != null) {
-            if (entity != null && entity.getName().getContent() instanceof TranslatableTextContent) {
-                TranslatableTextContent content = (TranslatableTextContent) entity.getName().getContent();
-                String key = content.getKey();
-                name = new StringBuilder(key.substring(key.lastIndexOf('.') + 1));
-            } else {
-                name = new StringBuilder();
-                List<Text> withoutStyle = entity.getName().withoutStyle();
-                for (Text text : withoutStyle) {
-                    name.append(text.getString());
-                }
-            }
+        
+        String name = entity != null ? entity.getName().toString() : "null";
+        if (entity != null && entity.getDisplayName() instanceof TranslatableText) {
+            TranslatableText content = (TranslatableText)entity.getName();
+            String key = content.getKey();
+            name = key.substring(key.lastIndexOf('.') + 1);
         }
 
         StringBuilder target = new StringBuilder();

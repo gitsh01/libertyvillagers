@@ -21,7 +21,7 @@
     "LivingEntityMixin",
     "MeleeAttackGoalMixin",
     "MobEntityMixin",
-    "PointOfInterestTypesMixin",
+    "PointOfInterestTypeMixin",
     "SecondaryPointsOfInterestSensorMixin",
     "SleepTaskMixin",
     "TakeJobSiteTaskMixin",

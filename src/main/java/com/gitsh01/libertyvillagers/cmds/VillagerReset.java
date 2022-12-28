@@ -1,13 +1,15 @@
 package com.gitsh01.libertyvillagers.cmds;
 
 import com.mojang.brigadier.context.CommandContext;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+
 import java.util.List;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
@@ -15,19 +17,20 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class VillagerReset {
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
                 literal("villagerreset").executes(context -> {
                     processVillagerReset(context);
                     return 1;
                 })));
         CommandRegistrationCallback.EVENT.register(
-                (dispatcher, registryAccess, environment) -> dispatcher.register(literal("vr").executes(context -> {
+                (dispatcher, dedicated) -> dispatcher.register(literal("vr").executes(context -> {
                     processVillagerReset(context);
                     return 1;
                 })));
     }
 
-    public static void processVillagerReset(CommandContext<ServerCommandSource> command) {
+    public static void processVillagerReset(CommandContext<ServerCommandSource> command) throws
+            CommandSyntaxException {
         ServerCommandSource source = command.getSource();
         ServerPlayerEntity player = source.getPlayer();
         ServerWorld serverWorld = source.getWorld();
@@ -44,6 +47,6 @@ public class VillagerReset {
             villager.getBrain().forget(MemoryModuleType.POTENTIAL_JOB_SITE);
         }
 
-        player.sendMessage(Text.translatable("text.LibertyVillagers.villagerreset"));
+        player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerreset"), false);
     }
 }
