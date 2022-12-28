@@ -1,5 +1,5 @@
 
-## [1.0.9+fabric+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.9+fabric+1.19.2) (2022-12-26)
+## [1.0.9+fabric+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.9+fabric+1.19.2) (2022-12-28)
 
 ### Features
 
@@ -10,6 +10,13 @@
  -  Added option to make Golems move back to shore when in water. ([f8bba3d96d6b6ee](https://gitlab.com/html-validate/html-validate/commit/f8bba3d96d6b6ee73d47c5c9eb2c3e9dbdd0573d))
  -  Added option to force Cats to stay within a specified range of the nearest meeting bell. ([bc240f038b7de1c](https://gitlab.com/html-validate/html-validate/commit/bc240f038b7de1ca9eb00691e4ae56336599d64b))
  -  Added option to force Iron Golems to stay within a specified range of the nearest meeting bell. ([f02472e272d0ca6](https://gitlab.com/html-validate/html-validate/commit/f02472e272d0ca6d6b33e5d548a045bc00309d65))
+
+### Bug Fixes
+
+ -  Added optional config for Librarians seeking out books. ([0b36e7c3b861d84](https://gitlab.com/html-validate/html-validate/commit/0b36e7c3b861d8431bc3e06c3dcf554aa4bf8e86))
+ -  Iron Golems shouldn't run after drowned in the water. ([b20222a77d28083](https://gitlab.com/html-validate/html-validate/commit/b20222a77d28083cbb28c96088eb827b240ccb4a))
+ -  Don't always run the ReturnToShoreGoal on the first load. ([49501979a26abf3](https://gitlab.com/html-validate/html-validate/commit/49501979a26abf3759c5f7760b2ff03cee29bb1d))
+ -  Improve golem pathfinding to shore. ([435dbd944ee67cb](https://gitlab.com/html-validate/html-validate/commit/435dbd944ee67cb0fdde17ed9cd3039a20dfb02b))
 
 
 ## [1.0.8+1.18.2](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)

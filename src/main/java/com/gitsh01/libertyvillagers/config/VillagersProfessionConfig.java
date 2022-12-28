@@ -65,4 +65,7 @@ public class VillagersProfessionConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int feedMaxAnimals = 30;
 
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public boolean librariansLookAtBooks = true;
+
 }
