@@ -26,9 +26,6 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(Brain.class)
 public abstract class BrainMixin<E extends LivingEntity> {
 
-    BrainMixin() {
-    }
-
     private LivingEntity entity;
 
     @Shadow
@@ -76,7 +73,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
 
         StringBuilder name = new StringBuilder(entity != null ? entity.getName().toString() : "null");
         if (entity != null) {
-            if (entity != null && entity.getName().getContent() instanceof TranslatableTextContent) {
+            if (entity.getName().getContent() instanceof TranslatableTextContent) {
                 TranslatableTextContent content = (TranslatableTextContent) entity.getName().getContent();
                 String key = content.getKey();
                 name = new StringBuilder(key.substring(key.lastIndexOf('.') + 1));

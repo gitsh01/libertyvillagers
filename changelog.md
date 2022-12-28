@@ -13,7 +13,7 @@
  -  Added option to force Iron Golems to stay within a specified range of the nearest meeting bell. ([f02472e272d0ca6](https://gitlab.com/html-validate/html-validate/commit/f02472e272d0ca6d6b33e5d548a045bc00309d65))
 
 
-## [1.0.8+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
+## [1.0.8+1.19.3](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
 
 
 ### Bug Fixes
@@ -22,7 +22,7 @@
 
  
 
-## [1.0.7+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.7+1.19.2) (2022-12-18)
+## [1.0.7+1.19.3](https://gitlab.com/html-validate/html-validate/compare/1.0.7+1.19.2) (2022-12-18)
 
 ### Features
 
@@ -42,7 +42,7 @@
  -  Improvements to applying fuzzy logic and teleporting when the villager is stuck. ([23cfb5485fc0206](https://gitlab.com/html-validate/html-validate/commit/23cfb5485fc0206beba883a8b9e515e7a65bd998))
  -  Improving farmer logic when harvesting crops. ([085a894acb1e990](https://gitlab.com/html-validate/html-validate/commit/085a894acb1e9906b80b1b8559ccea08512589a7))
 
- ## [1.0.6+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.6+1.19.2) (2022-12-07)
+## [1.0.6+1.19.3](https://gitlab.com/html-validate/html-validate/compare/1.0.6+1.19.2) (2022-12-07)
 
 ### Features
 

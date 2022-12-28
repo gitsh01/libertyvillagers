@@ -10,10 +10,11 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(PointOfInterestTypes.class)
 public class PointOfInterestTypesMixin {
 
-    @ModifyArg(method = "registerAndGetDefault(Lnet/minecraft/util/registry/Registry;)" +
-            "Lnet/minecraft/world/poi/PointOfInterestType;", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/poi/PointOfInterestTypes;register(Lnet/minecraft/util/registry/Registry;" +
-                    "Lnet/minecraft/util/registry/RegistryKey;Ljava/util/Set;II)Lnet/minecraft/world/poi/PointOfInterestType;"),
+    @ModifyArg(method = "registerAndGetDefault(Lnet/minecraft/registry/Registry;)Lnet/minecraft/world/poi/PointOfInterestType;",
+            at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/poi/PointOfInterestTypes;register(Lnet/minecraft/registry/Registry;" +
+                    "Lnet/minecraft/registry/RegistryKey;Ljava/util/Set;II)" +
+                    "Lnet/minecraft/world/poi/PointOfInterestType;"),
             index = 4)
     private static int modifySearchDistance(int searchDistance) {
         return Math.max(searchDistance, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance);
