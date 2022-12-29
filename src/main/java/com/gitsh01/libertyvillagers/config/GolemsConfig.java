@@ -8,6 +8,9 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 public class GolemsConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip(count = 2)
+    public int golemAggroRange = 48;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean golemsAvoidCactus = true;
 
     @ConfigEntry.Gui.Tooltip

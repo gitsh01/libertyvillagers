@@ -4,6 +4,7 @@
   "package": "com.gitsh01.libertyvillagers.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ActiveTargetGoalMixin",
     "BrainMixin",
     "CatEntityMixin",
     "CatSpawnerMixin",
