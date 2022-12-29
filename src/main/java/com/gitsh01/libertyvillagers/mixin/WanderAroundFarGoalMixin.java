@@ -8,7 +8,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.poi.PointOfInterestStorage;
-import net.minecraft.world.poi.PointOfInterestTypes;
+import net.minecraft.world.poi.PointOfInterestType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,7 +41,7 @@ public abstract class WanderAroundFarGoalMixin extends WanderAroundGoal  {
         PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
 
         Optional<BlockPos> nearestBell =
-                pointOfInterestStorage.getNearestPosition(poiType -> poiType.matchesKey(PointOfInterestTypes.MEETING),
+                pointOfInterestStorage.getNearestPosition(PointOfInterestType.MEETING.getCompletionCondition(),
                         this.mob.getBlockPos(), 2 * CONFIG.catsConfig.catsMaxBellRange,
                         PointOfInterestStorage.OccupationStatus.ANY);
 

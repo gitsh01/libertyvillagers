@@ -18,7 +18,7 @@ public abstract class VillagerProfessionMixin {
     @Shadow
     private String id;
 
-    @Inject(method = "secondaryJobSites",
+    @Inject(method = "getSecondaryJobSites",
             at = @At("HEAD"),
             cancellable = true)
     void replaceSecondaryJobSites(CallbackInfoReturnable<ImmutableSet<Block>> cir) {

@@ -7,7 +7,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.poi.PointOfInterestStorage;
-import net.minecraft.world.poi.PointOfInterestTypes;
+import net.minecraft.world.poi.PointOfInterestType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -36,7 +36,8 @@ public abstract class IronGolemWanderAroundGoalMixin extends WanderAroundGoal {
             ServerWorld serverWorld = (ServerWorld) this.mob.world;
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
 
-            Optional<BlockPos> nearestBell = pointOfInterestStorage.getNearestPosition(poiType -> poiType.matchesKey(PointOfInterestTypes.MEETING),
+            Optional<BlockPos> nearestBell =
+                    pointOfInterestStorage.getNearestPosition(PointOfInterestType.MEETING.getCompletionCondition(),
                     this.mob.getBlockPos(), 2 * CONFIG.golemsConfig.golemMaxBellRange, PointOfInterestStorage.OccupationStatus.ANY);
 
             if (nearestBell.isPresent()) {
