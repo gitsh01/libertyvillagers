@@ -1,8 +1,6 @@
 package com.gitsh01.libertyvillagers.mixin;
 
-import com.gitsh01.libertyvillagers.tasks.FeedTargetTask;
-import com.gitsh01.libertyvillagers.tasks.HealGolemTask;
-import com.gitsh01.libertyvillagers.tasks.ThrowRegenPotionAtTask;
+import com.gitsh01.libertyvillagers.tasks.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
@@ -28,9 +26,9 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(VillagerTaskListProvider.class)
 public abstract class VillagerTaskListProviderMixin {
 
-    private static final int SECONDARY_WORK_TASK_PRIORITY = 5; // Mojang default: 5.
+    private static final int SECONDARY_WORK_TASK_PRIORITY = 6; // Mojang default: 5.
     private static final int THIRD_WORK_TASK_PRIORITY = 7;
-    private static final int PRIMARY_WORK_TASK_PRIORITY = 7;
+    private static final int PRIMARY_WORK_TASK_PRIORITY = 8;
 
     @Invoker("createBusyFollowTask")
     public static Pair<Integer, Task<LivingEntity>> invokeCreateBusyFollowTask() {
@@ -93,6 +91,12 @@ public abstract class VillagerTaskListProviderMixin {
                 villagerWorkTask = new FarmerVillagerTask(); // Harvest / plant seeds.
                 secondaryWorkTask = new FarmerWorkTask(); // Compost.
                 thirdWorkTask = new BoneMealTask(); // Apply bonemeal to crops.
+                break;
+            case "fisherman":
+                if (CONFIG.villagersProfessionConfig.fishermanFish) {
+                    villagerWorkTask = new GoFishingTask();
+                    secondaryWorkTask = new FisherWorkTask(); // Cook fish.
+                }
                 break;
             case "fletcher":
                 if (CONFIG.villagersProfessionConfig.fletchersFeedChickens) {

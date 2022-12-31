@@ -219,7 +219,7 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
 	file = file("changelog.md")
 	fromRepo = file(".")
 	prependToFile = true
-	fromRef = "1.0.8+${project.minecraft_version}"
+	fromRef = "1.0.9+fabric+${project.minecraft_version}"
 	toRef = "${project.mod_version}+fabric+${project.minecraft_version}"
 	templateContent = """
 {{#tags}}
