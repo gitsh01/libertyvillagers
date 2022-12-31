@@ -55,7 +55,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
         // Only look for certain memories.
         if (type != MemoryModuleType.WALK_TARGET && type != MemoryModuleType.HOME &&
                 type != MemoryModuleType.POTENTIAL_JOB_SITE && type != MemoryModuleType.JOB_SITE &&
-                type != MemoryModuleType.PATH && type != MemoryModuleType.SECONDARY_JOB_SITE) {
+                type != MemoryModuleType.PATH) { //  && type != MemoryModuleType.SECONDARY_JOB_SITE) {
             return;
         }
         String className = "";
