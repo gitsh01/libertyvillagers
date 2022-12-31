@@ -26,6 +26,9 @@ public class VillagersGeneralConfig implements ConfigData {
     public boolean villagersEatPumpkinPie = true;
 
     @ConfigEntry.Gui.Tooltip
+    public boolean villagersEatCookedFish = true;
+
+    @ConfigEntry.Gui.Tooltip
     public boolean villagersDontTrampleCrops = true;
 
     @ConfigEntry.Gui.Tooltip

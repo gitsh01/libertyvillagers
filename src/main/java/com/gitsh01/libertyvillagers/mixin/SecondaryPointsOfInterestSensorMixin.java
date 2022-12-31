@@ -28,6 +28,9 @@ public class SecondaryPointsOfInterestSensorMixin {
         if (villagerEntity.getVillagerData().getProfession() == VillagerProfession.FARMER) {
             return CONFIG.villagersProfessionConfig.findCropRangeHorizontal;
         }
+        if (villagerEntity.getVillagerData().getProfession() == VillagerProfession.FISHERMAN) {
+            return CONFIG.villagersProfessionConfig.fishermanFindWaterRange;
+        }
         return xz;
     }
 
@@ -37,6 +40,9 @@ public class SecondaryPointsOfInterestSensorMixin {
     private int replaceNegXZ(int xz) {
         if (villagerEntity.getVillagerData().getProfession() == VillagerProfession.FARMER) {
             return -1 * CONFIG.villagersProfessionConfig.findCropRangeHorizontal;
+        }
+        if (villagerEntity.getVillagerData().getProfession() == VillagerProfession.FISHERMAN) {
+            return -1 * CONFIG.villagersProfessionConfig.fishermanFindWaterRange;
         }
         return xz;
     }

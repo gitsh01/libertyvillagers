@@ -65,6 +65,15 @@ public class VillagersProfessionConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 2)
     public int feedMaxAnimals = 30;
 
+    @ConfigEntry.Gui.Tooltip
+    public boolean fishermanFish = true;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int fishermanFindWaterRange = 10;
+
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    public int fishermanFishingWaterRange = 5;
+
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean librariansLookAtBooks = true;
 
