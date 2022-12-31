@@ -1,5 +1,13 @@
 
 
+## [1.0.10+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.10+fabric+1.19.2) (2022-12-31)
+
+### Features
+
+ -  Fisherman can now fish for cod and salmon. They "cook" fish at their workstation when they restock, and can then trade it with other villagers, who can use it for breeding. ([157f34726877cd0](https://gitlab.com/html-validate/html-validate/commit/157f34726877cd06137ecf61ee7e9a45108a383f))
+ -  Villagers only pick up food items and items needed for their profession. ([157f34726877cd0](https://gitlab.com/html-validate/html-validate/commit/157f34726877cd06137ecf61ee7e9a45108a383f))
+ -  Added a config option for the Golem's aggro range, reset default back to Mojang's 48. ([7fc8a337aee56f1](https://gitlab.com/html-validate/html-validate/commit/7fc8a337aee56f190330911a8a1ae4b267dc9b9b))
+
 ## [1.0.9+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.9+fabric+1.19.2) (2022-12-28)
 
 ### Features
