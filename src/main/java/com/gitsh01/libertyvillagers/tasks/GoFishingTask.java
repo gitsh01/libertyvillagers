@@ -2,6 +2,7 @@ package com.gitsh01.libertyvillagers.tasks;
 
 import com.gitsh01.libertyvillagers.mixin.FishingBobberEntityAccessorMixin;
 import com.google.common.collect.ImmutableMap;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -16,9 +17,12 @@ import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -52,21 +56,35 @@ public class GoFishingTask extends Task<VillagerEntity> {
         List<BlockPos> targetPositions = new ArrayList<>();
 
         // Look for water nearby.
-        BlockPos.Mutable mutable = villagerEntity.getBlockPos().mutableCopy();
+        BlockPos villagerPos = villagerEntity.getBlockPos();
+        for (BlockPos blockPos : BlockPos.iterateOutwards(villagerPos, CONFIG.villagersProfessionConfig.fishermanFishingWaterRange,
+                CONFIG.villagersProfessionConfig.fishermanFishingWaterRange, CONFIG.villagersProfessionConfig.fishermanFishingWaterRange)) {
+            // Don't fish "up".
+            if (blockPos.getY() > villagerPos.getY()) continue;
+            // Don't fish on ourselves (it looks odd).
+            if (blockPos.isWithinDistance(villagerPos, 1)) continue;
+            if (serverWorld.getBlockState(blockPos).isOf(Blocks.WATER) &&
+                    serverWorld.getBlockState(blockPos.up()).isOf(Blocks.AIR)) {
+                // Ray trace to see if the villager can actually fish on that spot.
+                HitResult hit = serverWorld.raycast(
+                        new RaycastContext(new Vec3d(villagerEntity.getX(), villagerEntity.getEyeY(),
+                        villagerEntity.getZ()),
+                                new Vec3d(blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f),
+                                RaycastContext.ShapeType.COLLIDER,
+                                RaycastContext.FluidHandling.ANY,
+                                villagerEntity));
 
-        for (int i = -1 * CONFIG.villagersProfessionConfig.fishermanFishingWaterRange;
-             i <= CONFIG.villagersProfessionConfig.fishermanFishingWaterRange; ++i) {
-            for (int j = -3; j <= 3; ++j) {
-                for (int k = -CONFIG.villagersProfessionConfig.fishermanFishingWaterRange;
-                     k <= CONFIG.villagersProfessionConfig.fishermanFishingWaterRange; ++k) {
-                    if (Math.abs(i) < 1 || Math.abs(k) < 1) {
-                        continue;
-                    }
-                    mutable.set(villagerEntity.getX() + (double) i, villagerEntity.getY() + (double) j,
-                            villagerEntity.getZ() + (double) k);
-                    if (serverWorld.getBlockState(mutable.toImmutable()).isOf(Blocks.WATER) &&
-                            serverWorld.getBlockState(mutable.up()).isOf(Blocks.AIR)) {
-                        targetPositions.add(mutable.toImmutable());
+                if (hit.getType() == HitResult.Type.BLOCK) {
+                    // Check to see if this is the same block we're aiming at.
+                    BlockHitResult blockHit = (BlockHitResult) hit;
+                    BlockState state = serverWorld.getBlockState(blockHit.getBlockPos());
+                    if (state.isOf(Blocks.WATER)) {
+                        // We hit water. It might not be the one we were aiming for, but it's okay, as long as it
+                        // lands in the water.
+                        // This check is expensive, so stop on the first one we find that works, instead of looking
+                        // for more.
+                        targetPositions.add(blockPos);
+                        break;
                     }
                 }
             }

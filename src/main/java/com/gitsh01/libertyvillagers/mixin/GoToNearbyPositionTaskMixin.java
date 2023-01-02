@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GoToNearbyPositionTask.class)
-public class GoToIfNearbyTaskMixin {
+public class GoToNearbyPositionTaskMixin {
 
     @Inject(method = "shouldRun",
     at = @At("HEAD"),
