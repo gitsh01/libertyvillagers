@@ -4,6 +4,7 @@
   "package": "com.gitsh01.libertyvillagers.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ActiveTargetGoalMixin",
     "BrainMixin",
     "CatEntityMixin",
     "CatSpawnerMixin",
@@ -12,9 +13,14 @@
     "FarmerWorkTaskMixin",
     "FarmlandBlockMixin",
     "FindPointOfInterestTaskMixin",
+    "FishingBobberEntityAccessorMixin",
+    "FishingBobberEntityMixin",
     "ForgetCompletedPointOfInterestTaskMixin",
     "GatherItemsVillagerTaskMixin",
+    "GoToIfNearbyTaskMixin",
+    "GoToSecondaryPositionTaskMixin",
     "GoToWorkTaskMixin",
+    "HoldTradeOffersTaskMixin",
     "IronGolemEntityMixin",
     "IronGolemWanderAroundGoalMixin",
     "LandPathNodeMakerMixin",
@@ -22,6 +28,7 @@
     "MeleeAttackGoalMixin",
     "MobEntityMixin",
     "PointOfInterestTypeMixin",
+    "ProjectileEntityAccessorMixin",
     "SecondaryPointsOfInterestSensorMixin",
     "SleepTaskMixin",
     "TakeJobSiteTaskMixin",
@@ -38,7 +45,9 @@
     "WanderAroundTaskMixin",
     "WanderNearTargetGoalMixin"
   ],
-  "client": [],
+  "client": [
+    "FishingBobberEntityRendererMixin"
+  ],
   "server": [
     "LecternScreenHandlerAccessorMixin"
   ],

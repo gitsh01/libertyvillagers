@@ -5,7 +5,10 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.village.VillagerProfession;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
@@ -28,6 +31,9 @@ public class SecondaryPointsOfInterestSensorMixin {
         if (villagerEntity.getVillagerData().getProfession() == VillagerProfession.FARMER) {
             return CONFIG.villagersProfessionConfig.findCropRangeHorizontal;
         }
+        if (villagerEntity.getVillagerData().getProfession() == VillagerProfession.FISHERMAN) {
+            return CONFIG.villagersProfessionConfig.fishermanFindWaterRange;
+        }
         return xz;
     }
 
@@ -37,6 +43,9 @@ public class SecondaryPointsOfInterestSensorMixin {
     private int replaceNegXZ(int xz) {
         if (villagerEntity.getVillagerData().getProfession() == VillagerProfession.FARMER) {
             return -1 * CONFIG.villagersProfessionConfig.findCropRangeHorizontal;
+        }
+        if (villagerEntity.getVillagerData().getProfession() == VillagerProfession.FISHERMAN) {
+            return -1 * CONFIG.villagersProfessionConfig.fishermanFindWaterRange;
         }
         return xz;
     }

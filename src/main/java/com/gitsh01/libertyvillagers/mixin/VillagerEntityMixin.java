@@ -1,7 +1,11 @@
 package com.gitsh01.libertyvillagers.mixin;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.InteractionObserver;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -9,7 +13,9 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
@@ -20,6 +26,7 @@ import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.World;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -54,6 +61,9 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     static private void modifyStaticBlock(CallbackInfo ci) {
+        // Only specific professions should have seeds and wheat.
+        GATHERABLE_ITEMS =  ImmutableSet.copyOf(Sets.difference(GATHERABLE_ITEMS,
+                ImmutableSet.of(Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.WHEAT)));
         if (CONFIG.villagersGeneralConfig.villagersEatMelons) {
             GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
             GATHERABLE_ITEMS.add(Items.MELON_SLICE);
@@ -70,10 +80,13 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
             GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
             GATHERABLE_ITEMS.add(Items.PUMPKIN_PIE);
         }
-        if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins) {
+        if (CONFIG.villagersGeneralConfig.villagersEatCookedFish) {
+            ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
+            ITEM_FOOD_VALUES.put(Items.COOKED_COD, 1);
+            ITEM_FOOD_VALUES.put(Items.COOKED_SALMON, 1);
             GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
-            GATHERABLE_ITEMS.add(Items.PUMPKIN_SEEDS);
-            GATHERABLE_ITEMS.add(Items.PUMPKIN);
+            GATHERABLE_ITEMS.add(Items.COOKED_COD);
+            GATHERABLE_ITEMS.add(Items.COOKED_SALMON);
         }
     }
 
@@ -194,6 +207,24 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
                 cir.setReturnValue(false);
                 cir.cancel();
             }
+        }
+    }
+
+    @Inject(method = "readCustomDataFromNbt",
+            at = @At("TAIL"))
+   public void readCustomDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
+        // If initialized with a rod, get rid of it.
+        if (this.getMainHandStack().isOf(Items.FISHING_ROD)) {
+            this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+        }
+    }
+
+    @Inject(method = "setAttacker",
+            at = @At("TAIL"))
+    public void setAttacker(@Nullable LivingEntity attacker, CallbackInfo ci) {
+        // Drop the rod if attacked.
+        if (this.getMainHandStack().isOf(Items.FISHING_ROD)) {
+            this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
     }
 }
