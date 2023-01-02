@@ -70,7 +70,7 @@ public class GoFishingTask extends Task<VillagerEntity> {
                         new RaycastContext(new Vec3d(villagerEntity.getX(), villagerEntity.getEyeY(),
                         villagerEntity.getZ()),
                                 new Vec3d(blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f),
-                                RaycastContext.ShapeType.OUTLINE,
+                                RaycastContext.ShapeType.COLLIDER,
                                 RaycastContext.FluidHandling.ANY,
                                 villagerEntity));
 
