@@ -89,7 +89,7 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
         boolean bl = f > 0.0f;
         if (isFlying) {
             if (bl) {
-                this.setVelocity(this.getVelocity().multiply(0.3, 0.2, 0.3));
+                this.setVelocity(this.getVelocity().multiply(0.3, 0.3, 0.3));
                 isFlying = false;
                 isBobbing = true;
                 ci.cancel();

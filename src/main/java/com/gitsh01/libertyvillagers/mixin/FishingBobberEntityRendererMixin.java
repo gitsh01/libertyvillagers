@@ -73,7 +73,7 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
         float l = MathHelper.lerp(g, villager.prevBodyYaw, villager.bodyYaw) * ((float)Math.PI / 180);
         double d = MathHelper.sin(l);
         double e = MathHelper.cos(l);
-        double n = 0.3;
+        double n = 0.4;
         o = MathHelper.lerp(g, villager.prevX, villager.getX()) - d * n;
         p = villager.prevY + (double)villager.getStandingEyeHeight() + (villager.getY() - villager.prevY) * (double)g - 0.45;
         q = MathHelper.lerp(g, villager.prevZ, villager.getZ()) + e * n;

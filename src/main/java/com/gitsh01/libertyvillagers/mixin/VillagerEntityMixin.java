@@ -216,6 +216,14 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
         if (this.getMainHandStack().isOf(Items.FISHING_ROD)) {
             this.equipStack(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         }
+        // Get rid of items the villager can't gather.
+        for (int i = this.getInventory().size(); i >= 0; i-- ) {
+            ItemStack stack = this.getInventory().getStack(i);
+            if (stack.isEmpty()) continue;
+            if (GATHERABLE_ITEMS.contains(stack.getItem())) continue;
+            if (this.getVillagerData().getProfession().gatherableItems().contains(stack.getItem())) continue;
+            this.getInventory().removeStack(i);
+        }
     }
 
     @Inject(method = "setAttacker",
