@@ -27,7 +27,7 @@
     "LivingEntityMixin",
     "MeleeAttackGoalMixin",
     "MobEntityMixin",
-    "ModelPredicatePRoviderRegistryMixin",
+    "ModelPredicateProviderRegistryMixin",
     "PointOfInterestTypesMixin",
     "SecondaryPointsOfInterestSensorMixin",
     "SleepTaskMixin",

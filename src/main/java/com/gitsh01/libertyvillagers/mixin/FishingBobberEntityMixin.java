@@ -150,10 +150,15 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
         return false;
     }
 
+
     @Inject(method = "onSpawnPacket(Lnet/minecraft/network/packet/s2c/play/EntitySpawnS2CPacket;)V", at = @At("HEAD"),
             cancellable = true)
     public void onSpawnPacket(EntitySpawnS2CPacket packet, CallbackInfo ci) {
         super.onSpawnPacket(packet);
+        if (this.getOwner() == null) {
+            System.out.println("No owner, killing bobbin.");
+            this.kill();
+        }
         ci.cancel();
     }
 
