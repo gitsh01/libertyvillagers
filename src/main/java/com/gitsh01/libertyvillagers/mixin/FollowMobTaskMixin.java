@@ -1,8 +1,8 @@
 package com.gitsh01.libertyvillagers.mixin;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.brain.task.GoToIfNearbyTask;
-import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.task.FollowMobTask;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
@@ -12,16 +12,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(GoToIfNearbyTask.class)
-public class GoToIfNearbyTaskMixin {
+@Mixin(FollowMobTask.class)
+public class FollowMobTaskMixin {
 
     @Inject(method = "shouldRun",
             at = @At("HEAD"),
             cancellable = true)
-    void dontRunIfFishing(ServerWorld serverWorld, PathAwareEntity pathAwareEntity,
+    void dontRunIfFishing(ServerWorld serverWorld, LivingEntity entity,
                           CallbackInfoReturnable<Boolean> cir){
-        if (pathAwareEntity.getType() == EntityType.VILLAGER) {
-            VillagerEntity villager = (VillagerEntity) pathAwareEntity;
+        if (entity.getType() == EntityType.VILLAGER) {
+            VillagerEntity villager = (VillagerEntity) entity;
             if (villager.getVillagerData().getProfession() == VillagerProfession.FISHERMAN &&
                     villager.getMainHandStack().isOf(Items.FISHING_ROD)) {
                 cir.setReturnValue(false);
