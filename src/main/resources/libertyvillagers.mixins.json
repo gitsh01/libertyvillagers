@@ -17,6 +17,7 @@
     "FishingBobberEntityMixin",
     "ForgetCompletedPointOfInterestTaskMixin",
     "GatherItemsVillagerTaskMixin",
+    "GoToIfNearbyTaskMixin",
     "GoToNearbyPositionTaskMixin",
     "GoToSecondaryPositionTaskMixin",
     "GoToWorkTaskMixin",
