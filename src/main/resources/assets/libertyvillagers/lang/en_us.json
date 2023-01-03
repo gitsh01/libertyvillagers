@@ -163,7 +163,7 @@
   "text.autoconfig.LibertyVillagers.option.villagersProfessionConfig.librariansLookAtBooks": "Librarians Look at Books",
   "text.autoconfig.LibertyVillagers.option.villagersProfessionConfig.librariansLookAtBooks.@Tooltip[0]": "While working, librarians will occasionally walk over to",
   "text.autoconfig.LibertyVillagers.option.villagersProfessionConfig.librariansLookAtBooks.@Tooltip[1]": "nearby bookshelves.",
-  "text.autoconfig.LibertyVillagers.option.villagersProfessionConfig.fishermanFish" : "Fisherman fish",
+  "text.autoconfig.LibertyVillagers.option.villagersProfessionConfig.fishermanFish" : "Fishermen Fish",
   "text.autoconfig.LibertyVillagers.option.villagersProfessionConfig.fishermanFish.@Tooltip" : "Gone fishing...",
   "text.autoconfig.LibertyVillagers.option.villagersProfessionConfig.fishermanFindWaterRange" : "Fisherman Find Water Range",
   "text.autoconfig.LibertyVillagers.option.villagersProfessionConfig.fishermanFindWaterRange.@Tooltip[0]" : "The range from their worksite a fisherman will",
