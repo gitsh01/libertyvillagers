@@ -28,8 +28,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
@@ -56,10 +54,8 @@ public class GoFishingTask extends Task<VillagerEntity> {
     }
 
     protected boolean shouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity) {
-        List<BlockPos> targetPositions = new ArrayList<>();
-
         // This just looks wrong.
-        if (villagerEntity.isSwimming()) {
+        if (villagerEntity.isTouchingWater()) {
             return false;
         }
 
@@ -74,50 +70,49 @@ public class GoFishingTask extends Task<VillagerEntity> {
             if (serverWorld.getBlockState(blockPos).getFluidState().isStill() &&
                     serverWorld.getBlockState(blockPos.up()).isOf(Blocks.AIR)) {
                 Vec3d bobberStartPosition = getBobberStartPosition(villagerEntity, blockPos);
-                Vec3d centerBlockPos = Vec3d.ofCenter(blockPos);
-                // Ray trace to see if the villager can actually fish on that spot.
-                HitResult hit = serverWorld.raycast(
-                        new RaycastContext(bobberStartPosition,
-                                centerBlockPos,
-                                RaycastContext.ShapeType.COLLIDER,
-                                RaycastContext.FluidHandling.ANY,
-                                villagerEntity));
 
-                if (hit.getType() == HitResult.Type.MISS ||
-                    hit.getType() == HitResult.Type.ENTITY) {
+                // Make sure the bobber won't be starting in a solid wall of a boat.
+                if (serverWorld.getBlockState(new BlockPos(bobberStartPosition)).isOpaque()) {
                     continue;
                 }
 
-                // Look for an entity between us and the block that the bobber might hit.
-                HitResult hitResult2;
+                Vec3d centerBlockPos = Vec3d.ofCenter(blockPos);
+                // Ray trace to see if the villager can actually fish on that spot.
+                // Use the lower edge of the bobber since it seems to get caught on the floor first.
                 Box box = EntityType.FISHING_BOBBER.getDimensions().getBoxAt(bobberStartPosition);
-                if ((hitResult2 = ProjectileUtil.getEntityCollision(serverWorld, villagerEntity, bobberStartPosition,
-                        hit.getPos(), box, Entity::isAlive)) != null) {
-                    hit = hitResult2;
+                Vec3d lowerEdge = new Vec3d(0, -1 * box.getYLength() / 2, 0);
+                if (doesNotHitValidWater(bobberStartPosition, lowerEdge, centerBlockPos, villagerEntity, serverWorld)) {
+                    continue;
                 }
 
-                if (hit.getType() == HitResult.Type.BLOCK) {
-                    // Check to see if this is the same block we're aiming at.
-                    BlockHitResult blockHit = (BlockHitResult) hit;
-                    BlockState state = serverWorld.getBlockState(blockHit.getBlockPos());
-                    if (state.isOf(Blocks.WATER) && state.getFluidState().isStill()) {
-                        // We hit water. It might not be the one we were aiming for, but it's okay, as long as it
-                        // lands in the water.
-                        // This check is expensive, so stop on the first one we find that works, instead of looking
-                        // for more.
-                        targetPositions.add(blockPos);
-                        break;
-                    }
+                // Next, look for an entity between us and the block that the bobber might hit to avoid fishing
+                // through buddies.
+                if (ProjectileUtil.getEntityCollision(serverWorld, villagerEntity, bobberStartPosition, centerBlockPos,
+                        box, Entity::isAlive) != null) {
+                    // We're going to hit someone.
+                    continue;
                 }
+
+                // Now check if the lower right or lower left are going to hit something (like that fence)....
+                Vec3d lowerLeftEdge = new Vec3d(-1 * box.getXLength() / 2, -1 * box.getYLength() / 2, 0);
+                if (doesNotHitValidWater(bobberStartPosition, lowerLeftEdge, centerBlockPos, villagerEntity,
+                        serverWorld)) {
+                    continue;
+                }
+                Vec3d lowerRightEdge = new Vec3d(1 * box.getXLength() / 2, -1 * box.getYLength() / 2, 0);
+                if (doesNotHitValidWater(bobberStartPosition, lowerRightEdge, centerBlockPos, villagerEntity,
+                        serverWorld)) {
+                    continue;
+                }
+
+                // This check is expensive, so stop on the first one we find that works, instead of looking
+                // for more.
+                targetBlockPos = blockPos;
+                return true;
             }
         }
 
-        if (targetPositions.size() < 1) {
-            return false;
-        }
-
-        targetBlockPos = targetPositions.get(serverWorld.getRandom().nextInt(targetPositions.size()));
-        return true;
+        return false;
     }
 
     protected void run(ServerWorld serverWorld, VillagerEntity villagerEntity, long time) {
@@ -211,5 +206,21 @@ public class GoFishingTask extends Task<VillagerEntity> {
                 SoundEvents.ENTITY_FISHING_BOBBER_THROW, SoundCategory.NEUTRAL, 0.5f,
                 0.4f / (serverWorld.getRandom().nextFloat() * 0.4f + 0.8f));
         hasThrownBobber = true;
+    }
+
+    boolean doesNotHitValidWater(Vec3d bobberStartPosition, Vec3d bobberEdge, Vec3d centerBlockPos,
+                                 VillagerEntity villagerEntity, ServerWorld serverWorld) {
+        BlockHitResult hitResult = serverWorld.raycast(
+                new RaycastContext(bobberStartPosition.add(bobberEdge),
+                        centerBlockPos,
+                        RaycastContext.ShapeType.COLLIDER,
+                        RaycastContext.FluidHandling.ANY,
+                        villagerEntity));
+
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockState blockState = serverWorld.getBlockState(hitResult.getBlockPos());
+            return !blockState.isOf(Blocks.WATER) || !blockState.getFluidState().isStill();
+        }
+        return true;
     }
 }
