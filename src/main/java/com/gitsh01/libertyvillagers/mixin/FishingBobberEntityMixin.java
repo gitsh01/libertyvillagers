@@ -24,6 +24,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
+
 @Mixin(FishingBobberEntity.class)
 public abstract class FishingBobberEntityMixin extends ProjectileEntity {
 
@@ -143,7 +145,8 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
         VillagerEntity villager = (VillagerEntity) owner;
         ItemStack itemStack = villager.getMainHandStack();
         boolean bl = itemStack.isOf(Items.FISHING_ROD);
-        if (!bl || this.squaredDistanceTo(villager) > 144.0) {
+        if (!bl || this.squaredDistanceTo(villager) > (CONFIG.villagersProfessionConfig.fishermanFishingWaterRange *
+                CONFIG.villagersProfessionConfig.fishermanFishingWaterRange)) {
             this.discard();
             return true;
         }
@@ -156,7 +159,6 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
     public void onSpawnPacket(EntitySpawnS2CPacket packet, CallbackInfo ci) {
         super.onSpawnPacket(packet);
         if (this.getOwner() == null) {
-            System.out.println("No owner, killing bobbin.");
             this.kill();
         }
         ci.cancel();
