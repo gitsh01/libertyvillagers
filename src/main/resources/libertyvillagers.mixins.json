@@ -15,6 +15,7 @@
     "FindPointOfInterestTaskMixin",
     "FishingBobberEntityAccessorMixin",
     "FishingBobberEntityMixin",
+    "FollowMobTaskMixin",
     "ForgetCompletedPointOfInterestTaskMixin",
     "GatherItemsVillagerTaskMixin",
     "GoToIfNearbyTaskMixin",
