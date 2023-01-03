@@ -4,6 +4,7 @@ import com.gitsh01.libertyvillagers.mixin.FishingBobberEntityAccessorMixin;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
@@ -12,6 +13,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
@@ -20,6 +22,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
@@ -41,7 +44,7 @@ public class GoFishingTask extends Task<VillagerEntity> {
     private boolean hasThrownBobber = false;
 
     @Nullable
-    private BlockPos targetPosition;
+    private BlockPos targetBlockPos;
 
     @Nullable
     private FishingBobberEntity bobber = null;
@@ -55,6 +58,11 @@ public class GoFishingTask extends Task<VillagerEntity> {
     protected boolean shouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity) {
         List<BlockPos> targetPositions = new ArrayList<>();
 
+        // This just looks wrong.
+        if (villagerEntity.isSwimming()) {
+            return false;
+        }
+
         // Look for water nearby.
         BlockPos villagerPos = villagerEntity.getBlockPos();
         for (BlockPos blockPos : BlockPos.iterateOutwards(villagerPos, CONFIG.villagersProfessionConfig.fishermanFishingWaterRange,
@@ -63,22 +71,36 @@ public class GoFishingTask extends Task<VillagerEntity> {
             if (blockPos.getY() > villagerPos.getY()) continue;
             // Don't fish on ourselves (it looks odd).
             if (blockPos.isWithinDistance(villagerPos, 1)) continue;
-            if (serverWorld.getBlockState(blockPos).isOf(Blocks.WATER) &&
+            if (serverWorld.getBlockState(blockPos).getFluidState().isStill() &&
                     serverWorld.getBlockState(blockPos.up()).isOf(Blocks.AIR)) {
+                Vec3d bobberStartPosition = getBobberStartPosition(villagerEntity, blockPos);
+                Vec3d centerBlockPos = Vec3d.ofCenter(blockPos);
                 // Ray trace to see if the villager can actually fish on that spot.
                 HitResult hit = serverWorld.raycast(
-                        new RaycastContext(new Vec3d(villagerEntity.getX(), villagerEntity.getEyeY(),
-                        villagerEntity.getZ()),
-                                new Vec3d(blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f),
+                        new RaycastContext(bobberStartPosition,
+                                centerBlockPos,
                                 RaycastContext.ShapeType.COLLIDER,
                                 RaycastContext.FluidHandling.ANY,
                                 villagerEntity));
+
+                if (hit.getType() == HitResult.Type.MISS ||
+                    hit.getType() == HitResult.Type.ENTITY) {
+                    continue;
+                }
+
+                // Look for an entity between us and the block that the bobber might hit.
+                HitResult hitResult2;
+                Box box = EntityType.FISHING_BOBBER.getDimensions().getBoxAt(bobberStartPosition);
+                if ((hitResult2 = ProjectileUtil.getEntityCollision(serverWorld, villagerEntity, bobberStartPosition,
+                        hit.getPos(), box, Entity::isAlive)) != null) {
+                    hit = hitResult2;
+                }
 
                 if (hit.getType() == HitResult.Type.BLOCK) {
                     // Check to see if this is the same block we're aiming at.
                     BlockHitResult blockHit = (BlockHitResult) hit;
                     BlockState state = serverWorld.getBlockState(blockHit.getBlockPos());
-                    if (state.isOf(Blocks.WATER)) {
+                    if (state.isOf(Blocks.WATER) && state.getFluidState().isStill()) {
                         // We hit water. It might not be the one we were aiming for, but it's okay, as long as it
                         // lands in the water.
                         // This check is expensive, so stop on the first one we find that works, instead of looking
@@ -94,14 +116,14 @@ public class GoFishingTask extends Task<VillagerEntity> {
             return false;
         }
 
-        targetPosition = targetPositions.get(serverWorld.getRandom().nextInt(targetPositions.size()));
+        targetBlockPos = targetPositions.get(serverWorld.getRandom().nextInt(targetPositions.size()));
         return true;
     }
 
     protected void run(ServerWorld serverWorld, VillagerEntity villagerEntity, long time) {
         villagerEntity.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.FISHING_ROD));
         villagerEntity.setEquipmentDropChance(EquipmentSlot.MAINHAND, 0.0f);
-        villagerEntity.getBrain().remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(targetPosition.up()));
+        villagerEntity.getBrain().remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(targetBlockPos.up()));
         bobberCountdown = TURN_TIME + time;
     }
 
@@ -115,7 +137,8 @@ public class GoFishingTask extends Task<VillagerEntity> {
             return true;
         }
 
-        if (bobber == null || bobber.isRemoved() || bobber.isOnGround()) {
+        if (bobber == null || bobber.isRemoved() ||
+                (bobber.isOnGround() && !bobber.getBlockStateAtPos().isOf(Blocks.WATER))) {
             return false;
         }
 
@@ -130,7 +153,7 @@ public class GoFishingTask extends Task<VillagerEntity> {
 
     protected void keepRunning(ServerWorld serverWorld, VillagerEntity villagerEntity, long time) {
         if (!hasThrownBobber && time > bobberCountdown) {
-                throwBobber(villagerEntity, serverWorld);
+            throwBobber(villagerEntity, serverWorld);
         }
     }
 
@@ -147,20 +170,33 @@ public class GoFishingTask extends Task<VillagerEntity> {
         this.bobberCountdown = 0;
     }
 
-    void throwBobber(VillagerEntity thrower, ServerWorld serverWorld) {
-        bobber = new FishingBobberEntity(EntityType.FISHING_BOBBER, serverWorld);
-        bobber.setOwner(thrower);
-
-        double d = targetPosition.getX() + 0.5 - thrower.getX();
-        double e = targetPosition.getY() + 0.5 - thrower.getEyeY();
-        double f = targetPosition.getZ() + 0.5 - thrower.getZ();
-        double g = 0.1;
+    Vec3d getBobberStartPosition(VillagerEntity thrower, BlockPos targetBlockPos) {
+        Vec3d targetPosition = Vec3d.ofCenter(targetBlockPos);
+        double d = targetPosition.x - thrower.getX();
+        double e = targetPosition.y - thrower.getEyeY();
+        double f = targetPosition.z - thrower.getZ();
 
         double x = thrower.getX() + (d * 0.3);
         double y = thrower.getEyeY();
         double z = thrower.getZ() + (f * 0.3);
+        return new Vec3d(x, y, z);
+    }
 
-        bobber.refreshPositionAndAngles(x, y, z, thrower.getYaw(), thrower.getPitch());
+    void throwBobber(VillagerEntity thrower, ServerWorld serverWorld) {
+        bobber = new FishingBobberEntity(EntityType.FISHING_BOBBER, serverWorld);
+        bobber.setOwner(thrower);
+
+        Vec3d bobberStartPosition = getBobberStartPosition(thrower, targetBlockPos);
+
+        bobber.refreshPositionAndAngles(bobberStartPosition.x, bobberStartPosition.y, bobberStartPosition.z,
+                thrower.getYaw(),
+                thrower.getPitch());
+
+        Vec3d targetPosition = Vec3d.ofCenter(targetBlockPos);
+        double d = targetPosition.x - bobberStartPosition.x;
+        double e = targetPosition.y - bobberStartPosition.y;
+        double f = targetPosition.z - bobberStartPosition.z;
+        double g = 0.1;
 
         Vec3d vec3d = new Vec3d(d * g, e * g, f * g);
 

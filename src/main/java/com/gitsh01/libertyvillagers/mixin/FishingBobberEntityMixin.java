@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.tag.FluidTags;
+import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
@@ -122,9 +123,6 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
                 }
             }
         }
-        if (!fluidState.isIn(FluidTags.WATER)) {
-            this.setVelocity(this.getVelocity().add(0.0, -0.03, 0.0));
-        }
         this.move(MovementType.SELF, this.getVelocity());
         this.updateRotation();
         if (isFlying && (this.onGround || this.horizontalCollision)) {
@@ -176,7 +174,7 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
             ItemStack itemStack = new ItemStack(fish);
             ItemEntity itemEntity = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(), itemStack);
             double d = villager.getX() - this.getX();
-            double e = villager.getY() - this.getY();
+            double e = villager.getEyeY() - this.getY();
             double f = villager.getZ() - this.getZ();
             double g = 0.1;
             itemEntity.setVelocity(d * 0.1, e * 0.1 + Math.sqrt(Math.sqrt(d * d + e * e + f * f)) * 0.08, f * 0.1);
@@ -189,5 +187,16 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
         this.discard();
         cir.setReturnValue(i);
         cir.cancel();
+    }
+
+    @Inject(method = "onEntityHit",
+            at = @At("HEAD"),
+            cancellable = true)
+    protected void onEntityHit(EntityHitResult entityHitResult, CallbackInfo ci) {
+        if (this.getOwner() != null && this.getOwner().getType() == EntityType.VILLAGER) {
+            // Don't "hook" entities.
+            super.onEntityHit(entityHitResult);
+            ci.cancel();
+        }
     }
 }
