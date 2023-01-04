@@ -32,8 +32,8 @@ public class ReturnToShoreGoal extends WanderAroundGoal {
                 if (this.mob.isTouchingWater()) {
                     ServerWorld serverWorld = (ServerWorld) this.mob.world;
                     BlockPos blockPos = this.mob.getBlockPos();
-                    for (BlockPos blockPos2 : BlockPos.iterateOutwards(blockPos, CONFIG.golemsConfig.golemMoveToShoreRange,
-                            CONFIG.golemsConfig.golemMoveToShoreRange, CONFIG.golemsConfig.golemMoveToShoreRange)) {
+                    for (BlockPos blockPos2 : BlockPos.iterateOutwards(blockPos, CONFIG.golemsConfig.golemPathfindToShoreRange,
+                            CONFIG.golemsConfig.golemPathfindToShoreRange, CONFIG.golemsConfig.golemPathfindToShoreRange)) {
                         if (blockPos2.getX() == blockPos.getX() && blockPos2.getZ() == blockPos.getZ()) continue;
                         if (blockPos2.getY() < blockPos.getY()) continue;
                         BlockState blockState = serverWorld.getBlockState(blockPos2);
