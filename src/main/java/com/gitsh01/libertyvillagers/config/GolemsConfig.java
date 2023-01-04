@@ -53,7 +53,7 @@ public class GolemsConfig implements ConfigData {
     public boolean golemMoveToShore = true;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
-    public int golemMoveToShoreRange = 10;
+    public int golemPathfindToShoreRange = 10;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean golemsDontClimb = true;
