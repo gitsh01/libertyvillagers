@@ -42,12 +42,18 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
         return origin.getManhattanDistance(dest);
     }
 
+    @ModifyConstant(
+            method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z",
+            constant = @Constant(doubleValue = 4.0))
+    private double replaceSquaredDistanceWithManhattanConstant(double constant) {
+        return 2.0f;
+    }
+
     @ModifyArgs(method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"))
     protected void modifyShouldRunGetNearestPositionArgs(Args args) {
         args.set(2, CONFIG.villagerPathfindingConfig.findPOIRange);
-        args.set(3, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 
     @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
@@ -71,8 +77,19 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
             }
             return posPredicate.test(blockPos);
         };
-        return pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, newBlockPosPredicate, pos,
+
+        Stream<Pair<RegistryEntry<PointOfInterestType>, BlockPos>> stream =
+                pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, newBlockPosPredicate, pos,
                 CONFIG.villagerPathfindingConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+
+        if (stream.findAny().isPresent()) {
+            return stream;
+        }
+
+        // All beds are occupied, go back to default behavior of meeping around the nearest bed at night, worst
+        // roommate ever.
+        return pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, posPredicate, pos,
+                CONFIG.villagerPathfindingConfig.findPOIRange, occupationStatus);
     }
 
     private boolean isBedOccupiedByOthers(ServerWorld world, BlockPos pos, LivingEntity entity) {
