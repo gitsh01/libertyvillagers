@@ -1,5 +1,17 @@
 
 
+## [1.0.12+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.12+fabric+1.19.2) (2023-01-15)
+
+### Features
+
+ -  Added option for bees to avoid trapdoors. ([578b35de89983c2](https://gitlab.com/html-validate/html-validate/commit/578b35de89983c22c72ff574902679449e386907))
+
+### Bug Fixes
+
+ -  Improvements to farmers prefer same crops - if they find a piece of farmland without a crop on it, they will look around that farmland to see what other kinds of crops are growing and grow the same crop if they have it. ([fbda97228575eaf](https://gitlab.com/html-validate/html-validate/commit/fbda97228575eaf180b2e87270331d001f252b5c))
+ -  Fixed villagers not going to an occupied bed, if all beds are occupied. ([164104eeccd5545](https://gitlab.com/html-validate/html-validate/commit/164104eeccd55456723c49d35ee60aa5f6fe1b68))
+
+
 ## [1.0.11+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.11+fabric+1.19.2) (2023-01-04)
 
 
