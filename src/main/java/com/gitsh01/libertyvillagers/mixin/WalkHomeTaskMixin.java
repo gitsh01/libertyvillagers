@@ -20,7 +20,9 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
@@ -81,9 +83,10 @@ public abstract class WalkHomeTaskMixin {
         Stream<Pair<RegistryEntry<PointOfInterestType>, BlockPos>> stream =
                 pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, newBlockPosPredicate, pos,
                         CONFIG.villagerPathfindingConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+        Set<Pair<RegistryEntry<PointOfInterestType>, BlockPos>> set = stream.collect(Collectors.toSet());
 
-        if (stream.findAny().isPresent()) {
-            return stream;
+        if (!set.isEmpty()) {
+            return set.stream();
         }
 
         // All beds are occupied, go back to default behavior of meeping around the nearest bed at night, worst
