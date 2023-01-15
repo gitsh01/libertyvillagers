@@ -111,15 +111,7 @@ public abstract class FarmerVillagerTaskMixin  {
             if (CONFIG.villagersProfessionConfig.preferPlantSameCrop) {
                 if (block instanceof CropBlock && ((CropBlock) block).isMature(blockState)) {
                     foundBlockCrop = true;
-                    if (block instanceof BeetrootsBlock) {
-                        preferredSeeds = Items.BEETROOT_SEEDS;
-                    } else if (block instanceof PotatoesBlock) {
-                        preferredSeeds = Items.POTATO;
-                    } else if (block instanceof CarrotsBlock) {
-                        preferredSeeds = Items.CARROT;
-                    } else {
-                        preferredSeeds = Items.WHEAT_SEEDS;
-                    }
+                    preferredSeeds = getPreferredSeedsForCropBlock(block);
                 }
             }
 
@@ -140,6 +132,23 @@ public abstract class FarmerVillagerTaskMixin  {
             if (blockState.isAir() && block2 instanceof FarmlandBlock && villagerEntity.hasSeedToPlant()) {
                 SimpleInventory simpleInventory = villagerEntity.getInventory();
 
+                // If we don't know what to plant on a piece of farmland, look to nearby blocks to see if
+                // we should plant the same item.
+                if (CONFIG.villagersProfessionConfig.preferPlantSameCrop && preferredSeeds == null) {
+                    for (BlockPos blockPos : BlockPos.iterate(currentTarget.add(-4, 0, -4),
+                            currentTarget.add(4, 1, 4))) {
+                        BlockState possibleCropState = serverWorld.getBlockState(blockPos);
+                        Block possibleCrop = possibleCropState.getBlock();
+                        if (possibleCrop instanceof CropBlock || possibleCrop instanceof GourdBlock ||
+                                possibleCrop instanceof StemBlock) {
+                            preferredSeeds = getPreferredSeedsForCropBlock(possibleCrop);
+                            if (preferredSeeds != null) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 // First look for the preferred seed.
                 boolean plantedPreferredSeeds = false;
                 if (preferredSeeds != null) {
@@ -154,7 +163,8 @@ public abstract class FarmerVillagerTaskMixin  {
                     }
                 }
 
-                if (!plantedPreferredSeeds) {
+                if (!plantedPreferredSeeds && (!CONFIG.villagersProfessionConfig.preferPlantSameCrop ||
+                        preferredSeeds == null)) {
                     // Look for any seed to plant.
                     for (int i = 0; i < simpleInventory.size(); ++i) {
                         ItemStack itemStack = simpleInventory.getStack(i);
@@ -201,6 +211,27 @@ public abstract class FarmerVillagerTaskMixin  {
 
         this.ticksRan++;
         cir.cancel();
+    }
+
+    private Item getPreferredSeedsForCropBlock(Block block) {
+        if (block instanceof StemBlock) {
+            block = ((StemBlock)block).getGourdBlock();
+        }
+
+        if (block instanceof BeetrootsBlock) {
+            return Items.BEETROOT_SEEDS;
+        } else if (block instanceof PotatoesBlock) {
+            return Items.POTATO;
+        } else if (block instanceof CarrotsBlock) {
+            return Items.CARROT;
+        } else if (CONFIG.villagersProfessionConfig.farmersHarvestMelons && block instanceof MelonBlock) {
+            return Items.MELON_SEEDS;
+        } else if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins && block instanceof PumpkinBlock) {
+            return Items.PUMPKIN_SEEDS;
+        } else if (block instanceof CropBlock) {
+            return Items.WHEAT_SEEDS;
+        }
+        return null;
     }
 
     private boolean plantSeed(ItemStack itemStack, int stackIndex, ServerWorld serverWorld,

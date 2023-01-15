@@ -1,16 +1,19 @@
 package com.gitsh01.libertyvillagers.mixin;
 
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.ai.brain.MemoryQueryResult;
 import net.minecraft.entity.ai.brain.task.WalkHomeTask;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.poi.PointOfInterestStorage;
+import net.minecraft.world.poi.PointOfInterestType;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
@@ -18,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
@@ -35,13 +39,18 @@ public abstract class WalkHomeTaskMixin {
         return origin.getManhattanDistance(dest);
     }
 
+    @ModifyConstant(method = "method_47054",
+            constant = @Constant(doubleValue = 4.0))
+    private static double replaceSquaredDistanceWithManhattanConstant(double constant) {
+        return 2.0f;
+    }
+
     @SuppressWarnings("target")
     @ModifyArgs(method = "method_47054",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"))
     private static void modifyShouldRunGetNearestPositionArgs(Args args) {
         args.set(2, CONFIG.villagerPathfindingConfig.findPOIRange);
-        args.set(3, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
     }
 
     @SuppressWarnings("target")
@@ -54,21 +63,33 @@ public abstract class WalkHomeTaskMixin {
         world = serverWorld;
     }
 
-    @SuppressWarnings("target")
-    @ModifyArgs(method = "method_47054",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getTypesAndPositions(Ljava/util/function/Predicate;Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;"))
-    private static void modifyShouldRunGetTypesAndPositions(Args args) {
-        Predicate<BlockPos> posPredicate = args.get(1);
+    @Redirect(method = "method_47054",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getTypesAndPositions" +
+                    "(Ljava/util/function/Predicate;Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;" +
+                    "ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;"))
+    private static Stream<Pair<RegistryEntry<PointOfInterestType>, BlockPos>> modifyGetTypesAndPositions(
+            PointOfInterestStorage pointOfInterestStorage, Predicate<RegistryEntry<PointOfInterestType>> typePredicate,
+            Predicate<BlockPos> posPredicate, BlockPos pos, int radius,
+            PointOfInterestStorage.OccupationStatus occupationStatus) {
         Predicate<BlockPos> newBlockPosPredicate = blockPos -> {
             if (isBedOccupied(world, blockPos)) {
                 return false;
             }
             return posPredicate.test(blockPos);
         };
-        args.set(1, newBlockPosPredicate);
-        args.set(3, CONFIG.villagerPathfindingConfig.findPOIRange);
-        args.set(4, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+
+        Stream<Pair<RegistryEntry<PointOfInterestType>, BlockPos>> stream =
+                pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, newBlockPosPredicate, pos,
+                        CONFIG.villagerPathfindingConfig.findPOIRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE);
+
+        if (stream.findAny().isPresent()) {
+            return stream;
+        }
+
+        // All beds are occupied, go back to default behavior of meeping around the nearest bed at night, worst
+        // roommate ever.
+        return pointOfInterestStorage.getSortedTypesAndPositions(typePredicate, posPredicate, pos,
+                CONFIG.villagerPathfindingConfig.findPOIRange, occupationStatus);
     }
 
     private static boolean isBedOccupied(ServerWorld world, BlockPos pos) {
