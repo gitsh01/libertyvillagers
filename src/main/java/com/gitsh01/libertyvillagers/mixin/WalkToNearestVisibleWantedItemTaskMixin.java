@@ -48,7 +48,7 @@ public abstract class WalkToNearestVisibleWantedItemTaskMixin {
         }
         // If our inventory is full, don't move towards the item.
         ItemStack stack = itemEntity.getStack();
-        if (((VillagerEntity)entity).getInventory().canInsert(stack)) {
+        if (!((VillagerEntity)entity).getInventory().canInsert(stack)) {
             cir.setReturnValue(false);
             cir.cancel();
         }
