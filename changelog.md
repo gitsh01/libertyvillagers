@@ -1,5 +1,16 @@
 
 
+## [1.0.13+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.13+fabric+1.19.2) (2023-01-23)
+
+### Features
+
+ -  Villagers can now avoid glass panes, which forces their pathfinding AI to consider whether they can walk through glass panes when creating new paths. ([4cde24e543ec447](https://gitlab.com/html-validate/html-validate/commit/4cde24e543ec4471970ed1776d23910278441b18))
+
+### Bug Fixes
+
+ -  Crash on reusing a stream. ([2b5565a4dec5707](https://gitlab.com/html-validate/html-validate/commit/2b5565a4dec570711c90d2f4d8b39ba02755397d))
+ -  Fixed villagers not picking up items. (Bug in 1.19.3 verison only.)
+
 ## [1.0.12+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.12+fabric+1.19.2) (2023-01-15)
 
 ### Features
