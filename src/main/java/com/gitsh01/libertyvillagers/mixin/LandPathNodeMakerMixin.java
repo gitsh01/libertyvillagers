@@ -13,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
+
 @Mixin(LandPathNodeMaker.class)
 public abstract class LandPathNodeMakerMixin extends PathNodeMaker {
 
@@ -29,6 +31,10 @@ public abstract class LandPathNodeMakerMixin extends PathNodeMaker {
                 cir.cancel();
             }
             if (block instanceof StairsBlock) {
+                cir.setReturnValue(PathNodeType.BLOCKED);
+                cir.cancel();
+            }
+            if (CONFIG.villagerPathfindingConfig.villagersAvoidGlassPanes && block instanceof PaneBlock) {
                 cir.setReturnValue(PathNodeType.BLOCKED);
                 cir.cancel();
             }
