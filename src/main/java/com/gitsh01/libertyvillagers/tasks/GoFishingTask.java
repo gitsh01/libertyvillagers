@@ -72,7 +72,7 @@ public class GoFishingTask extends MultiTickTask<VillagerEntity> {
                 Vec3d bobberStartPosition = getBobberStartPosition(villagerEntity, blockPos);
 
                 // Make sure the bobber won't be starting in a solid wall of a boat.
-                if (serverWorld.getBlockState(new BlockPos(bobberStartPosition)).isOpaque()) {
+                if (serverWorld.getBlockState(BlockPos.ofFloored(bobberStartPosition)).isOpaque()) {
                     continue;
                 }
 

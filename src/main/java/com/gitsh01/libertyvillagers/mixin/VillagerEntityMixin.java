@@ -91,7 +91,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
     public void villagerInit(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {
         if (CONFIG.villagerPathfindingConfig.villagersAvoidCactus) {
-            this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
+            this.setPathfindingPenalty(PathNodeType.DANGER_OTHER, 16);
         }
         if (CONFIG.villagerPathfindingConfig.villagersAvoidWater) {
             this.setPathfindingPenalty(PathNodeType.WATER, -1);

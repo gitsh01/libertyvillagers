@@ -70,7 +70,7 @@ public abstract class WanderAroundTaskMixin {
 
     private void checkToSeeIfVillagerHasMoved(ServerWorld serverWorld, MobEntity entity, long time) {
         BlockPos entityPos =
-                new BlockPos(entity.getBlockX(), LandPathNodeMaker.getFeetY(serverWorld, entity.getBlockPos()),
+                new BlockPos(entity.getBlockX(), (int)LandPathNodeMaker.getFeetY(serverWorld, entity.getBlockPos()),
                         entity.getBlockZ());
         if (previousEntityPos == null || !previousEntityPos.isWithinDistance(entityPos, 1)) {
             previousEntityPos = entityPos;
