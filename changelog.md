@@ -1,4 +1,10 @@
 
+## [1.0.14+fabric+1.19.4](https://gitlab.com/html-validate/html-validate/compare/1.0.14+fabric+1.19.4) (2023-01-23)
+
+### Bug Fixes
+
+-  Fixed crash in villager brain debug.
+-  Set default to villager brain debug and debug info overlay to false.
 
 ## [1.0.13+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.13+fabric+1.19.2) (2023-01-23)
 

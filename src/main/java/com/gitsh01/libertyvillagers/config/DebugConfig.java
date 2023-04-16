@@ -11,11 +11,11 @@ public class DebugConfig implements ConfigData {
     public int villagerStatRange = 256;
 
     @ConfigEntry.Gui.Tooltip
-    public boolean enableVillagerInfoOverlay = true;
+    public boolean enableVillagerInfoOverlay = false;
 
     @ConfigEntry.Gui.Tooltip
     public boolean villagerInfoShowsPath = true;
 
     @ConfigEntry.Gui.Tooltip
-    public boolean enableVillagerBrainDebug = true;
+    public boolean enableVillagerBrainDebug = false;
 }

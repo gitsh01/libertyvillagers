@@ -59,12 +59,16 @@ public abstract class BrainMixin<E extends LivingEntity> {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         for (int i = 1; i < elements.length; i++) {
             StackTraceElement s = elements[i];
-            // Find who is calling LookTargetUtil, not LookTargetUtil itself.
-            if (s.getFileName().contains("LookTargetUtil")) {
+            String fileName = s.getFileName();
+            if (fileName == null) {
                 continue;
             }
-            if (s.getClassName().contains("ai.brain.task") || s.getClassName().contains("ai.brain.sensor")) {
-                String fileName = s.getFileName();
+            // Find who is calling LookTargetUtil, not LookTargetUtil itself.
+            if (fileName.contains("LookTargetUtil")) {
+                continue;
+            }
+            className = s.getClassName();
+            if (className.contains("ai.brain.task") || className.contains("ai.brain.sensor")) {
                 fileName = fileName.substring(0, fileName.lastIndexOf('.'));
                 className = fileName + ":" + s.getMethodName() + ":" + s.getLineNumber();
                 break;
