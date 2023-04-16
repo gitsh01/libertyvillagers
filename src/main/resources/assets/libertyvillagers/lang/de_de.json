@@ -42,7 +42,7 @@
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerInfoShowsPath": "Dorfbewohner-Info zeigt Pfad",
   "text.autoconfig.LibertyVillagers.option.debugConfig.villagerInfoShowsPath.@Tooltip": "Dorfbewohner Info beschreibt auch den aktuellen Pfad des Dorfbewohners.",
   "text.autoconfig.LibertyVillagers.option.villagerPathfindingConfig.findPOIRange": "POI-Bereich finden",
-  "text.autoconfig.LibertyVillagers.option.villagerPathfindingConfig.findPOIRange.@Tooltip[0]": "Die euklidische Distanz, in der ein Dorfbewohner nach einem Bett, einer Glocke," sucht,
+  "text.autoconfig.LibertyVillagers.option.villagerPathfindingConfig.findPOIRange.@Tooltip[0]": "Die euklidische Distanz, in der ein Dorfbewohner nach einem Bett, einer Glocke,",
   "text.autoconfig.LibertyVillagers.option.villagerPathfindingConfig.findPOIRange.@Tooltip[1]": "oder Arbeitsplatz (teuer). Mojang-Vorgabe: 48. Vorgeschlagener Standard: 128.",
   "text.autoconfig.LibertyVillagers.option.villagerPathfindingConfig.pathfindingMaxRange": "Maximaler Pfadfindung Reichweite",
   "text.autoconfig.LibertyVillagers.option.villagerPathfindingConfig.pathfindingMaxRange.@Tooltip[0]": "Die maximal zulässige Manhattan-Distanz für einen gültigen Dorfbewohnerpfad",
