@@ -1,4 +1,14 @@
 
+## [1.0.14+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.14+fabric+1.19.4) (2023-04-16)
+
+### Features
+
+- Added german translations. Thank you Cape-City for providing the translations!
+
+### Bug Fixes
+
+-  Fixed crash in villager brain debug (version 1.19.4 crash only).
+-  Set default to villager brain debug and debug info overlay to false.
 
 ## [1.0.13+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.13+fabric+1.19.2) (2023-01-23)
 
@@ -68,7 +78,7 @@
  -  Improve golem pathfinding to shore. ([435dbd944ee67cb](https://gitlab.com/html-validate/html-validate/commit/435dbd944ee67cb0fdde17ed9cd3039a20dfb02b))
 
 
-## [1.0.8+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
+## [1.0.8+1.19.3](https://gitlab.com/html-validate/html-validate/compare/1.0.8+1.19.2) (2022-12-20)
 
 
 ### Bug Fixes
@@ -77,7 +87,7 @@
 
  
 
-## [1.0.7+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.7+1.19.2) (2022-12-18)
+## [1.0.7+1.19.3](https://gitlab.com/html-validate/html-validate/compare/1.0.7+1.19.2) (2022-12-18)
 
 ### Features
 
@@ -97,7 +107,7 @@
  -  Improvements to applying fuzzy logic and teleporting when the villager is stuck. ([23cfb5485fc0206](https://gitlab.com/html-validate/html-validate/commit/23cfb5485fc0206beba883a8b9e515e7a65bd998))
  -  Improving farmer logic when harvesting crops. ([085a894acb1e990](https://gitlab.com/html-validate/html-validate/commit/085a894acb1e9906b80b1b8559ccea08512589a7))
 
- ## [1.0.6+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.6+1.19.2) (2022-12-07)
+## [1.0.6+1.19.3](https://gitlab.com/html-validate/html-validate/compare/1.0.6+1.19.2) (2022-12-07)
 
 ### Features
 
