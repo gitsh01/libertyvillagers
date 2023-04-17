@@ -110,3 +110,4 @@ for writing code under the [MIT license](https://will-lucic.mit-license.org) for
 server.
 
 Thanks to kressety for the Simplified Chinese translations.
+Thanks to Cape-City for the German translations.
