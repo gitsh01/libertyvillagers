@@ -1,9 +1,13 @@
 
-## [1.0.14+fabric+1.19.4](https://gitlab.com/html-validate/html-validate/compare/1.0.14+fabric+1.19.4) (2023-01-23)
+## [1.0.14+fabric+1.19.4](https://gitlab.com/html-validate/html-validate/compare/1.0.14+fabric+1.19.4) (2023-04-16)
+
+### Features
+
+- Added german translation. Thank you Cape-City for providing the translations!
 
 ### Bug Fixes
 
--  Fixed crash in villager brain debug.
+-  Fixed crash in villager brain debug (version 1.19.4 crash only).
 -  Set default to villager brain debug and debug info overlay to false.
 
 ## [1.0.13+fabric+1.19.2](https://gitlab.com/html-validate/html-validate/compare/1.0.13+fabric+1.19.2) (2023-01-23)
