@@ -68,12 +68,12 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
             return;
         }
 
-        if (!this.world.isClient && this.removeIfInvalidOwner()) {
+        if (!this.getWorld().isClient && this.removeIfInvalidOwner()) {
             ci.cancel();
             return;
         }
 
-        if (this.onGround) {
+        if (this.isOnGround()) {
             ++this.removalTimer;
             if (this.removalTimer >= 1200) {
                 this.discard();
@@ -85,9 +85,9 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
         }
         float f = 0.0f;
         BlockPos blockPos = this.getBlockPos();
-        FluidState fluidState = this.world.getFluidState(blockPos);
+        FluidState fluidState = this.getWorld().getFluidState(blockPos);
         if (fluidState.isIn(FluidTags.WATER)) {
-            f = fluidState.getHeight(this.world, blockPos);
+            f = fluidState.getHeight(this.getWorld(), blockPos);
         }
         boolean bl = f > 0.0f;
         if (isFlying) {
@@ -115,7 +115,7 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
                         this.setVelocity(this.getVelocity().add(0.0, -0.1 * (double) this.velocityRandom.nextFloat() *
                                 (double) this.velocityRandom.nextFloat(), 0.0));
                     }
-                    if (!this.world.isClient) {
+                    if (!this.getWorld().isClient) {
                         this.tickFishingLogic(blockPos);
                     }
                 } else {
@@ -125,7 +125,7 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
         }
         this.move(MovementType.SELF, this.getVelocity());
         this.updateRotation();
-        if (isFlying && (this.onGround || this.horizontalCollision)) {
+        if (isFlying && (this.isOnGround() || this.horizontalCollision)) {
             this.setVelocity(Vec3d.ZERO);
         }
         this.setVelocity(this.getVelocity().multiply(0.92));
@@ -159,23 +159,23 @@ public abstract class FishingBobberEntityMixin extends ProjectileEntity {
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void use(ItemStack usedItem, CallbackInfoReturnable<Integer> cir) {
-        if (this.world.isClient || this.getOwner() == null || this.getOwner().getType() != EntityType.VILLAGER) {
+        if (this.getWorld().isClient || this.getOwner() == null || this.getOwner().getType() != EntityType.VILLAGER) {
             return;
         }
         VillagerEntity villager = (VillagerEntity) this.getOwner();
         int i = 0;
         if (this.hookCountdown > 0) {
-            Item fish = this.world.getRandom().nextInt(2) == 0 ? Items.COD : Items.SALMON;
+            Item fish = this.getWorld().getRandom().nextInt(2) == 0 ? Items.COD : Items.SALMON;
             ItemStack itemStack = new ItemStack(fish);
-            ItemEntity itemEntity = new ItemEntity(this.world, this.getX(), this.getY(), this.getZ(), itemStack);
+            ItemEntity itemEntity = new ItemEntity(this.getWorld(), this.getX(), this.getY(), this.getZ(), itemStack);
             double d = villager.getX() - this.getX();
             double e = villager.getY() - this.getY();
             double f = villager.getZ() - this.getZ();
             itemEntity.setVelocity(d * 0.1, e * 0.1 + Math.sqrt(Math.sqrt(d * d + e * e + f * f)) * 0.08, f * 0.1);
-            this.world.spawnEntity(itemEntity);
+            this.getWorld().spawnEntity(itemEntity);
             i = 1;
         }
-        if (this.onGround) {
+        if (this.isOnGround()) {
             i = 2;
         }
         this.discard();

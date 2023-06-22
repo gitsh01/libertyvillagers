@@ -47,7 +47,7 @@ public abstract class ActiveTargetGoalMixin extends TrackTargetGoal {
     @Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
     public void canStartIfNotTooFarFromBell(CallbackInfoReturnable<Boolean> cir) {
         if (mob.getType() == EntityType.IRON_GOLEM && CONFIG.golemsConfig.golemStayNearBell) {
-            ServerWorld serverWorld = (ServerWorld) this.mob.world;
+            ServerWorld serverWorld = (ServerWorld) this.mob.getWorld();
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
 
             Optional<BlockPos> nearestBell = pointOfInterestStorage.getNearestPosition(

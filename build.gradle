@@ -135,7 +135,7 @@ modrinth {
 	projectId = '264clomZ' // The ID of your Modrinth project. Slugs will not work.
 	versionType = 'release'
 	uploadFile = remapJar // Tells Minotaur to use the remapped jar
-	gameVersions = ['1.19.4'] // An array of game versions the version supports
+	gameVersions = ['1.20.1'] // An array of game versions the version supports
 	loaders = ['fabric'] // Self-explanatory.
 	changelog = file('changelog.md').text
 	dependencies = [

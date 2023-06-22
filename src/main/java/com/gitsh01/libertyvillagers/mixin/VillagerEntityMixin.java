@@ -114,10 +114,10 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("HEAD"), method = "initBrain(Lnet/minecraft/entity/ai/brain/Brain;)V")
     private void changeVillagerProfession(Brain<VillagerEntity> brain, CallbackInfo ci) {
-        if (!(this.world instanceof ServerWorld)) {
+        if (!(this.getWorld() instanceof ServerWorld)) {
             return;
         }
-        ServerWorld world = (ServerWorld) this.world;
+        ServerWorld world = (ServerWorld) this.getWorld();
 
         VillagerProfession profession = this.getVillagerData().getProfession();
         if (CONFIG.villagersGeneralConfig.noNitwitVillagers && profession == VillagerProfession.NITWIT) {

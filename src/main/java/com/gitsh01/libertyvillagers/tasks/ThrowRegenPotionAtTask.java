@@ -34,14 +34,14 @@ public class ThrowRegenPotionAtTask extends HealTargetTask {
         }
 
         if (CONFIG.villagersProfessionConfig.clericThrowsPotionsAtVillagers) {
-            List<VillagerEntity> villagers = villagerEntity.world.getNonSpectatingEntities(VillagerEntity.class,
+            List<VillagerEntity> villagers = villagerEntity.getWorld().getNonSpectatingEntities(VillagerEntity.class,
                     villagerEntity.getBoundingBox()
                             .expand(CONFIG.villagersProfessionConfig.clericThrowsPotionsAtRange));
             possiblePatients.addAll(villagers);
         }
 
         if (CONFIG.villagersProfessionConfig.clericThrowsPotionsAtPlayers) {
-            List<PlayerEntity> players = villagerEntity.world.getNonSpectatingEntities(PlayerEntity.class,
+            List<PlayerEntity> players = villagerEntity.getWorld().getNonSpectatingEntities(PlayerEntity.class,
                     villagerEntity.getBoundingBox()
                             .expand(CONFIG.villagersProfessionConfig.clericThrowsPotionsAtRange));
             possiblePatients.addAll(players);
