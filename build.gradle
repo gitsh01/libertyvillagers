@@ -20,11 +20,6 @@ subprojects {
         //mappings loom.officialMojangMappings()
         // The following line declares the yarn mappings you may select this one as well.
         mappings "net.fabricmc:yarn:${rootProject.yarn_mappings_version}:v2"
-
-        // Cloth config, required for auto config.
-        modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}") {
-            exclude(group: "net.fabricmc.fabric-api")
-        }
     }
 }
 

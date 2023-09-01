@@ -40,8 +40,13 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
     // Mod menu.
-    modApi("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") {
+    modImplementation("com.terraformersmc:modmenu:${rootProject.mod_menu_version}") {
         exclude module: 'fabric-api' // includes bad Fabric API
+    }
+
+    // Cloth config, required for auto config.
+    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
     }
 }
 

@@ -12,11 +12,14 @@
     "sources": "https://github.com/gitsh01/libertyvillagers"
   },
   "license": "CC0-1.0",
-  "icon": "assets/libertyvillagers/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.gitsh01.libertyvillagers.fabric.LibertyVillagersFabricMod"
+      "com.gitsh01.libertyvillagers.fabric.LibertyVillagersModFabric"
+    ],
+    "modmenu": [
+      "com.gitsh01.libertyvillagers.fabric.integration.ModMenuIntegration"
     ]
   },
   "mixins": [
