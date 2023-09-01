@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[40,)"
+issueTrackerURL = "https://github.com/gitsh01/libertyvillagers/issues"
+license = "CC0-1.0"
+
+[[mods]]
+modId = "libertyvillagers"
+version = "${version}"
+displayName = "Liberty's Villagers"
+authors = "gitsh01"
+description = '''
+Quality of Life improvements for villagers.
+'''
+#logoFile = ""
+
+[[dependencies.libertyvillagers]]
+modId = "forge"
+mandatory = true
+versionRange = "[40,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.libertyvillagers]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.18.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.libertyvillagers]]
+modId = "architectury"
+mandatory = true
+versionRange = "[4.11.91,)"
+ordering = "AFTER"
+side = "BOTH"
