@@ -22,10 +22,7 @@ subprojects {
         mappings "net.fabricmc:yarn:${rootProject.yarn_mappings_version}:v2"
 
         // Cloth config, required for auto config.
-        modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
-            exclude(group: "net.fabricmc.fabric-api")
-        }
-        modApi("me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}") {
+        modApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}") {
             exclude(group: "net.fabricmc.fabric-api")
         }
     }
