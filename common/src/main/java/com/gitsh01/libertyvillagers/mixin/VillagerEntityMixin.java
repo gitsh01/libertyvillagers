@@ -29,7 +29,6 @@ import net.minecraft.world.poi.PointOfInterestType;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -54,61 +53,31 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
     @Shadow
     public abstract void setVillagerData(VillagerData villagerData);
 
-    @Shadow
-    public static Map<Item, Integer> ITEM_FOOD_VALUES;
-
-    @Shadow
-    // Forge won't allow us to modify this static value.
-    private static Set<Item> GATHERABLE_ITEMS;
-
-    private static Set<Item> GATHERABLE_ITEMS_2;
-
-    @Accessor("ITEM_FOOD_VALUES")
-    public static void setItemFoodValues( Map<Item, Integer> itemFoodValues) {
-        throw new AssertionError();
-    }
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     static private void modifyStaticBlock(CallbackInfo ci) {
-        // This doesn't work either.
-        /*
-        Map<Item, Integer> itemFoodValues = new HashMap<>(ITEM_FOOD_VALUES);
-        itemFoodValues.put(Items.MELON_SLICE, 1);
-        VillagerEntityMixin.setItemFoodValues(itemFoodValues);
-*/
         // Only specific professions should have seeds and wheat.
-        GATHERABLE_ITEMS_2 =  new HashSet<>(Sets.difference(GATHERABLE_ITEMS,
+        VillagerEntity.GATHERABLE_ITEMS = new HashSet<>(Sets.difference(VillagerEntity.GATHERABLE_ITEMS,
                 ImmutableSet.of(Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.WHEAT)));
+        VillagerEntity.ITEM_FOOD_VALUES = new HashMap<>(VillagerEntity.ITEM_FOOD_VALUES);
 
         if (CONFIG.villagersGeneralConfig.villagersEatMelons) {
-            GATHERABLE_ITEMS_2.add(Items.MELON_SLICE);
-        //    ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
-        //    ITEM_FOOD_VALUES.put(Items.MELON_SLICE, 1);
+            VillagerEntity.GATHERABLE_ITEMS.add(Items.MELON_SLICE);
+            VillagerEntity.ITEM_FOOD_VALUES.put(Items.MELON_SLICE, 1);
         }
         if (CONFIG.villagersProfessionConfig.farmersHarvestMelons) {
-            GATHERABLE_ITEMS_2.add(Items.MELON_SLICE);
+            VillagerEntity.GATHERABLE_ITEMS.add(Items.MELON_SLICE);
         }
         if (CONFIG.villagersGeneralConfig.villagersEatPumpkinPie) {
-        //    ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
-        //    ITEM_FOOD_VALUES.put(Items.PUMPKIN_PIE, 1);
-            GATHERABLE_ITEMS_2.add(Items.PUMPKIN_PIE);
+            VillagerEntity.ITEM_FOOD_VALUES.put(Items.PUMPKIN_PIE, 1);
+            VillagerEntity.GATHERABLE_ITEMS.add(Items.PUMPKIN_PIE);
         }
         if (CONFIG.villagersGeneralConfig.villagersEatCookedFish) {
-          //  ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
-          //  ITEM_FOOD_VALUES.put(Items.COOKED_COD, 1);
-          //  ITEM_FOOD_VALUES.put(Items.COOKED_SALMON, 1);
-            GATHERABLE_ITEMS_2.add(Items.COOKED_COD);
-            GATHERABLE_ITEMS_2.add(Items.COOKED_SALMON);
+            VillagerEntity.ITEM_FOOD_VALUES.put(Items.COOKED_COD, 1);
+            VillagerEntity.ITEM_FOOD_VALUES.put(Items.COOKED_SALMON, 1);
+            VillagerEntity.GATHERABLE_ITEMS.add(Items.COOKED_COD);
+            VillagerEntity.GATHERABLE_ITEMS.add(Items.COOKED_SALMON);
         }
-    }
-
-    @Inject(at = @At("HEAD"), method = "canGather(Lnet/minecraft/item/ItemStack;)Z", cancellable = true)
-    public void replaceCanGather(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        Item item = stack.getItem();
-        boolean canGather =
-                (GATHERABLE_ITEMS_2.contains(item) || this.getVillagerData().getProfession().getGatherableItems().contains(item)) && this.getInventory().canInsert(stack);
-        cir.setReturnValue(canGather);
-        cir.cancel();
     }
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
@@ -242,7 +211,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
         for (int i = this.getInventory().size(); i >= 0; i-- ) {
             ItemStack stack = this.getInventory().getStack(i);
             if (stack.isEmpty()) continue;
-            if (GATHERABLE_ITEMS.contains(stack.getItem())) continue;
+            if (VillagerEntity.GATHERABLE_ITEMS.contains(stack.getItem())) continue;
             if (this.getVillagerData().getProfession().getGatherableItems().contains(stack.getItem())) continue;
             this.getInventory().removeStack(i);
         }

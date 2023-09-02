@@ -1,1 +1,7 @@
 accessWidener   v2  named
+
+# Fields
+accessible field net/minecraft/entity/passive/VillagerEntity GATHERABLE_ITEMS Ljava/util/Set;
+mutable field net/minecraft/entity/passive/VillagerEntity GATHERABLE_ITEMS Ljava/util/Set;
+accessible field net/minecraft/entity/passive/VillagerEntity ITEM_FOOD_VALUES Ljava/util/Map;
+mutable field net/minecraft/entity/passive/VillagerEntity ITEM_FOOD_VALUES Ljava/util/Map;
