@@ -49,11 +49,14 @@ public abstract class WalkHomeTaskMixin extends Task<LivingEntity> {
         return 2.0f;
     }
 
-    @ModifyArgs(method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z",
+    @ModifyArg(method = "shouldRun(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)Z",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"))
-    protected void modifyShouldRunGetNearestPositionArgs(Args args) {
-        args.set(2, CONFIG.villagerPathfindingConfig.findPOIRange);
+                    target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition" +
+                            "(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;" +
+                            "ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"),
+            index = 2)
+    protected int modifyShouldRunGetNearestPositionArgs(int findPOIRange) {
+        return CONFIG.villagerPathfindingConfig.findPOIRange;
     }
 
     @Inject(method = "run(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;J)V",
