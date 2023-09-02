@@ -11,7 +11,7 @@ authors = "gitsh01"
 description = '''
 Quality of Life improvements for villagers.
 '''
-#logoFile = ""
+logoFile = "icon.png"
 
 [[dependencies.libertyvillagers]]
 modId = "forge"
