@@ -38,6 +38,7 @@
     "TakeJobSiteTaskMixin",
     "TaskAccessorMixin",
     "VillagerBreedTaskMixin",
+    "VillagerEntityMixin",
     "VillagerProfessionMixin",
     "VillagerTaskListProviderMixin",
     "VillagerWalkTowardsTaskMixin",

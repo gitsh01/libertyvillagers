@@ -61,6 +61,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     static private void modifyStaticBlock(CallbackInfo ci) {
+        /**
+         * This crashes in Forge in Architectury. Works fine in Fabric.
         // Only specific professions should have seeds and wheat.
         GATHERABLE_ITEMS =  ImmutableSet.copyOf(Sets.difference(GATHERABLE_ITEMS,
                 ImmutableSet.of(Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.WHEAT)));
@@ -88,6 +90,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
             GATHERABLE_ITEMS.add(Items.COOKED_COD);
             GATHERABLE_ITEMS.add(Items.COOKED_SALMON);
         }
+        */
     }
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
