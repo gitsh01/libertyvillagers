@@ -1,11 +1,12 @@
 {
   "required": true,
-  "package": "com.gitsh01.libertyvillagers.mixin.fabric",
+  "package": "com.gitsh01.libertyvillagers.fabric.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
   ],
   "mixins": [
+    "ModelPredicateProviderRegistryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

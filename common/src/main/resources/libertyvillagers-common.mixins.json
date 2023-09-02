@@ -30,7 +30,6 @@
     "LivingEntityMixin",
     "MeleeAttackGoalMixin",
     "MobEntityMixin",
-    "ModelPredicateProviderRegistryMixin",
     "PointOfInterestTypeMixin",
     "ProjectileEntityAccessorMixin",
     "SecondaryPointsOfInterestSensorMixin",
