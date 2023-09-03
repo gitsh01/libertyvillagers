@@ -46,6 +46,10 @@ public class VillagerInfo {
             processVillagerInfo(context);
             return 1;
         }));
+        dispatcher.register(CommandManager.literal("villagerinfo").executes(context -> {
+            processVillagerInfo(context);
+            return 1;
+        }));
         dispatcher.register(CommandManager.literal("vi").executes(context -> {
             processVillagerInfo(context);
             return 1;
@@ -121,8 +125,7 @@ public class VillagerInfo {
         }
 
         VillagerEntity villager = (VillagerEntity)entity;
-        String occupation = "fixme";
-//                VillagerStats.translatedProfession(villager.getVillagerData().getProfession());
+        String occupation = VillagerStats.translatedProfession(villager.getVillagerData().getProfession());
         lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.occupation", occupation));
 
         // Client-side villagers don't have memories.

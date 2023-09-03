@@ -3,6 +3,7 @@ package com.gitsh01.libertyvillagers;
 import com.gitsh01.libertyvillagers.cmds.VillagerInfo;
 import com.gitsh01.libertyvillagers.cmds.VillagerReset;
 import com.gitsh01.libertyvillagers.cmds.VillagerSetPOI;
+import com.gitsh01.libertyvillagers.cmds.VillagerStats;
 import com.gitsh01.libertyvillagers.config.BaseConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -32,5 +33,6 @@ public class LibertyVillagersMod {
         VillagerInfo.register(dispatcher);
         VillagerReset.register(dispatcher);
         VillagerSetPOI.register(dispatcher);
+        VillagerStats.register(dispatcher);
     }
 }

@@ -27,6 +27,10 @@ public class VillagerSetPOI {
             processVillagerSetPOI(context);
             return 1;
         }));
+        dispatcher.register(CommandManager.literal("villagersetpoi").executes(context -> {
+            processVillagerSetPOI(context);
+            return 1;
+        }));
         dispatcher.register(CommandManager.literal("vsp").executes(context -> {
             processVillagerSetPOI(context);
             return 1;

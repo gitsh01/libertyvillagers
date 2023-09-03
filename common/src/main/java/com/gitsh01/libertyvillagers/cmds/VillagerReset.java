@@ -22,6 +22,10 @@ public class VillagerReset {
             processVillagerReset(context);
             return 1;
         }));
+        dispatcher.register(CommandManager.literal("villagerreset").executes(context -> {
+            processVillagerReset(context);
+            return 1;
+        }));
         dispatcher.register(CommandManager.literal("vr").executes(context -> {
             processVillagerReset(context);
             return 1;
