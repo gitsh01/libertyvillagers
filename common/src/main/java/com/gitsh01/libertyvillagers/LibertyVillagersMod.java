@@ -1,9 +1,14 @@
 package com.gitsh01.libertyvillagers;
 
+import com.gitsh01.libertyvillagers.cmds.VillagerInfo;
 import com.gitsh01.libertyvillagers.config.BaseConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import dev.architectury.event.events.common.*;
 
 public class LibertyVillagersMod {
     public static final String MOD_ID = "libertyvillagers";
@@ -17,6 +22,11 @@ public class LibertyVillagersMod {
     }
 
     public static void init() {
-        System.out.println(LibertyVillagersExpectPlatform.getConfigDirectory().toAbsolutePath().normalize().toString());
+        CommandRegistrationEvent.EVENT.register(LibertyVillagersMod::registerCommands);
+    }
+
+    private static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher,
+                                         CommandManager.RegistrationEnvironment registrationEnvironment) {
+        VillagerInfo.register(dispatcher);
     }
 }
