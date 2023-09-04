@@ -18,6 +18,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -100,6 +101,12 @@ public class VillagerStats {
         if (Platform.getEnvironment() == Env.CLIENT) {
             VillagerStatsClient.openBookScreen(bookStack);
         } else {
+            // Without server translations, it just stays "invalid key" when you open the book on fabric servers.
+            if (Platform.isFabric() && !Platform.isModLoaded("server-translations-api")) {
+                player.sendMessage(Text.of("Server_translations_api is missing. VillagerStats does not work " +
+                        "server-side without translations."), false);
+                return;
+            }
             VillagerStatsServer.openBookScreen(bookStack, player);
         }
     }
