@@ -137,8 +137,4 @@ task gitChangelogTask(type: se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
  """
 }
 
-task release(dependsOn: [tasks.githubRelease, tasks.curseforge, tasks.modrinth]) {
-    group = 'publishing'
-    description = 'Releases a new version to Github, Modrinth, and Curseforge'
-}
  */
