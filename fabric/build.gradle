@@ -1,5 +1,6 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
+    id("me.shedaniel.unified-publishing") version("0.1.+")
 }
 
 architectury {
@@ -48,7 +49,7 @@ dependencies {
     }
 
     // Cloth config, required for auto config.
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
+    modApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -57,6 +58,8 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 }
+
+version = "${project.mod_version}+fabric+${project.minecraft_version}"
 
 processResources {
     inputs.property "version", project.version
@@ -107,5 +110,52 @@ publishing {
     // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
         // Add repositories to publish to here.
+    }
+}
+
+unifiedPublishing {
+    project {
+        gameVersions = [ rootProject.curseforge_versions ]
+        gameLoaders = ["fabric"]
+        changelog = file('..\\changelog.md').text
+        releaseType = "beta"
+
+        relations {
+            depends { // Mark as a required dependency
+                curseforge = "fabric-api" // Optional, project slug
+                modrinth = "fabric-api" // Optional, project slug or id
+            }
+            depends {
+                curseforge = "architectury-api"
+                modrinth = "architectury-api"
+            }
+            includes {} // Mark as an included dependency
+            optional {
+                curseforge = "server-translations"
+            } // Mark as an optional dependency
+            optional {
+                curseforge = "modmenu"
+                modrinth = "modmenu"
+            }
+            conflicts {} // Mark as a conflicted dependency
+        }
+
+        mainPublication remapJar // Declares the publicated jar
+
+        var cfToken = System.getenv("CURSE_KEY")
+        if (cfToken != null) {
+            curseforge {
+                token = cfToken
+                id = rootProject.curseforge_id // Required, must be a string, ID of CurseForge project
+            }
+        }
+
+        var mrToken = System.getenv("MODRINTH_TOKEN")
+        if (mrToken != null) {
+            modrinth {
+                token = mrToken
+                id = rootProject.modrinth_id // Required, must be a string, ID of Modrinth project
+            }
+        }
     }
 }

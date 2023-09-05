@@ -41,6 +41,8 @@ dependencies {
     }
 }
 
+version = "${project.mod_version}+forge+${project.minecraft_version}"
+
 processResources {
     inputs.property "version", project.version
 
@@ -90,5 +92,41 @@ publishing {
     // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
         // Add repositories to publish to here.
+    }
+}
+
+unifiedPublishing {
+    project {
+        gameVersions = [ rootProject.curseforge_versions ]
+        gameLoaders = ["forge"]
+        changelog = file('..\\changelog.md').text
+        releaseType = "beta"
+
+        relations {
+            depends {
+                curseforge = "architectury-api"
+                modrinth = "architectury-api"
+            }
+            includes {} // Mark as an included dependency
+            conflicts {} // Mark as a conflicted dependency
+        }
+
+        mainPublication remapJar // Declares the publicated jar
+
+        var cfToken = System.getenv("CURSE_KEY")
+        if (cfToken != null) {
+            curseforge {
+                token = cfToken
+                id = rootProject.curseforge_id // Required, must be a string, ID of CurseForge project
+            }
+        }
+
+        var mrToken = System.getenv("MODRINTH_TOKEN")
+        if (mrToken != null) {
+            modrinth {
+                token = mrToken
+                id = rootProject.modrinth_id // Required, must be a string, ID of Modrinth project
+            }
+        }
     }
 }

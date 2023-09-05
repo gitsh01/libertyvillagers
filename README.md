@@ -99,9 +99,19 @@ provide a better experience for your villagers!
 
 ## Dependencies
 
+Required for either:
+* Architectury-API
+* Cloth-config
+
+Required for fabric:
+* Fabric-api
+
+Required for forge:
+Nothing extra
+
 If you want to run this on a dedicated server, you will need the "Server Translation API" version 1.4.17 or higher.
 
-To edit the mod's options on the client, you will need to the "Mod Menu" mod.
+The GUI config menus are only available on fabric with the "Mod Menu" mod loader. I have not found any forge equivalent.
 
 ## Credits
 
@@ -110,3 +120,5 @@ for writing code under the [MIT license](https://will-lucic.mit-license.org) for
 server.
 
 Thanks to kressety for the Simplified Chinese translations.
+
+Big thanks to the [Architectury project](https://github.com/architectury) for providing the framework to write cross-platform mods.
