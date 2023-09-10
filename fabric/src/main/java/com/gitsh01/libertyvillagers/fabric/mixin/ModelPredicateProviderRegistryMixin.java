@@ -1,9 +1,9 @@
 package com.gitsh01.libertyvillagers.fabric.mixin;
 
 import com.google.common.collect.Maps;
+import net.minecraft.client.item.ClampedModelPredicateProvider;
 import net.minecraft.client.item.ModelPredicateProvider;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
-import net.minecraft.client.item.UnclampedModelPredicateProvider;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -24,17 +24,16 @@ public class ModelPredicateProviderRegistryMixin {
     @Mutable
     static Map<Item, Map<Identifier, ModelPredicateProvider>> ITEM_SPECIFIC;
 
-    // Forge insists on remapping this to "modelPredicateProvider" instead of "unclampedModelPredicateProvider". :(
-    // Fabric does it the correct way, but because Forge is being a problem, we need platform specific versions.
-    @Inject(method = "register(Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/UnclampedModelPredicateProvider;)V",
+    @Inject(method = "register(Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;" +
+            "Lnet/minecraft/client/item/ClampedModelPredicateProvider;)V",
             at = @At("HEAD"),
             cancellable = true)
-    private static void register(Item item, Identifier id, UnclampedModelPredicateProvider provider, CallbackInfo ci) {
+    private static void register(Item item, Identifier id, ClampedModelPredicateProvider provider, CallbackInfo ci) {
         if (item != Items.FISHING_ROD) {
             return;
         }
         // Villagers should show the used graphic for the fishing rod.
-        UnclampedModelPredicateProvider newProvider = (stack, world, entity, seed) -> {
+        ClampedModelPredicateProvider newProvider = (stack, world, entity, seed) -> {
             if (entity != null && entity.getType() == EntityType.VILLAGER) {
                 return 1.0f;
             }
@@ -44,4 +43,3 @@ public class ModelPredicateProviderRegistryMixin {
         ci.cancel();
     }
 }
-

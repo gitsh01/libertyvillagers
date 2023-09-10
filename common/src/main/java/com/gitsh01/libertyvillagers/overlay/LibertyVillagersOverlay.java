@@ -5,7 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.MultilineText;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
@@ -25,7 +25,7 @@ public class LibertyVillagersOverlay {
     static int BACKGROUND_PADDING = 2;
     static int BACKGROUND_COLOR = 0x55200000;
 
-    public static void HudRenderCallback(MatrixStack matrices, float tickDelta) {
+    public static void HudRenderCallback(DrawContext context, float tickDelta) {
         if (!CONFIG.debugConfig.enableVillagerInfoOverlay) {
             return;
         }
@@ -67,9 +67,9 @@ public class LibertyVillagersOverlay {
             }
             int multilineWidth = maxWidth + TEXT_PADDING;
             int x = windowScaledWidth - multilineWidth;
-            multilineText.fillBackground(matrices, x + (multilineWidth / 2) - (BACKGROUND_PADDING / 2), TEXT_PADDING,
+            multilineText.fillBackground(context, x + (multilineWidth / 2) - (BACKGROUND_PADDING / 2), TEXT_PADDING,
                     renderer.fontHeight, BACKGROUND_PADDING, BACKGROUND_COLOR);
-            multilineText.draw(matrices, x, TEXT_PADDING, renderer.fontHeight, WHITE);
+            multilineText.draw(context, x, TEXT_PADDING, renderer.fontHeight, WHITE);
         }
     }
 }

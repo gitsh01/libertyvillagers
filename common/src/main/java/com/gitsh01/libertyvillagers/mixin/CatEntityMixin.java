@@ -4,8 +4,10 @@ import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.CatEntity;
+import net.minecraft.entity.passive.CatVariant;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -23,7 +25,7 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 public abstract class CatEntityMixin extends TameableEntity {
 
     @Shadow
-    public abstract void setCatType(int type);
+    public abstract void setVariant(CatVariant variant);
 
     public CatEntityMixin(EntityType<? extends CatEntity> entityType, World world) {
         super(entityType, world);
@@ -40,7 +42,7 @@ public abstract class CatEntityMixin extends TameableEntity {
         }
 
         if (CONFIG.catsConfig.allBlackCats) {
-            this.setCatType(10);
+            this.setVariant(Registries.CAT_VARIANT.get(CatVariant.ALL_BLACK));
         }
     }
 

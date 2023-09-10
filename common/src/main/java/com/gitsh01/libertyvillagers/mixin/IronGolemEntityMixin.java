@@ -25,7 +25,7 @@ public abstract class IronGolemEntityMixin extends PathAwareEntity {
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
     public void avoidCactus(EntityType<? extends GolemEntity> entityType, World world, CallbackInfo ci) {
         if (CONFIG.golemsConfig.golemsAvoidCactus) {
-            this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, -1);
+            this.setPathfindingPenalty(PathNodeType.DANGER_OTHER, -1);
         }
         if (CONFIG.golemsConfig.golemsAvoidWater) {
             this.setPathfindingPenalty(PathNodeType.WATER, 16);

@@ -2,10 +2,7 @@ package com.gitsh01.libertyvillagers.mixin;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.InteractionObserver;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -15,11 +12,12 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.dynamic.GlobalPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
@@ -53,37 +51,47 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
     @Shadow
     public abstract void setVillagerData(VillagerData villagerData);
 
+    @Shadow
+    public static Map<Item, Integer> ITEM_FOOD_VALUES;
+
+    @Shadow
+    private static Set<Item> GATHERABLE_ITEMS;
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     static private void modifyStaticBlock(CallbackInfo ci) {
         // Only specific professions should have seeds and wheat.
-        VillagerEntity.GATHERABLE_ITEMS = new HashSet<>(Sets.difference(VillagerEntity.GATHERABLE_ITEMS,
+        GATHERABLE_ITEMS =  ImmutableSet.copyOf(Sets.difference(GATHERABLE_ITEMS,
                 ImmutableSet.of(Items.WHEAT_SEEDS, Items.BEETROOT_SEEDS, Items.WHEAT)));
-        VillagerEntity.ITEM_FOOD_VALUES = new HashMap<>(VillagerEntity.ITEM_FOOD_VALUES);
-
         if (CONFIG.villagersGeneralConfig.villagersEatMelons) {
-            VillagerEntity.GATHERABLE_ITEMS.add(Items.MELON_SLICE);
-            VillagerEntity.ITEM_FOOD_VALUES.put(Items.MELON_SLICE, 1);
+            GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
+            GATHERABLE_ITEMS.add(Items.MELON_SLICE);
+            ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
+            ITEM_FOOD_VALUES.put(Items.MELON_SLICE, 1);
         }
         if (CONFIG.villagersProfessionConfig.farmersHarvestMelons) {
-            VillagerEntity.GATHERABLE_ITEMS.add(Items.MELON_SLICE);
+            GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
+            GATHERABLE_ITEMS.add(Items.MELON_SLICE);
         }
         if (CONFIG.villagersGeneralConfig.villagersEatPumpkinPie) {
-            VillagerEntity.ITEM_FOOD_VALUES.put(Items.PUMPKIN_PIE, 1);
-            VillagerEntity.GATHERABLE_ITEMS.add(Items.PUMPKIN_PIE);
+            ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
+            ITEM_FOOD_VALUES.put(Items.PUMPKIN_PIE, 1);
+            GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
+            GATHERABLE_ITEMS.add(Items.PUMPKIN_PIE);
         }
         if (CONFIG.villagersGeneralConfig.villagersEatCookedFish) {
-            VillagerEntity.ITEM_FOOD_VALUES.put(Items.COOKED_COD, 1);
-            VillagerEntity.ITEM_FOOD_VALUES.put(Items.COOKED_SALMON, 1);
-            VillagerEntity.GATHERABLE_ITEMS.add(Items.COOKED_COD);
-            VillagerEntity.GATHERABLE_ITEMS.add(Items.COOKED_SALMON);
+            ITEM_FOOD_VALUES = new HashMap<>(ITEM_FOOD_VALUES);
+            ITEM_FOOD_VALUES.put(Items.COOKED_COD, 1);
+            ITEM_FOOD_VALUES.put(Items.COOKED_SALMON, 1);
+            GATHERABLE_ITEMS = new HashSet<>(GATHERABLE_ITEMS);
+            GATHERABLE_ITEMS.add(Items.COOKED_COD);
+            GATHERABLE_ITEMS.add(Items.COOKED_SALMON);
         }
     }
 
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
     public void villagerInit(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {
         if (CONFIG.villagerPathfindingConfig.villagersAvoidCactus) {
-            this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
+            this.setPathfindingPenalty(PathNodeType.DANGER_OTHER, 16);
         }
         if (CONFIG.villagerPathfindingConfig.villagersAvoidWater) {
             this.setPathfindingPenalty(PathNodeType.WATER, -1);
@@ -106,9 +114,10 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("HEAD"), method = "initBrain(Lnet/minecraft/entity/ai/brain/Brain;)V")
     private void changeVillagerProfession(Brain<VillagerEntity> brain, CallbackInfo ci) {
-        if (!(this.world instanceof ServerWorld world)) {
+        if (!(this.getWorld() instanceof ServerWorld)) {
             return;
         }
+        ServerWorld world = (ServerWorld) this.getWorld();
 
         VillagerProfession profession = this.getVillagerData().getProfession();
         if (CONFIG.villagersGeneralConfig.noNitwitVillagers && profession == VillagerProfession.NITWIT) {
@@ -132,8 +141,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
                 return;
             }
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
-            Optional<PointOfInterestType> optional = pointOfInterestStorage.getType(pos.getPos());
-            BiPredicate<VillagerEntity, PointOfInterestType> biPredicate = POINTS_OF_INTEREST.get(memoryModuleType);
+            Optional<RegistryEntry<PointOfInterestType>> optional = pointOfInterestStorage.getType(pos.getPos());
+            BiPredicate<VillagerEntity, RegistryEntry<PointOfInterestType>> biPredicate = POINTS_OF_INTEREST.get(memoryModuleType);
             if (optional.isPresent() && biPredicate.test((VillagerEntity) ((Object) this), optional.get())) {
                 pointOfInterestStorage.releaseTicket(pos.getPos());
                 DebugInfoSender.sendPointOfInterest(serverWorld, pos.getPos());
@@ -211,8 +220,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
         for (int i = this.getInventory().size(); i >= 0; i-- ) {
             ItemStack stack = this.getInventory().getStack(i);
             if (stack.isEmpty()) continue;
-            if (VillagerEntity.GATHERABLE_ITEMS.contains(stack.getItem())) continue;
-            if (this.getVillagerData().getProfession().getGatherableItems().contains(stack.getItem())) continue;
+            if (GATHERABLE_ITEMS.contains(stack.getItem())) continue;
+            if (this.getVillagerData().getProfession().gatherableItems().contains(stack.getItem())) continue;
             this.getInventory().removeStack(i);
         }
     }

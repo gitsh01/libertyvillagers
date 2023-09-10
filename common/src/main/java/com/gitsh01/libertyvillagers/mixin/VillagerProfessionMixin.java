@@ -20,7 +20,7 @@ public abstract class VillagerProfessionMixin {
     @Shadow
     private String id;
 
-    @Inject(method = "getSecondaryJobSites",
+    @Inject(method = "secondaryJobSites",
             at = @At("HEAD"),
             cancellable = true)
     void replaceSecondaryJobSites(CallbackInfoReturnable<ImmutableSet<Block>> cir) {
@@ -40,7 +40,7 @@ public abstract class VillagerProfessionMixin {
         }
     }
 
-    @Inject(method = "getGatherableItems",
+    @Inject(method = "gatherableItems",
             at = @At("RETURN"),
             cancellable = true)
     void replaceGatherableItems(CallbackInfoReturnable<ImmutableSet<Item>> cir) {

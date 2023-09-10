@@ -15,21 +15,23 @@ import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.dynamic.GlobalPos;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.world.poi.PointOfInterestTypes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,12 +115,12 @@ public class VillagerInfo {
 
     public static List<Text> getEntityInfo(ServerWorld serverWorld, Entity entity) {
         List<Text> lines = new ArrayList<>();
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.title"));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.title"));
         if (entity == null) {
             return lines;
         }
         Text name = entity.getDisplayName();
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.name", name));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.name", name));
 
         if (!(entity instanceof VillagerEntity)) {
             return lines;
@@ -126,58 +128,58 @@ public class VillagerInfo {
 
         VillagerEntity villager = (VillagerEntity)entity;
         String occupation = VillagerStats.translatedProfession(villager.getVillagerData().getProfession());
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.occupation", occupation));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.occupation", occupation));
 
         // Client-side villagers don't have memories.
         if (serverWorld == null) {
-            lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.needsServer"));
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.needsServer"));
             return lines;
         }
 
         Optional<GlobalPos> home = villager.getBrain().getOptionalMemory(MemoryModuleType.HOME);
         String homeCoords = home.isPresent() ? home.get().getPos().toShortString() : BLANK_COORDS;
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.home", homeCoords));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.home", homeCoords));
 
         Optional<GlobalPos> jobSite = villager.getBrain().getOptionalMemory(MemoryModuleType.JOB_SITE);
         String jobSiteCoords = jobSite.isPresent() ? jobSite.get().getPos().toShortString() : BLANK_COORDS;
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.jobSite", jobSiteCoords));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.jobSite", jobSiteCoords));
 
         Optional<GlobalPos> potentialJobSite =
                 villager.getBrain().getOptionalMemory(MemoryModuleType.POTENTIAL_JOB_SITE);
         String potentialJobSiteCoords =
                 potentialJobSite.isPresent() ? potentialJobSite.get().getPos().toShortString() : BLANK_COORDS;
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.potentialJobSite", potentialJobSiteCoords));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.potentialJobSite", potentialJobSiteCoords));
 
         Optional<GlobalPos> meetingPoint = villager.getBrain().getOptionalMemory(MemoryModuleType.MEETING_POINT);
         String meetingPointCoords =
                 meetingPoint.isPresent() ? meetingPoint.get().getPos().toShortString() : BLANK_COORDS;
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.meetingPoint", meetingPointCoords));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.meetingPoint", meetingPointCoords));
 
         Optional<WalkTarget> walkTarget = villager.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET);
         String walkTargetCoords =
                 walkTarget.isPresent() ? walkTarget.get().getLookTarget().getBlockPos().toShortString() : BLANK_COORDS;
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.walkTarget", walkTargetCoords,
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.walkTarget", walkTargetCoords,
                 walkTarget.map(WalkTarget::getCompletionRange).orElse(0)));
 
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.inventory"));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.inventory"));
 
         if (villager.getInventory().isEmpty()) {
-            lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.empty"));
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.empty"));
         } else {
             for(int i = 0; i < villager.getInventory().size(); i++) {
                 ItemStack stack = villager.getInventory().getStack(i);
                 if (!stack.isEmpty()) {
-                    lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.inventoryLine", stack.getCount(),
+                    lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.inventoryLine", stack.getCount(),
                             stack.getName()));
                 }
             }
         }
 
         if (villager.getNavigation().getCurrentPath() != null && CONFIG.debugConfig.villagerInfoShowsPath) {
-            lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.path"));
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.path"));
             Path path = villager.getNavigation().getCurrentPath();
             for (int i = path.getCurrentNodeIndex(); i < path.getLength(); i++) {
-                lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.pathnode", i,
+                lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.pathnode", i,
                         path.getNode(i).getBlockPos().toShortString()));
             }
         }
@@ -187,16 +189,16 @@ public class VillagerInfo {
 
     public static List<Text> getBlockInfo(ServerWorld serverWorld, BlockPos blockPos, BlockState blockState) {
         List<Text> lines = new ArrayList<>();
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.title"));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.title"));
         Block block = blockState.getBlock();
         if (block == null) {
             return lines;
         }
         Text name = block.getName();
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.name", name));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.name", name));
 
         if (serverWorld == null) {
-            lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.needsServer"));
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.needsServer"));
             return lines;
         }
         if (block instanceof BeehiveBlock) {
@@ -204,40 +206,47 @@ public class VillagerInfo {
             if (blockEntity instanceof BeehiveBlockEntity) {
                 BeehiveBlockEntity beehiveBlockEntity = (BeehiveBlockEntity) blockEntity;
                 int numBees = beehiveBlockEntity.getBeeCount();
-                lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.numBees", numBees));
+                lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.numBees", numBees));
             }
             int numHoney = block.getComparatorOutput(blockState, serverWorld, blockPos);
-            lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.numHoney", numHoney));
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.numHoney", numHoney));
         }
 
-        Optional<PointOfInterestType> optionalRegistryEntry =
-                PointOfInterestType.from(blockState);
+        Optional<RegistryEntry<PointOfInterestType>> optionalRegistryEntry =
+                PointOfInterestTypes.getTypeForState(blockState);
         if (optionalRegistryEntry.isEmpty()) {
-            lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.poiType",
-                    new TranslatableText("text.LibertyVillagers.villagerInfo.none")));
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.poiType",
+                    Text.translatable("text.LibertyVillagers.villagerInfo.none")));
             return lines;
         }
 
-        PointOfInterestType poiType = optionalRegistryEntry.get();
-        String poiTypeName =  poiType.getId();
+        PointOfInterestType poiType = optionalRegistryEntry.get().value();
+        Optional<RegistryKey<PointOfInterestType>> optionalRegistryKey = optionalRegistryEntry.get().getKey();
+        if (optionalRegistryKey.isEmpty()) {
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.poiType",
+                    Text.translatable("text.LibertyVillagers.villagerInfo.none")));
+            return lines;
+        }
 
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.poiType", poiTypeName));
+        String poiTypeName = optionalRegistryKey.get().getValue().toString();
+
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.poiType", poiTypeName));
+
 
         PointOfInterestStorage storage = serverWorld.getPointOfInterestStorage();
-        if (!storage.hasTypeAt(poiType, blockPos)) {
-            lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.notAPOI"));
+        if (!storage.hasTypeAt(optionalRegistryKey.get(), blockPos)) {
+            lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.notAPOI"));
             return lines;
         }
 
         @SuppressWarnings("deprecation")
         int freeTickets = storage.getFreeTickets(blockPos);
         Text isOccupied =
-                freeTickets < poiType.getTicketCount() ? new TranslatableText("text.LibertyVillagers.villagerInfo" +
-                        ".true") :
-                        new TranslatableText("text" + ".LibertyVillagers.villagerInfo.false");
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.isOccupied", isOccupied));
-        lines.add(new TranslatableText("text.LibertyVillagers.villagerInfo.freeTickets", freeTickets,
-                poiType.getTicketCount()));
+                freeTickets < poiType.ticketCount() ? Text.translatable("text.LibertyVillagers.villagerInfo.true") :
+                        Text.translatable("text" + ".LibertyVillagers.villagerInfo.false");
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.isOccupied", isOccupied));
+        lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.freeTickets", freeTickets,
+                poiType.ticketCount()));
 
         return lines;
 

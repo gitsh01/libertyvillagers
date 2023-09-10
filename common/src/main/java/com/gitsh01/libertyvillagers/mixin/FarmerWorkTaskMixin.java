@@ -3,9 +3,11 @@ package com.gitsh01.libertyvillagers.mixin;
 import net.minecraft.entity.ai.brain.task.FarmerWorkTask;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,14 +19,18 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(FarmerWorkTask.class)
 public class FarmerWorkTaskMixin {
 
+    @Shadow
+    private static List<Item> COMPOSTABLES;
+
     @Inject(method = "<clinit>", at = @At("TAIL"))
     static private void modifyStaticBlock(CallbackInfo ci) {
-        FarmerWorkTask.COMPOSTABLES = new ArrayList<>(FarmerWorkTask.COMPOSTABLES);
         if (CONFIG.villagersProfessionConfig.farmersHarvestMelons) {
-            FarmerWorkTask.COMPOSTABLES.add(Items.MELON_SEEDS);
+            COMPOSTABLES = new ArrayList<>(COMPOSTABLES);
+            COMPOSTABLES.add(Items.MELON_SEEDS);
         }
         if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins) {
-            FarmerWorkTask.COMPOSTABLES.add(Items.PUMPKIN_SEEDS);
+            COMPOSTABLES = new ArrayList<>(COMPOSTABLES);
+            COMPOSTABLES.add(Items.PUMPKIN_SEEDS);
         }
     }
 

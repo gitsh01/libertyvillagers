@@ -1,13 +1,11 @@
 package com.gitsh01.libertyvillagers.mixin;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.*;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.brain.task.FarmerVillagerTask;
-import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
@@ -19,6 +17,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,11 +31,7 @@ import java.util.List;
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 @Mixin(FarmerVillagerTask.class)
-public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
-    public FarmerVillagerTaskMixin() {
-        super(ImmutableMap.of());
-    }
-
+public abstract class FarmerVillagerTaskMixin  {
     private static final int MAX_RUN_TIME = 20 * 60; // One minute.
 
     @Shadow
@@ -55,13 +50,6 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
     @Shadow
     @Nullable
     abstract BlockPos chooseRandomTarget(ServerWorld world);
-
-    @Inject(method = "<init>()V",
-            at = @At("TAIL"))
-    public void replaceFarmerVillagerTaskRunTime(CallbackInfo ci) {
-        ((TaskAccessorMixin)this).setMaxRunTime(MAX_RUN_TIME);
-        ((TaskAccessorMixin)this).setMinRunTime(MAX_RUN_TIME);
-    }
 
     @Inject(method = "shouldRun", at = @At(value = "HEAD"), cancellable = true)
     protected void replaceShouldRun(ServerWorld serverWorld, VillagerEntity villagerEntity,
@@ -273,6 +261,8 @@ public abstract class FarmerVillagerTaskMixin extends Task<VillagerEntity> {
         }
 
         serverWorld.setBlockState(currentTarget, blockState2);
+        serverWorld.emitGameEvent(GameEvent.BLOCK_PLACE, currentTarget,
+                GameEvent.Emitter.of(villagerEntity, blockState2));
 
         serverWorld.playSound(null, currentTarget.getX(), currentTarget.getY(), currentTarget.getZ(),
                 SoundEvents.ITEM_CROP_PLANT, SoundCategory.BLOCKS, 1.0F, 1.0F);

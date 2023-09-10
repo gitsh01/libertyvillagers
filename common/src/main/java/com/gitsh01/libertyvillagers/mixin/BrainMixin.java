@@ -8,8 +8,9 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.dynamic.GlobalPos;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.util.math.GlobalPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,9 +25,6 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 @Mixin(Brain.class)
 public abstract class BrainMixin<E extends LivingEntity> {
-
-    BrainMixin() {
-    }
 
     private LivingEntity entity;
 
@@ -61,23 +59,35 @@ public abstract class BrainMixin<E extends LivingEntity> {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         for (int i = 1; i < elements.length; i++) {
             StackTraceElement s = elements[i];
-            // Find who is calling LookTargetUtil, not LookTargetUtil itself.
-            if (s.getFileName().contains("LookTargetUtil")) {
+            String fileName = s.getFileName();
+            if (fileName == null) {
                 continue;
             }
-            if (s.getClassName().contains("ai.brain.task") || s.getClassName().contains("ai.brain.sensor")) {
-                String fileName = s.getFileName();
+            // Find who is calling LookTargetUtil, not LookTargetUtil itself.
+            if (fileName.contains("LookTargetUtil")) {
+                continue;
+            }
+            className = s.getClassName();
+            if (className.contains("ai.brain.task") || className.contains("ai.brain.sensor")) {
                 fileName = fileName.substring(0, fileName.lastIndexOf('.'));
                 className = fileName + ":" + s.getMethodName() + ":" + s.getLineNumber();
                 break;
             }
         }
-        
-        String name = entity != null ? entity.getName().toString() : "null";
-        if (entity != null && entity.getDisplayName() instanceof TranslatableText) {
-            TranslatableText content = (TranslatableText)entity.getName();
-            String key = content.getKey();
-            name = key.substring(key.lastIndexOf('.') + 1);
+
+        StringBuilder name = new StringBuilder(entity != null ? entity.getName().toString() : "null");
+        if (entity != null) {
+            if (entity.getName().getContent() instanceof TranslatableTextContent) {
+                TranslatableTextContent content = (TranslatableTextContent) entity.getName().getContent();
+                String key = content.getKey();
+                name = new StringBuilder(key.substring(key.lastIndexOf('.') + 1));
+            } else {
+                name = new StringBuilder();
+                List<Text> withoutStyle = entity.getName().withoutStyle();
+                for (Text text : withoutStyle) {
+                    name.append(text.getString());
+                }
+            }
         }
 
         StringBuilder target = new StringBuilder();

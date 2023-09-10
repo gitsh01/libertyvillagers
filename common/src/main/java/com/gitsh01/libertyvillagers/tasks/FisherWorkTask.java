@@ -9,7 +9,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.dynamic.GlobalPos;
+import net.minecraft.util.math.GlobalPos;
 
 import java.util.Optional;
 

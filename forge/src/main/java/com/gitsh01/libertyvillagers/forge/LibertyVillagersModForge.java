@@ -14,6 +14,6 @@ public class LibertyVillagersModForge {
         // Submit our event bus to let architectury register our content on the right time.
         EventBuses.registerModEventBus(LibertyVillagersMod.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         LibertyVillagersMod.init();
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> LibertyVillagersClientInitializerForge::register);
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> LibertyVillagersClientInitializerForge::onInitializeClient);
     }
 }

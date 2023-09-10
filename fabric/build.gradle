@@ -54,7 +54,7 @@ dependencies {
     }
 
     // Server translations. Without this text can't translate on the server for VillagerStats.
-    modImplementation("fr.catcore:server-translations-api:$project.server_translations_version") {
+    modImplementation include("xyz.nucleoid:server-translations-api:$project.server_translations_version") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 }

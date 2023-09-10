@@ -14,6 +14,7 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 @Mixin(WalkTowardJobSiteTask.class)
 public class WalkTowardJobSiteTaskMixin {
+
     @Inject(method = "keepRunning",
             at = @At("HEAD"),
             cancellable = true)

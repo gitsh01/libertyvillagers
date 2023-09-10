@@ -9,7 +9,7 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.poi.PointOfInterestStorage;
-import net.minecraft.world.poi.PointOfInterestType;
+import net.minecraft.world.poi.PointOfInterestTypes;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,11 +47,11 @@ public abstract class ActiveTargetGoalMixin extends TrackTargetGoal {
     @Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
     public void canStartIfNotTooFarFromBell(CallbackInfoReturnable<Boolean> cir) {
         if (mob.getType() == EntityType.IRON_GOLEM && CONFIG.golemsConfig.golemStayNearBell) {
-            ServerWorld serverWorld = (ServerWorld) this.mob.world;
+            ServerWorld serverWorld = (ServerWorld) this.mob.getWorld();
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
 
             Optional<BlockPos> nearestBell = pointOfInterestStorage.getNearestPosition(
-                    poiType -> poiType == PointOfInterestType.MEETING, this.mob.getBlockPos(),
+                    poiType -> poiType.matchesKey(PointOfInterestTypes.MEETING), this.mob.getBlockPos(),
                     2 * CONFIG.golemsConfig.golemMaxBellRange, PointOfInterestStorage.OccupationStatus.ANY);
 
             if (nearestBell.isPresent()) {

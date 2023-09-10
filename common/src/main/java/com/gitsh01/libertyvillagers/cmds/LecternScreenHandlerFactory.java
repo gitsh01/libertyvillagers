@@ -8,7 +8,6 @@ import net.minecraft.screen.LecternScreenHandler;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import org.jetbrains.annotations.Nullable;
 
 public class LecternScreenHandlerFactory implements NamedScreenHandlerFactory {
@@ -20,7 +19,7 @@ public class LecternScreenHandlerFactory implements NamedScreenHandlerFactory {
 
     @Override
     public Text getDisplayName() {
-        return new TranslatableText("text.LibertyVillagers.villagerStats.title");
+        return Text.translatable("text.LibertyVillagers.villagerStats.title");
     }
 
     @Nullable

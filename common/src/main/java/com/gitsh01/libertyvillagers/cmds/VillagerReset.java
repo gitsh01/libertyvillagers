@@ -9,7 +9,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 import java.util.List;
 
@@ -50,6 +50,6 @@ public class VillagerReset {
             villager.getBrain().forget(MemoryModuleType.POTENTIAL_JOB_SITE);
         }
 
-        player.sendMessage(new TranslatableText("text.LibertyVillagers.villagerreset"), false);
+        player.sendMessage(Text.translatable("text.LibertyVillagers.villagerreset"), false);
     }
 }

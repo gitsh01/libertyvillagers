@@ -10,7 +10,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -28,9 +28,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import org.jetbrains.annotations.Nullable;
 
+
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
-public class GoFishingTask extends Task<VillagerEntity> {
+public class GoFishingTask extends MultiTickTask<VillagerEntity> {
 
     private static final int MAX_RUN_TIME = 40 * 20;
     private static final int TURN_TIME = 3 * 20;
@@ -71,7 +72,7 @@ public class GoFishingTask extends Task<VillagerEntity> {
                 Vec3d bobberStartPosition = getBobberStartPosition(villagerEntity, blockPos);
 
                 // Make sure the bobber won't be starting in a solid wall of a boat.
-                if (serverWorld.getBlockState(new BlockPos(bobberStartPosition)).isOpaque()) {
+                if (serverWorld.getBlockState(BlockPos.ofFloored(bobberStartPosition)).isOpaque()) {
                     continue;
                 }
 
@@ -118,7 +119,6 @@ public class GoFishingTask extends Task<VillagerEntity> {
         villagerEntity.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.FISHING_ROD));
         villagerEntity.setEquipmentDropChance(EquipmentSlot.MAINHAND, 0.0f);
         villagerEntity.getBrain().remember(MemoryModuleType.LOOK_TARGET, new BlockPosLookTarget(targetBlockPos.up()));
-        villagerEntity.getLookControl().lookAt(Vec3d.of(targetBlockPos.up()));
         bobberCountdown = TURN_TIME + time;
     }
 
@@ -168,7 +168,6 @@ public class GoFishingTask extends Task<VillagerEntity> {
     Vec3d getBobberStartPosition(VillagerEntity thrower, BlockPos targetBlockPos) {
         Vec3d targetPosition = Vec3d.ofCenter(targetBlockPos);
         double d = targetPosition.x - thrower.getX();
-        double e = targetPosition.y - thrower.getEyeY();
         double f = targetPosition.z - thrower.getZ();
 
         double x = thrower.getX() + (d * 0.3);

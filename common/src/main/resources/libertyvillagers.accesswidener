@@ -7,3 +7,6 @@ accessible field net/minecraft/entity/passive/VillagerEntity ITEM_FOOD_VALUES Lj
 mutable field net/minecraft/entity/passive/VillagerEntity ITEM_FOOD_VALUES Ljava/util/Map;
 accessible field net/minecraft/entity/ai/brain/task/FarmerWorkTask COMPOSTABLES Ljava/util/List;
 mutable field net/minecraft/entity/ai/brain/task/FarmerWorkTask COMPOSTABLES Ljava/util/List;
+
+# Classes
+accessible method net/minecraft/entity/projectile/ProjectileEntity <init> (Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V
