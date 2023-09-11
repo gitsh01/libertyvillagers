@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[40,)"
+loaderVersion = "[47,)"
 issueTrackerURL = "https://github.com/gitsh01/libertyvillagers/issues"
 license = "CC0-1.0"
 
@@ -16,20 +16,20 @@ logoFile = "icon.png"
 [[dependencies.libertyvillagers]]
 modId = "forge"
 mandatory = true
-versionRange = "[40,)"
+versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.libertyvillagers]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18.2,)"
+versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.libertyvillagers]]
 modId = "architectury"
 mandatory = true
-versionRange = "[4.11.91,)"
+versionRange = "[9.1.12,)"
 ordering = "AFTER"
 side = "BOTH"
