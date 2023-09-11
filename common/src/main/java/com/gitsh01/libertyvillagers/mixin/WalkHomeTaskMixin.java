@@ -18,7 +18,6 @@ import org.apache.commons.lang3.mutable.MutableLong;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.util.Set;
 import java.util.function.Predicate;
@@ -48,11 +47,13 @@ public abstract class WalkHomeTaskMixin {
     }
 
     @SuppressWarnings("target")
-    @ModifyArgs(method = "method_47054",
+    @ModifyArg(method = "method_47054",
             at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"))
-    private static void modifyShouldRunGetNearestPositionArgs(Args args) {
-        args.set(2, CONFIG.villagerPathfindingConfig.findPOIRange);
+                    target = "Lnet/minecraft/world/poi/PointOfInterestStorage;getNearestPosition" +
+                            "(Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/Optional;"),
+    index = 2)
+    private static int modifyShouldRunGetNearestPositionArgs(int range) {
+        return CONFIG.villagerPathfindingConfig.findPOIRange;
     }
 
     @SuppressWarnings("target")

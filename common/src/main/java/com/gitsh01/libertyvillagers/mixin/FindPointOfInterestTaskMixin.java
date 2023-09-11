@@ -53,21 +53,29 @@ public abstract class FindPointOfInterestTaskMixin {
     }
 
     @SuppressWarnings("target")
-    @ModifyArgs(method = "method_46885",
-            at = @At(value = "Invoke", target = "Lnet/minecraft/world/poi/PointOfInterestStorage;" +
-                    "getSortedTypesAndPositions(Ljava/util/function/Predicate;Ljava/util/function/Predicate;Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;"))
-    static private void filterForOccupiedBedsAndIncreasePOIRange(Args args) {
-        Predicate<BlockPos> oldPredicate = args.get(1);
+    @ModifyArg(method = "method_46885",
+               at = @At(value = "Invoke", target = "Lnet/minecraft/world/poi/PointOfInterestStorage;" +
+                    "getSortedTypesAndPositions(Ljava/util/function/Predicate;Ljava/util/function/Predicate;" +
+                       "Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;"),
+               index = 1)
+    static private Predicate<BlockPos> filterForOccupiedBeds(Predicate<BlockPos> oldPredicate) {
         Predicate<BlockPos> newPredicate = (blockPos -> {
             if (isBedOccupied(blockPos)) {
                 return false;
             }
             return oldPredicate.test(blockPos);
         });
-        args.set(1, newPredicate);
+        return newPredicate;
+    }
 
-        int radius = args.get(3);
-        args.set(3, Math.max(radius, CONFIG.villagerPathfindingConfig.findPOIRange));
+    @SuppressWarnings("target")
+    @ModifyArg(method = "method_46885",
+               at = @At(value = "Invoke", target = "Lnet/minecraft/world/poi/PointOfInterestStorage;" +
+                    "getSortedTypesAndPositions(Ljava/util/function/Predicate;Ljava/util/function/Predicate;" +
+                    "Lnet/minecraft/util/math/BlockPos;ILnet/minecraft/world/poi/PointOfInterestStorage$OccupationStatus;)Ljava/util/stream/Stream;"),
+               index = 3)
+    static private int increasePOIRange(int radius) {
+        return Math.max(radius, CONFIG.villagerPathfindingConfig.findPOIRange);
     }
 
     private static boolean isBedOccupied(BlockPos pos) {
@@ -75,12 +83,12 @@ public abstract class FindPointOfInterestTaskMixin {
         return blockState.isIn(BlockTags.BEDS) && blockState.get(BedBlock.OCCUPIED);
     }
 
-    @ModifyArgs(method = "findPathToPoi(Lnet/minecraft/entity/mob/MobEntity;Ljava/util/Set;)" +
+    @ModifyArg(method = "findPathToPoi(Lnet/minecraft/entity/mob/MobEntity;Ljava/util/Set;)" +
             "Lnet/minecraft/entity/ai/pathing/Path;", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/entity/ai/pathing/EntityNavigation;findPathTo" +
-                    "(Ljava/util/Set;I)Lnet/minecraft/entity/ai/pathing/Path;"))
-    static private void increaseMinimumPOIClaimDistance(Args args) {
-        int distance = args.get(1);
-        args.set(1, Math.max(distance, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance));
+                    "(Ljava/util/Set;I)Lnet/minecraft/entity/ai/pathing/Path;"),
+    index = 1)
+    static private int increaseMinimumPOIClaimDistance(int distance) {
+        return Math.max(distance, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance);
     }
 }
