@@ -80,7 +80,7 @@ public class GoFishingTask extends MultiTickTask<VillagerEntity> {
                 // Ray trace to see if the villager can actually fish on that spot.
                 // Use the lower edge of the bobber since it seems to get caught on the floor first.
                 Box box = EntityType.FISHING_BOBBER.getDimensions().getBoxAt(bobberStartPosition);
-                Vec3d lowerEdge = new Vec3d(0, -1 * box.getYLength() / 2, 0);
+                Vec3d lowerEdge = new Vec3d(0, -1 * box.getLengthY() / 2, 0);
                 if (doesNotHitValidWater(bobberStartPosition, lowerEdge, centerBlockPos, villagerEntity, serverWorld)) {
                     continue;
                 }
@@ -94,12 +94,12 @@ public class GoFishingTask extends MultiTickTask<VillagerEntity> {
                 }
 
                 // Now check if the lower right or lower left are going to hit something (like that fence)....
-                Vec3d lowerLeftEdge = new Vec3d(-1 * box.getXLength() / 2, -1 * box.getYLength() / 2, 0);
+                Vec3d lowerLeftEdge = new Vec3d(-1 * box.getLengthX() / 2, -1 * box.getLengthY() / 2, 0);
                 if (doesNotHitValidWater(bobberStartPosition, lowerLeftEdge, centerBlockPos, villagerEntity,
                         serverWorld)) {
                     continue;
                 }
-                Vec3d lowerRightEdge = new Vec3d(1 * box.getXLength() / 2, -1 * box.getYLength() / 2, 0);
+                Vec3d lowerRightEdge = new Vec3d(1 * box.getLengthX() / 2, -1 * box.getLengthY() / 2, 0);
                 if (doesNotHitValidWater(bobberStartPosition, lowerRightEdge, centerBlockPos, villagerEntity,
                         serverWorld)) {
                     continue;
