@@ -33,7 +33,7 @@ public abstract class IronGolemWanderAroundGoalMixin extends WanderAroundGoal {
             return;
         }
         if (CONFIG.golemsConfig.golemStayNearBell) {
-            ServerWorld serverWorld = (ServerWorld) this.mob.world;
+            ServerWorld serverWorld = (ServerWorld) this.mob.getWorld();
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
 
             Optional<BlockPos> nearestBell = pointOfInterestStorage.getNearestPosition(poiType -> poiType.matchesKey(PointOfInterestTypes.MEETING),
@@ -52,7 +52,7 @@ public abstract class IronGolemWanderAroundGoalMixin extends WanderAroundGoal {
             }
         }
         if (CONFIG.golemsConfig.golemsAvoidWater) {
-            if (!this.mob.world.getFluidState(new BlockPos(dest.x, dest.y, dest.z)).isEmpty()) {
+            if (!this.mob.getWorld().getFluidState(BlockPos.ofFloored(dest.x, dest.y, dest.z)).isEmpty()) {
                 dest = NoWaterTargeting.find(this.mob, 10, 7, 0, dest, 0.3141592741012573);
                 cir.setReturnValue(dest);
                 cir.cancel();

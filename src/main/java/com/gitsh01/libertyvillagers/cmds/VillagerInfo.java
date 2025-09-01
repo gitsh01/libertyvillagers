@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.block.BeehiveBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.entity.BeehiveBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -14,6 +15,8 @@ import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -24,8 +27,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.RaycastContext;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestType;
@@ -37,6 +38,7 @@ import java.util.Optional;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 import static net.minecraft.server.command.CommandManager.literal;
+
 
 public class VillagerInfo {
 
@@ -135,22 +137,22 @@ public class VillagerInfo {
         }
 
         Optional<GlobalPos> home = villager.getBrain().getOptionalMemory(MemoryModuleType.HOME);
-        String homeCoords = home.isPresent() ? home.get().getPos().toShortString() : BLANK_COORDS;
+        String homeCoords = home.isPresent() ? home.get().pos().toShortString() : BLANK_COORDS;
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.home", homeCoords));
 
         Optional<GlobalPos> jobSite = villager.getBrain().getOptionalMemory(MemoryModuleType.JOB_SITE);
-        String jobSiteCoords = jobSite.isPresent() ? jobSite.get().getPos().toShortString() : BLANK_COORDS;
+        String jobSiteCoords = jobSite.isPresent() ? jobSite.get().pos().toShortString() : BLANK_COORDS;
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.jobSite", jobSiteCoords));
 
         Optional<GlobalPos> potentialJobSite =
                 villager.getBrain().getOptionalMemory(MemoryModuleType.POTENTIAL_JOB_SITE);
         String potentialJobSiteCoords =
-                potentialJobSite.isPresent() ? potentialJobSite.get().getPos().toShortString() : BLANK_COORDS;
+                potentialJobSite.isPresent() ? potentialJobSite.get().pos().toShortString() : BLANK_COORDS;
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.potentialJobSite", potentialJobSiteCoords));
 
         Optional<GlobalPos> meetingPoint = villager.getBrain().getOptionalMemory(MemoryModuleType.MEETING_POINT);
         String meetingPointCoords =
-                meetingPoint.isPresent() ? meetingPoint.get().getPos().toShortString() : BLANK_COORDS;
+                meetingPoint.isPresent() ? meetingPoint.get().pos().toShortString() : BLANK_COORDS;
         lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.meetingPoint", meetingPointCoords));
 
         Optional<WalkTarget> walkTarget = villager.getBrain().getOptionalMemory(MemoryModuleType.WALK_TARGET);
@@ -164,7 +166,7 @@ public class VillagerInfo {
         if (villager.getInventory().isEmpty()) {
             lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.empty"));
         } else {
-            for (ItemStack stack : villager.getInventory().stacks) {
+            for (ItemStack stack : villager.getInventory().heldStacks) {
                 if (!stack.isEmpty()) {
                     lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.inventoryLine", stack.getCount(),
                             stack.getName()));
@@ -205,7 +207,8 @@ public class VillagerInfo {
                 int numBees = beehiveBlockEntity.getBeeCount();
                 lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.numBees", numBees));
             }
-            int numHoney = block.getComparatorOutput(blockState, serverWorld, blockPos);
+
+            int numHoney = blockState.getComparatorOutput(serverWorld, blockPos);
             lines.add(Text.translatable("text.LibertyVillagers.villagerInfo.numHoney", numHoney));
         }
 

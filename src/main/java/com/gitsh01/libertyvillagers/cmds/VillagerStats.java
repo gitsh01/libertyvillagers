@@ -6,6 +6,9 @@ import com.gitsh01.libertyvillagers.LibertyVillagersServerInitializer;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.WrittenBookContentComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.passive.CatEntity;
@@ -14,19 +17,17 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.RawFilteredPair;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import net.minecraft.world.poi.PointOfInterestTypes;
-import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -65,55 +66,52 @@ public class VillagerStats {
                 })));
     }
 
-    public static MutablePair<Integer, Integer> sumPair(MutablePair<Integer, Integer> oldVal,
-                                                        MutablePair<Integer, Integer> newVal) {
-        oldVal.setLeft(oldVal.getLeft() + newVal.getLeft());
-        oldVal.setRight(oldVal.getRight() + newVal.getRight());
-        return oldVal;
-    }
-
     public static void processVillagerStats(CommandContext<ServerCommandSource> command) {
         ServerCommandSource source = command.getSource();
         ServerPlayerEntity player = source.getPlayer();
         ServerWorld serverWorld = source.getWorld();
 
-        ItemStack bookStack = new ItemStack(Items.WRITTEN_BOOK);
-        bookStack.setSubNbt("title",
-                NbtString.of(Text.translatable("text.LibertyVillagers.villagerStats.title").getString()));
-        bookStack.setSubNbt("author", NbtString.of(player.getEntityName()));
-
         List<VillagerEntity> villagers = serverWorld.getNonSpectatingEntities(VillagerEntity.class,
                 player.getBoundingBox().expand(CONFIG.debugConfig.villagerStatRange));
 
-        NbtList pages = new NbtList();
+        List<RawFilteredPair<Text>> pages = new LinkedList<>();
         pages.addAll(splitToPageTags(titlePage(player, villagers, serverWorld)));
-        pages.addAll(splitToPageTags(professionPage(player, villagers, serverWorld)));
-        pages.addAll(splitToPageTags(heldWorkstationPage(player, villagers, serverWorld)));
-        pages.addAll(splitToPageTags(freeWorkstationsPage(player, villagers, serverWorld)));
-        pages.addAll(splitToPageTags(homelessPage(player, villagers, serverWorld)));
-        pages.addAll(splitToPageTags(availableBedsPage(player, villagers, serverWorld)));
+        pages.addAll(splitToPageTags(professionPage(villagers)));
+        pages.addAll(splitToPageTags(heldWorkstationPage(player, serverWorld)));
+        pages.addAll(splitToPageTags(freeWorkstationsPage(player, serverWorld)));
+        pages.addAll(splitToPageTags(homelessPage(villagers)));
+        pages.addAll(splitToPageTags(availableBedsPage(player, serverWorld)));
         pages.addAll(splitToPageTags(golems(player, serverWorld)));
         pages.addAll(splitToPageTags(cats(player, serverWorld)));
-        bookStack.setSubNbt("pages", pages);
+
+        ItemStack bookStack = new ItemStack(Items.WRITTEN_BOOK);
+        WrittenBookContentComponent bookContent = new WrittenBookContentComponent(
+                RawFilteredPair.of(Text.translatable("text.LibertyVillagers.villagerStats.title").getString()),
+                Objects.requireNonNull(player.getDisplayName()).toString(),
+                0,
+                pages,
+                true
+        );
+
+        bookStack.set(DataComponentTypes.WRITTEN_BOOK_CONTENT, bookContent);
 
         if (LibertyVillagersMod.isClient()) {
             LibertyVillagersClientInitializer.openBookScreen(bookStack);
-        } else {
-            if (FabricLoader.getInstance().getModContainer("server_translations_api").isEmpty()) {
-                player.sendMessage(Text.of("Server_translations_api is missing. VillagerStats does not work " +
-                        "server-side without translations."));
-                return;
-            }
+        } else if (FabricLoader.getInstance().getModContainer("server_translations_api").isPresent()) {
             LibertyVillagersServerInitializer.openBookScreen(bookStack, player);
+        } else {
+            player.sendMessage(Text.of(
+                "Server_translations_api is missing. VillagerStats does not work server-side without translations."
+            ));
         }
     }
 
 
-    private static Collection<NbtString> splitToPageTags(String string) {
+    private static Collection<RawFilteredPair<Text>> splitToPageTags(String string) {
         final List<String> lines = LibertyVillagersMod.isClient() ? LibertyVillagersClientInitializer.wrapText(string) :
                 LibertyVillagersServerInitializer.wrapText(string);
 
-        List<NbtString> pageTags = new LinkedList<>();
+        List<RawFilteredPair<Text>> pageTags = new LinkedList<>();
 
         int linesRemaining = LINES_PER_PAGE;
         StringBuilder curString = new StringBuilder();
@@ -122,13 +120,13 @@ public class VillagerStats {
             linesRemaining--;
             if (linesRemaining <= 0) {
                 linesRemaining = LINES_PER_PAGE;
-                pageTags.add(NbtString.of("\"" + curString + "\""));
+                pageTags.add(RawFilteredPair.of(Text.of(curString.toString())));
                 curString = new StringBuilder();
             }
         }
 
-        if (curString.length() > 0) {
-            pageTags.add(NbtString.of("\"" + curString + "\""));
+        if (!curString.isEmpty()) {
+            pageTags.add(RawFilteredPair.of(Text.of(curString.toString())));
         }
 
         return pageTags;
@@ -198,13 +196,14 @@ public class VillagerStats {
     public static String translatedProfession(VillagerProfession profession) {
         String villagerTranslationKey = EntityType.VILLAGER.getTranslationKey();
         return
-                Text.translatable(villagerTranslationKey + "." + Registry.VILLAGER_PROFESSION.getId(profession).getPath()).getString();
+                Text.translatable(villagerTranslationKey + "." + Registries.VILLAGER_PROFESSION.getId(profession).getPath()).getString();
     }
 
     protected static TreeMap<String, ProfessionInfo> createProfessionTreeMap() {
         TreeMap<String, ProfessionInfo> villagerProfessionMap = new TreeMap<>();
 
-        for (Map.Entry<RegistryKey<VillagerProfession>, VillagerProfession> professionEntry : Registry.VILLAGER_PROFESSION.getEntrySet()) {
+        for (Map.Entry<RegistryKey<VillagerProfession>, VillagerProfession> professionEntry :
+                Registries.VILLAGER_PROFESSION.getEntrySet()) {
             VillagerProfession profession = professionEntry.getValue();
             String professionText = translatedProfession(profession);
             villagerProfessionMap.put(professionText, new ProfessionInfo(profession, 0));
@@ -213,8 +212,7 @@ public class VillagerStats {
         return villagerProfessionMap;
     }
 
-    protected static String professionPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
-                                           ServerWorld serverWorld) {
+    protected static String professionPage(List<VillagerEntity> villagers) {
         String pageString = Text.translatable("text.LibertyVillagers.villagerStats.professions").getString() + "\n\n";
         TreeMap<String, ProfessionInfo> villagerProfessionMap = createProfessionTreeMap();
 
@@ -241,8 +239,7 @@ public class VillagerStats {
     }
 
 
-    protected static String heldWorkstationPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
-                                                ServerWorld serverWorld) {
+    protected static String heldWorkstationPage(ServerPlayerEntity player, ServerWorld serverWorld) {
         String pageString =
                 Text.translatable("text.LibertyVillagers.villagerStats.professionsHeldJobSites").getString() + "\n\n";
         TreeMap<String, ProfessionInfo> villagerProfessionMap = createProfessionTreeMap();
@@ -266,8 +263,7 @@ public class VillagerStats {
     }
 
 
-    protected static String freeWorkstationsPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
-                                                 ServerWorld serverWorld) {
+    protected static String freeWorkstationsPage(ServerPlayerEntity player, ServerWorld serverWorld) {
         String pageString =
                 Text.translatable("text.LibertyVillagers.villagerStats.professionsAvailableJobSites").getString() +
                         "\n\n";
@@ -293,8 +289,7 @@ public class VillagerStats {
         return pageString;
     }
 
-    protected static String homelessPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
-                                         ServerWorld serverWorld) {
+    protected static String homelessPage(List<VillagerEntity> villagers) {
         StringBuilder homelessString = new StringBuilder();
         int numHomeless = 0;
         for (VillagerEntity villager : villagers) {
@@ -316,8 +311,7 @@ public class VillagerStats {
         return pageString;
     }
 
-    protected static String availableBedsPage(ServerPlayerEntity player, List<VillagerEntity> villagers,
-                                              ServerWorld serverWorld) {
+    protected static String availableBedsPage(ServerPlayerEntity player, ServerWorld serverWorld) {
         List<PointOfInterest> availableBeds = serverWorld.getPointOfInterestStorage()
                 .getInCircle(registryEntry -> registryEntry.matchesKey(PointOfInterestTypes.HOME), player.getBlockPos(),
                         CONFIG.debugConfig.villagerStatRange, PointOfInterestStorage.OccupationStatus.HAS_SPACE)
@@ -376,14 +370,14 @@ public class VillagerStats {
 
         TreeMap<String, Integer> catVariantMap = new TreeMap<>();
 
-        for (Map.Entry<RegistryKey<CatVariant>, CatVariant> catVariantEntry : Registry.CAT_VARIANT.getEntrySet()) {
+        for (Map.Entry<RegistryKey<CatVariant>, CatVariant> catVariantEntry : Registries.CAT_VARIANT.getEntrySet()) {
             catVariantMap.put(translatedCatVariant(catVariantEntry.getKey().getValue().toShortTranslationKey()), 0);
         }
 
         if (cats.size() > 0) {
             for (CatEntity cat : cats) {
                 String variant =
-                        translatedCatVariant(Registry.CAT_VARIANT.getId(cat.getVariant()).toShortTranslationKey());
+                        translatedCatVariant(Registries.CAT_VARIANT.getId(cat.getVariant().value()).toShortTranslationKey());
                 catVariantMap.merge(variant, 1, Integer::sum);
             }
 

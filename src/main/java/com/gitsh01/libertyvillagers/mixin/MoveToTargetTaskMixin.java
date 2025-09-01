@@ -5,7 +5,7 @@ import net.minecraft.entity.ai.NoPenaltyTargeting;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
-import net.minecraft.entity.ai.brain.task.WanderAroundTask;
+import net.minecraft.entity.ai.brain.task.MoveToTargetTask;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MobEntity;
@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
-@Mixin(WanderAroundTask.class)
-public abstract class WanderAroundTaskMixin {
+@Mixin(MoveToTargetTask.class)
+public abstract class MoveToTargetTaskMixin {
 
     static private final int MAX_RUN_TIME = 20 * 60; // One minute.
     static private final long STUCK_TIME = 20 * 3; // Three seconds.
@@ -46,10 +46,19 @@ public abstract class WanderAroundTaskMixin {
     @Shadow
     abstract boolean hasReached(MobEntity entity, WalkTarget walkTarget);
 
-    @Inject(method = "<init>()V", at = @At("TAIL"))
-    public void replaceFarmerVillagerTaskRunTime(CallbackInfo ci) {
-        ((TaskAccessorMixin) this).setMaxRunTime(MAX_RUN_TIME);
-        ((TaskAccessorMixin) this).setMinRunTime(MAX_RUN_TIME);
+    @ModifyArg(
+            method = "<init>(II)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/brain/task/MultiTickTask;<init>(Ljava/util/Map;II)V"), index = 1)
+    static private int replaceMinTimeForTask(int maxTime) {
+        return Math.max(maxTime, 20 * 60 - 100);
+    }
+
+    @ModifyArg(
+            method = "<init>(II)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ai/brain/task/MultiTickTask;<init>" +
+                    "(Ljava/util/Map;II)V"), index = 2)
+    static private int replaceMaxTimeForTask(int maxTime) {
+        return Math.max(maxTime, 20 * 60);
     }
 
     @Inject(method = "hasFinishedPath(Lnet/minecraft/entity/mob/MobEntity;Lnet/minecraft/entity/ai/brain/WalkTarget;J)Z",
@@ -61,7 +70,7 @@ public abstract class WanderAroundTaskMixin {
 
     private void checkToSeeIfVillagerHasMoved(ServerWorld serverWorld, MobEntity entity, long time) {
         BlockPos entityPos =
-                new BlockPos(entity.getBlockX(), LandPathNodeMaker.getFeetY(serverWorld, entity.getBlockPos()),
+                new BlockPos(entity.getBlockX(), (int)LandPathNodeMaker.getFeetY(serverWorld, entity.getBlockPos()),
                         entity.getBlockZ());
         if (previousEntityPos == null || !previousEntityPos.isWithinDistance(entityPos, 1)) {
             previousEntityPos = entityPos;

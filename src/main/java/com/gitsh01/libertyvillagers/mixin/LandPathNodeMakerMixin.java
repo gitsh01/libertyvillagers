@@ -3,6 +3,7 @@ package com.gitsh01.libertyvillagers.mixin;
 import net.minecraft.block.*;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.pathing.LandPathNodeMaker;
+import net.minecraft.entity.ai.pathing.PathContext;
 import net.minecraft.entity.ai.pathing.PathNodeMaker;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.mob.MobEntity;
@@ -42,7 +43,7 @@ public abstract class LandPathNodeMakerMixin extends PathNodeMaker {
     }
 
     @Inject(method = "getDefaultNodeType", at = @At("HEAD"))
-    public void getDefaultNodeType(BlockView world, int x, int y, int z, CallbackInfoReturnable<PathNodeType> cir) {
+    public void getDefaultNodeType(PathContext context, int x, int y, int z, CallbackInfoReturnable<PathNodeType> cir) {
         lastUsedEntity = this.entity;
     }
 }

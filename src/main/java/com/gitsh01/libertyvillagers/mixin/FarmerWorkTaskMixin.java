@@ -6,6 +6,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,10 +35,10 @@ public class FarmerWorkTaskMixin {
         }
     }
 
-    @Inject(method = "craftAndDropBread(Lnet/minecraft/entity/passive/VillagerEntity;)V",
+    @Inject(method = "craftAndDropBread",
             at = @At("HEAD"))
-    private void craftAndDropPumpkinPie(VillagerEntity entity, CallbackInfo ci) {
-        SimpleInventory simpleInventory = entity.getInventory();
+    private void craftAndDropPumpkinPie(ServerWorld world, VillagerEntity villager, CallbackInfo ci) {
+        SimpleInventory simpleInventory = villager.getInventory();
         if (CONFIG.villagersProfessionConfig.farmersHarvestPumpkins) {
             if (simpleInventory.count(Items.PUMPKIN_PIE) > 36) {
                 return;
@@ -51,7 +52,7 @@ public class FarmerWorkTaskMixin {
             simpleInventory.removeItem(Items.PUMPKIN, i);
             ItemStack itemStack = simpleInventory.addStack(new ItemStack(Items.PUMPKIN_PIE, i));
             if (!itemStack.isEmpty()) {
-                entity.dropStack(itemStack, 0.5f);
+                villager.dropStack(world, itemStack, 0.5f);
             }
         }
     }

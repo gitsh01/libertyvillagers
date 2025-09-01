@@ -14,7 +14,7 @@ public class DebugConfig implements ConfigData {
     public boolean enableVillagerInfoOverlay = false;
 
     @ConfigEntry.Gui.Tooltip
-    public boolean villagerInfoShowsPath = false;
+    public boolean villagerInfoShowsPath = true;
 
     @ConfigEntry.Gui.Tooltip
     public boolean enableVillagerBrainDebug = false;

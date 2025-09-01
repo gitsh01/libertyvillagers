@@ -34,11 +34,9 @@ public abstract class ActiveTargetGoalMixin extends TrackTargetGoal {
         super(mob, false);
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/entity/mob/MobEntity;Ljava/lang/Class;IZZLjava/util/function/Predicate;)V",
+    @Inject(method = "<init>(Lnet/minecraft/entity/mob/MobEntity;Ljava/lang/Class;IZZLnet/minecraft/entity/ai/TargetPredicate$EntityPredicate;)V",
             at = @At("RETURN"))
-    void changeAngerDistanceForIronGolems(MobEntity mob, Class<?> targetClass, int reciprocalChance,
-                                          boolean checkVisibility, boolean checkCanNavigate,
-                                          @Nullable Predicate<LivingEntity> targetPredicate, CallbackInfo ci) {
+    void changeAngerDistanceForIronGolems(MobEntity mob, Class targetClass, int reciprocalChance, boolean checkVisibility, boolean checkCanNavigate, TargetPredicate.EntityPredicate targetPredicate, CallbackInfo ci) {
         if (mob.getType() == EntityType.IRON_GOLEM) {
             this.targetPredicate.setBaseMaxDistance(CONFIG.golemsConfig.golemAggroRange);
         }
@@ -47,7 +45,7 @@ public abstract class ActiveTargetGoalMixin extends TrackTargetGoal {
     @Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
     public void canStartIfNotTooFarFromBell(CallbackInfoReturnable<Boolean> cir) {
         if (mob.getType() == EntityType.IRON_GOLEM && CONFIG.golemsConfig.golemStayNearBell) {
-            ServerWorld serverWorld = (ServerWorld) this.mob.world;
+            ServerWorld serverWorld = (ServerWorld) this.mob.getWorld();
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
 
             Optional<BlockPos> nearestBell = pointOfInterestStorage.getNearestPosition(

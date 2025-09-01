@@ -1,41 +1,32 @@
 package com.gitsh01.libertyvillagers.mixin;
 
-import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.ai.brain.task.Task;
 import net.minecraft.entity.ai.brain.task.VillagerWalkTowardsTask;
-import net.minecraft.entity.passive.VillagerEntity;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
 @Mixin(VillagerWalkTowardsTask.class)
-public abstract class VillagerWalkTowardsTaskMixin extends Task<VillagerEntity> {
-    public VillagerWalkTowardsTaskMixin() {
-        super(ImmutableMap.of());
+public abstract class VillagerWalkTowardsTaskMixin {
+    @ModifyVariable(method = "create(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)Lnet/minecraft/entity/ai/brain/task/SingleTickTask;",
+            at = @At("HEAD"),
+            ordinal = 0)
+    private static int increaseCompletionRange(int completionRange) {
+        return CONFIG.villagerPathfindingConfig.minimumPOISearchDistance;
     }
 
-    @Shadow
-    @Mutable
-    private int maxRunTime;
+    @ModifyVariable(method = "create(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)Lnet/minecraft/entity/ai/brain/task/SingleTickTask;",
+            at = @At("HEAD"),
+            ordinal = 1)
+    private static int increaseMaxDistance(int maxDistance) {
+        return CONFIG.villagerPathfindingConfig.pathfindingMaxRange;
+    }
 
-    @Shadow
-    @Mutable
-    private int completionRange;
-
-    @Shadow
-    @Mutable
-    private int maxRange;
-
-    @Inject(method = "<init>(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)V",
-    at = @At("TAIL"))
-    private void increaseMaxRunTime(CallbackInfo ci) {
-        maxRunTime = CONFIG.villagerPathfindingConfig.walkTowardsTaskMaxRunTime;
-        completionRange = Math.max(completionRange, CONFIG.villagerPathfindingConfig.minimumPOISearchDistance);
-        maxRange = CONFIG.villagerPathfindingConfig.pathfindingMaxRange;
+    @ModifyVariable(method = "create(Lnet/minecraft/entity/ai/brain/MemoryModuleType;FIII)Lnet/minecraft/entity/ai/brain/task/SingleTickTask;",
+            at = @At("HEAD"),
+            ordinal = 2)
+    private static int increaseMaxRunTime(int maxRunTime) {
+        return CONFIG.villagerPathfindingConfig.walkTowardsTaskMaxRunTime;
     }
 }

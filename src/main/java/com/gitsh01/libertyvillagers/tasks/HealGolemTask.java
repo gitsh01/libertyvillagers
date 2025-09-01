@@ -24,7 +24,7 @@ public class HealGolemTask extends HealTargetTask {
             return possiblePatients;
         }
 
-        List<IronGolemEntity> golems = villagerEntity.world.getNonSpectatingEntities(IronGolemEntity.class,
+        List<IronGolemEntity> golems = villagerEntity.getWorld().getNonSpectatingEntities(IronGolemEntity.class,
                 villagerEntity.getBoundingBox().expand(CONFIG.villagersProfessionConfig.armorerHealsGolemsRange));
         possiblePatients.addAll(golems);
         return possiblePatients;

@@ -6,9 +6,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.MultilineText;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -19,7 +21,7 @@ import java.util.List;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
-public class LibertyVillagersOverlay {
+public class LibertyVillagersOverlay implements HudRenderCallback {
 
     static int WHITE = 0xffffff;
     static int TEXT_PADDING = 2;
@@ -27,10 +29,10 @@ public class LibertyVillagersOverlay {
     static int BACKGROUND_COLOR = 0x55200000;
 
     public static void register() {
-        HudRenderCallback.EVENT.register(LibertyVillagersOverlay::HudRenderCallback);
+        HudRenderCallback.EVENT.register(new LibertyVillagersOverlay());
     }
 
-    public static void HudRenderCallback(MatrixStack matrices, float tickDelta) {
+    public void onHudRender(DrawContext context, RenderTickCounter tickDelta) {
         if (!CONFIG.debugConfig.enableVillagerInfoOverlay) {
             return;
         }
@@ -63,14 +65,20 @@ public class LibertyVillagersOverlay {
         }
 
         if (lines != null) {
-            int windowScaledWidth = client.getWindow().getScaledWidth();
             TextRenderer renderer = client.textRenderer;
-            MultilineText multilineText = MultilineText.createFromTexts(renderer, lines);
+            MultilineText multilineText = MultilineText.create(renderer, lines.toArray(new Text[0]));
+
+            int windowScaledWidth = client.getWindow().getScaledWidth();
             int multilineWidth = multilineText.getMaxWidth() + TEXT_PADDING;
             int x = windowScaledWidth - multilineWidth;
-            multilineText.fillBackground(matrices, x + (multilineWidth / 2) - (BACKGROUND_PADDING / 2), TEXT_PADDING,
-                    renderer.fontHeight, BACKGROUND_PADDING, BACKGROUND_COLOR);
-            multilineText.draw(matrices, x, TEXT_PADDING, renderer.fontHeight, WHITE);
+            int width = x + (multilineWidth / 2) - (BACKGROUND_PADDING / 2);
+
+            int i = TEXT_PADDING;
+            for (Text line : lines) {
+                context.drawTextWithBackground(renderer, line, x, i, width, WHITE);
+
+                i += renderer.fontHeight;
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ai.brain.BlockPosLookTarget;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.entity.ai.brain.task.Task;
+import net.minecraft.entity.ai.brain.task.MultiTickTask;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 
-public class GoFishingTask extends Task<VillagerEntity> {
+public class GoFishingTask extends MultiTickTask<VillagerEntity> {
 
     private static final int MAX_RUN_TIME = 40 * 20;
     private static final int TURN_TIME = 3 * 20;
@@ -72,7 +72,7 @@ public class GoFishingTask extends Task<VillagerEntity> {
                 Vec3d bobberStartPosition = getBobberStartPosition(villagerEntity, blockPos);
 
                 // Make sure the bobber won't be starting in a solid wall of a boat.
-                if (serverWorld.getBlockState(new BlockPos(bobberStartPosition)).isOpaque()) {
+                if (serverWorld.getBlockState(BlockPos.ofFloored(bobberStartPosition)).isOpaque()) {
                     continue;
                 }
 
@@ -80,7 +80,7 @@ public class GoFishingTask extends Task<VillagerEntity> {
                 // Ray trace to see if the villager can actually fish on that spot.
                 // Use the lower edge of the bobber since it seems to get caught on the floor first.
                 Box box = EntityType.FISHING_BOBBER.getDimensions().getBoxAt(bobberStartPosition);
-                Vec3d lowerEdge = new Vec3d(0, -1 * box.getYLength() / 2, 0);
+                Vec3d lowerEdge = new Vec3d(0, -1 * box.getLengthY() / 2, 0);
                 if (doesNotHitValidWater(bobberStartPosition, lowerEdge, centerBlockPos, villagerEntity, serverWorld)) {
                     continue;
                 }
@@ -94,12 +94,12 @@ public class GoFishingTask extends Task<VillagerEntity> {
                 }
 
                 // Now check if the lower right or lower left are going to hit something (like that fence)....
-                Vec3d lowerLeftEdge = new Vec3d(-1 * box.getXLength() / 2, -1 * box.getYLength() / 2, 0);
+                Vec3d lowerLeftEdge = new Vec3d(-1 * box.getLengthY() / 2, -1 * box.getLengthY() / 2, 0);
                 if (doesNotHitValidWater(bobberStartPosition, lowerLeftEdge, centerBlockPos, villagerEntity,
                         serverWorld)) {
                     continue;
                 }
-                Vec3d lowerRightEdge = new Vec3d(1 * box.getXLength() / 2, -1 * box.getYLength() / 2, 0);
+                Vec3d lowerRightEdge = new Vec3d(1 * box.getLengthX() / 2, -1 * box.getLengthX() / 2, 0);
                 if (doesNotHitValidWater(bobberStartPosition, lowerRightEdge, centerBlockPos, villagerEntity,
                         serverWorld)) {
                     continue;
@@ -168,7 +168,6 @@ public class GoFishingTask extends Task<VillagerEntity> {
     Vec3d getBobberStartPosition(VillagerEntity thrower, BlockPos targetBlockPos) {
         Vec3d targetPosition = Vec3d.ofCenter(targetBlockPos);
         double d = targetPosition.x - thrower.getX();
-        double e = targetPosition.y - thrower.getEyeY();
         double f = targetPosition.z - thrower.getZ();
 
         double x = thrower.getX() + (d * 0.3);

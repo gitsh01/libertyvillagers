@@ -12,12 +12,12 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.DebugInfoSender;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.GlobalPos;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.village.VillagerData;
 import net.minecraft.village.VillagerDataContainer;
 import net.minecraft.village.VillagerProfession;
@@ -27,6 +27,7 @@ import net.minecraft.world.poi.PointOfInterestType;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -54,8 +55,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
     @Shadow
     public static Map<Item, Integer> ITEM_FOOD_VALUES;
 
-    @Shadow
-    private static Set<Item> GATHERABLE_ITEMS;
+    @Unique
+    private static Set<Item> GATHERABLE_ITEMS = Sets.newHashSet();
 
     @Inject(method = "<clinit>", at = @At("TAIL"))
     static private void modifyStaticBlock(CallbackInfo ci) {
@@ -91,7 +92,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
     @Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/World;)V")
     public void villagerInit(EntityType<? extends MerchantEntity> entityType, World world, CallbackInfo ci) {
         if (CONFIG.villagerPathfindingConfig.villagersAvoidCactus) {
-            this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, 16);
+            this.setPathfindingPenalty(PathNodeType.DANGER_OTHER, 16);
         }
         if (CONFIG.villagerPathfindingConfig.villagersAvoidWater) {
             this.setPathfindingPenalty(PathNodeType.WATER, -1);
@@ -114,10 +115,10 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
 
     @Inject(at = @At("HEAD"), method = "initBrain(Lnet/minecraft/entity/ai/brain/Brain;)V")
     private void changeVillagerProfession(Brain<VillagerEntity> brain, CallbackInfo ci) {
-        if (!(this.world instanceof ServerWorld)) {
+        if (!(this.getWorld() instanceof ServerWorld)) {
             return;
         }
-        ServerWorld world = (ServerWorld) this.world;
+        ServerWorld world = (ServerWorld) this.getWorld();
 
         VillagerProfession profession = this.getVillagerData().getProfession();
         if (CONFIG.villagersGeneralConfig.noNitwitVillagers && profession == VillagerProfession.NITWIT) {
@@ -136,16 +137,16 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Inte
     public void releaseTicketFor(Brain<VillagerEntity> brain, ServerWorld world, MemoryModuleType<GlobalPos> memoryModuleType) {
         MinecraftServer minecraftServer = world.getServer();
         brain.getOptionalMemory(memoryModuleType).ifPresent(pos -> {
-            ServerWorld serverWorld = minecraftServer.getWorld(pos.getDimension());
+            ServerWorld serverWorld = minecraftServer.getWorld(pos.dimension());
             if (serverWorld == null) {
                 return;
             }
             PointOfInterestStorage pointOfInterestStorage = serverWorld.getPointOfInterestStorage();
-            Optional<RegistryEntry<PointOfInterestType>> optional = pointOfInterestStorage.getType(pos.getPos());
+            Optional<RegistryEntry<PointOfInterestType>> optional = pointOfInterestStorage.getType(pos.pos());
             BiPredicate<VillagerEntity, RegistryEntry<PointOfInterestType>> biPredicate = POINTS_OF_INTEREST.get(memoryModuleType);
             if (optional.isPresent() && biPredicate.test((VillagerEntity) ((Object) this), optional.get())) {
-                pointOfInterestStorage.releaseTicket(pos.getPos());
-                DebugInfoSender.sendPointOfInterest(serverWorld, pos.getPos());
+                pointOfInterestStorage.releaseTicket(pos.pos());
+                DebugInfoSender.sendPointOfInterest(serverWorld, pos.pos());
             }
         });
     }

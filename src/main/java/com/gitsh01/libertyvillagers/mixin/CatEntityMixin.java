@@ -6,7 +6,8 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.passive.CatVariant;
 import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -24,29 +25,29 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 public abstract class CatEntityMixin extends TameableEntity {
 
     @Shadow
-    public abstract void setVariant(CatVariant variant);
+    public abstract void setVariant(RegistryEntry<CatVariant> registryEntry);
 
     public CatEntityMixin(EntityType<? extends CatEntity> entityType, World world) {
         super(entityType, world);
     }
 
-    @Inject(method = "initialize(Lnet/minecraft/world/ServerWorldAccess;Lnet/minecraft/world/LocalDifficulty;" +
-            "Lnet/minecraft/entity/SpawnReason;Lnet/minecraft/entity/EntityData;Lnet/minecraft/nbt/NbtCompound;)Lnet/minecraft/entity/EntityData;",
+    @Inject(method = "initialize",
             at = @At("RETURN"))
-    void addPersistantToInitialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason,
-                                   @Nullable EntityData entityData, @Nullable NbtCompound entityNbt,
+    void addPersistantToInitialize(ServerWorldAccess world, LocalDifficulty difficulty,
+                                   SpawnReason spawnReason, EntityData entityData,
                                    CallbackInfoReturnable<EntityData> cir) {
         if (CONFIG.catsConfig.villageCatsDontDespawn) {
             this.setPersistent();
         }
 
         if (CONFIG.catsConfig.allBlackCats) {
-            this.setVariant(CatVariant.ALL_BLACK);
+            Registries.CAT_VARIANT
+                    .getEntry(CatVariant.ALL_BLACK.getValue())
+                    .ifPresent(this::setVariant);
         }
     }
 
-    @Redirect(method = "initialize(Lnet/minecraft/world/ServerWorldAccess;Lnet/minecraft/world/LocalDifficulty;" +
-                    "Lnet/minecraft/entity/SpawnReason;Lnet/minecraft/entity/EntityData;Lnet/minecraft/nbt/NbtCompound;)Lnet/minecraft/entity/EntityData;",
+    @Redirect(method = "initialize",
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/world/ServerWorldAccess;getMoonSize()F"))
     private float replaceMoonSize(ServerWorldAccess world) {

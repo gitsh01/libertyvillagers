@@ -26,9 +26,6 @@ import static com.gitsh01.libertyvillagers.LibertyVillagersMod.CONFIG;
 @Mixin(Brain.class)
 public abstract class BrainMixin<E extends LivingEntity> {
 
-    BrainMixin() {
-    }
-
     private LivingEntity entity;
 
     @Shadow
@@ -42,7 +39,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
 
     @SuppressWarnings("unchecked")
     @Inject(method = "setMemory(Lnet/minecraft/entity/ai/brain/MemoryModuleType;Ljava/util/Optional;)V",
-            at = @At(value = "Head"))
+            at = @At(value = "HEAD"))
     <U> void setMemory(MemoryModuleType<U> type, Optional<? extends Memory<?>> memory, CallbackInfo ci) {
         if (!CONFIG.debugConfig.enableVillagerBrainDebug) {
             return;
@@ -62,12 +59,16 @@ public abstract class BrainMixin<E extends LivingEntity> {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         for (int i = 1; i < elements.length; i++) {
             StackTraceElement s = elements[i];
-            // Find who is calling LookTargetUtil, not LookTargetUtil itself.
-            if (s.getFileName().contains("LookTargetUtil")) {
+            String fileName = s.getFileName();
+            if (fileName == null) {
                 continue;
             }
-            if (s.getClassName().contains("ai.brain.task") || s.getClassName().contains("ai.brain.sensor")) {
-                String fileName = s.getFileName();
+            // Find who is calling LookTargetUtil, not LookTargetUtil itself.
+            if (fileName.contains("LookTargetUtil")) {
+                continue;
+            }
+            className = s.getClassName();
+            if (className.contains("ai.brain.task") || className.contains("ai.brain.sensor")) {
                 fileName = fileName.substring(0, fileName.lastIndexOf('.'));
                 className = fileName + ":" + s.getMethodName() + ":" + s.getLineNumber();
                 break;
@@ -76,7 +77,7 @@ public abstract class BrainMixin<E extends LivingEntity> {
 
         StringBuilder name = new StringBuilder(entity != null ? entity.getName().toString() : "null");
         if (entity != null) {
-            if (entity != null && entity.getName().getContent() instanceof TranslatableTextContent) {
+            if (entity.getName().getContent() instanceof TranslatableTextContent) {
                 TranslatableTextContent content = (TranslatableTextContent) entity.getName().getContent();
                 String key = content.getKey();
                 name = new StringBuilder(key.substring(key.lastIndexOf('.') + 1));
@@ -99,12 +100,12 @@ public abstract class BrainMixin<E extends LivingEntity> {
          } else if (type == MemoryModuleType.HOME || type ==
                 MemoryModuleType.POTENTIAL_JOB_SITE || type == MemoryModuleType.JOB_SITE) {
             GlobalPos globalPos = (GlobalPos)memory.get().getValue();
-            target = new StringBuilder(String.format("Position set to %s", globalPos.getPos().toShortString()));
+            target = new StringBuilder(String.format("Position set to %s", globalPos.pos().toShortString()));
         } else if (type == MemoryModuleType.SECONDARY_JOB_SITE) {
             List<GlobalPos> globalPosList;
             globalPosList = (List<GlobalPos>)memory.get().getValue();
             for (GlobalPos globalPos : globalPosList) {
-                target.append("{ ").append(globalPos.getPos().toShortString()).append(" } ");
+                target.append("{ ").append(globalPos.pos().toShortString()).append(" } ");
             }
         } else if (type == MemoryModuleType.PATH) {
             Path path = (Path)memory.get().getValue();
